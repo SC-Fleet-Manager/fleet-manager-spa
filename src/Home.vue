@@ -372,6 +372,7 @@ import anime from 'animejs/lib/anime.es.js';
 import axios from 'axios';
 import AnimatedNumber from 'animated-number-vue';
 import RegistrationAndLoginModal from "./views/RegistrationAndLoginModal";
+import Config from '@config/config.json';
 
 export default {
     name: 'Home',
@@ -412,18 +413,18 @@ export default {
         };
     },
     created() {
-        axios.get('/api/numbers').then(response => {
+        axios.get(`${Config.api_base_url}/api/numbers`).then(response => {
             this.countOrga = response.data.organizations;
             this.countUsers = response.data.users;
             this.countShips = response.data.ships;
         });
-        axios.get('/api/funding/ladder-alltime').then(response => {
+        axios.get(`${Config.api_base_url}/api/funding/ladder-alltime`).then(response => {
             this.topSupporters = response.data.topFundings.slice(0, 12);
             this.$nextTick(() => {
                 this.onScroll();
             });
         });
-        axios.get('/api/me').then(response => {
+        axios.get(`${Config.api_base_url}/api/me`).then(response => {
             this.user = response.data;
         }).catch(response => {
         }).then(_ => {

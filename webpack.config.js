@@ -25,6 +25,7 @@ Encore
         '@styles': path.resolve(__dirname, 'assets/styles'),
         '@img': path.resolve(__dirname, 'assets/img'),
         '@fonts': path.resolve(__dirname, 'assets/fonts'),
+        '@config': path.resolve(__dirname, 'config'),
     })
 
     .cleanupOutputBeforeBuild()
