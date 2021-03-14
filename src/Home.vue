@@ -34,6 +34,11 @@
                     <button v-if="this.user === null" v-once class="btn" type="button" @click="showModal">Use Now</button>
                     <a v-else v-once class="btn" href="/profile">Use Now</a>
                     <span class="learn-more" @click="smoothScroll('#join-citizens')">learn more <i class="fas fa-angle-down"></i></span>
+
+
+                    <router-view></router-view>
+
+
                 </div>
             </section>
             <section class="main">

@@ -1,3 +1,6 @@
 {
-    "api_base_url": "http://localhost:8100"
+    "api_base_url": "http://localhost:8100",
+    "auth0_domain": "",
+    "auth0_clientId": "",
+    "auth0_audience": ""
 }
