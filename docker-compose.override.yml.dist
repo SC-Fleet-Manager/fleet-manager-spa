@@ -1,0 +1,18 @@
+version: '3.5'
+services:
+    apache:
+        build:
+            context: .
+            target: build_apache
+            dockerfile: ./docker/Dockerfile
+        volumes:
+            - .:/app
+        ports:
+            - 8000:80
+    bundle-analyzer:
+        image: node:12-alpine
+        command: ['./node_modules/.bin/webpack-bundle-analyzer', '-h', '0.0.0.0', './public/build/stats.json']
+        volumes:
+            - .:/app
+        ports:
+            - 8888:8888

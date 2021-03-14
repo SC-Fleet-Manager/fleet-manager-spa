@@ -1,0 +1,5 @@
+version: '3.5'
+services:
+    apache:
+        image: fleet-manager-spa-apache:latest
+        hostname: apache

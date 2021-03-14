@@ -1,0 +1,7 @@
+/docker-compose.override.yml
+
+/node_modules/
+/public/build/
+/public/index.html
+npm-debug.log
+yarn-error.log
