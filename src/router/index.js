@@ -1,21 +1,22 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import axios from 'axios';
-import store from '../store/store';
+import store from '@/store/store';
 
 // Containers
-const DefaultContainer = () => import('../containers/DefaultContainer');
+const DefaultContainer = () => import('@/containers/DefaultContainer');
 
 // Views
-const MyFleet = () => import('../views/MyFleet');
-const CorpoFleets = () => import('../views/CorpoFleets');
-const Profile = () => import('../views/Profile');
-const Supporter = () => import('../views/Supporter');
-const MyBackings = () => import('../views/MyBackings');
+const Home = () => import('@/views/Home');
+const MyFleet = () => import('@/views/MyFleet');
+const CorpoFleets = () => import('@/views/CorpoFleets');
+const Profile = () => import('@/views/Profile');
+const Supporter = () => import('@/views/Supporter');
+const MyBackings = () => import('@/views/MyBackings');
 
 // Views - Pages
-const PrivacyPolicy = () => import('../views/PrivacyPolicy');
-const Page404 = () => import('../views/Page404');
+const PrivacyPolicy = () => import('@/views/PrivacyPolicy');
+const Page404 = () => import('@/views/Page404');
 
 Vue.use(Router);
 
@@ -26,8 +27,12 @@ const router = new Router({
     routes: [
         {
             path: '/',
-            redirect: '/profile',
             name: 'Home',
+            component: Home,
+        },
+        {
+            path: '/',
+            name: 'App',
             component: DefaultContainer,
             children: [
                 {

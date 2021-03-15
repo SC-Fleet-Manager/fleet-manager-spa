@@ -1,4 +1,23 @@
 import Vue from 'vue';
+import router from './router';
+
+// see Discord OAuth2 implicit grant https://discord.com/developers/docs/topics/oauth2#implicit-grant
+import Config from "@config/config.json";
+import { Auth0Plugin } from "./auth";
+Vue.use(Auth0Plugin, {
+    domain: Config.auth0_domain,
+    clientId: Config.auth0_clientId,
+    audience: Config.auth0_audience,
+    redirectUri: 'https://fleet-manager.traefik.test/profile',
+    onRedirectCallback: appState => {
+        router.push(
+            appState && appState.targetUrl
+                ? appState.targetUrl
+                : window.location.pathname
+        );
+    }
+});
+
 import {
     LayoutPlugin,
     FormPlugin,
@@ -27,7 +46,6 @@ import {
 } from 'bootstrap-vue';
 import VueToastr from "vue-toastr";
 import App from './App';
-import router from './router';
 import store from './store/store';
 
 Vue.use(LayoutPlugin);

@@ -12,6 +12,7 @@ services:
     bundle-analyzer:
         image: node:12-alpine
         command: ['./node_modules/.bin/webpack-bundle-analyzer', '-h', '0.0.0.0', './public/build/stats.json']
+        working_dir: /app
         volumes:
             - .:/app
         ports:

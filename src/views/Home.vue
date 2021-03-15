@@ -10,7 +10,7 @@
                     <a target="_blank" href="https://github.com/Ioni14/starcitizen-fleet-manager" aria-label="Github"><i class="fab fa-github"></i></a>
                     <a target="_blank" href="https://discord.gg/5EyFpVP" aria-label="Discord"><i class="fab fa-discord"></i></a>
                 </div>
-                <button v-if="this.user === null" v-once class="btn" type="button" @click="showModal"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading"><i class="fas fa-sign-in-alt"></i> Login</button>
                 <a v-else v-once class="btn" href="/profile"><i class="fas fa-space-shuttle"></i> Dashboard</a>
             </nav>
         </header>
@@ -31,14 +31,9 @@
                 <div class="container">
                     <h1 id="title">Fleet Manager <span id="subtitle">for Star Citizen</span></h1>
                     <p>Best tool in the verse to manage and share your organization's and personal fleet.</p>
-                    <button v-if="this.user === null" v-once class="btn" type="button" @click="showModal">Use Now</button>
+                    <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading">Use Now</button>
                     <a v-else v-once class="btn" href="/profile">Use Now</a>
                     <span class="learn-more" @click="smoothScroll('#join-citizens')">learn more <i class="fas fa-angle-down"></i></span>
-
-
-                    <router-view></router-view>
-
-
                 </div>
             </section>
             <section class="main">
@@ -259,7 +254,7 @@
                             <div class="col">
                                 <h2>Use it now</h2>
                                 <p>Fleet Manager is an online app to help you keep your organization’s fleet updated and get more insights about it. So you can better prepare your next operations and have fun all together.</p>
-                                <button v-if="this.user === null" v-once class="btn" type="button" @click="showModal">Start using Fleet Manager</button>
+                                <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading">Start using Fleet Manager</button>
                                 <a v-else v-once class="btn" href="/profile">Start using Fleet Manager</a>
                             </div>
                             <img @load="onLoad('use-it-now')" id="sprite-useitnow-character-right" src="@img/character-3.png" alt="Sprite character with bike">
@@ -367,8 +362,6 @@
                 <p>All game content and materials are copyright of Cloud Imperium Rights LLC and Cloud Imperium Rights Ltd. Star Citizen®, Roberts Space Industries®, and Cloud Imperium® are registered trademarks of Cloud Imperium Rights LLC. All rights reserved.</p>
             </section>
         </footer>
-
-        <RegistrationAndLoginModal ref="modal"></RegistrationAndLoginModal>
     </div>
 </template>
 
@@ -376,12 +369,11 @@
 import anime from 'animejs/lib/anime.es.js';
 import axios from 'axios';
 import AnimatedNumber from 'animated-number-vue';
-import RegistrationAndLoginModal from "./views/RegistrationAndLoginModal";
 import Config from '@config/config.json';
 
 export default {
     name: 'Home',
-    components: {AnimatedNumber, RegistrationAndLoginModal},
+    components: {AnimatedNumber},
     data() {
         return {
             actualYear: (new Date()).getFullYear(),
@@ -429,20 +421,41 @@ export default {
                 this.onScroll();
             });
         });
-        axios.get(`${Config.api_base_url}/api/me`).then(response => {
-            this.user = response.data;
-        }).catch(response => {
-        }).then(_ => {
-            this.userStated = true;
+
+        this.$auth.$on('loaded', async () => {
+            console.log('loaded');
+            const token = await this.$auth.getTokenSilently();
+            if (!this.$auth.isAuthenticated) {
+                return;
+            }
+
+            console.log(this.$auth.user);
+
+            axios.get(`${Config.api_base_url}/api/me`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }).then(response => {
+                this.user = response.data;
+            }).catch(response => {
+            }).then(_ => {
+                this.userStated = true;
+            });
         });
+
         window.addEventListener('scroll', this.onScroll);
     },
     mounted() {
         this.onScroll();
     },
     methods: {
-        showModal() {
-            this.$refs['modal'].show();
+        login() {
+            this.$auth.loginWithRedirect();
+        },
+        logout() {
+            this.$auth.logout({
+                returnTo: window.location.origin
+            });
         },
         formatSatistics(value) {
             return Math.round(value);

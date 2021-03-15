@@ -8,9 +8,9 @@
             </b-link>
             <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen="true" ref="sidebarDesktop"/>
             <b-navbar-nav class="ml-auto">
-                <b-nav-text v-if="user != null" class="px-3 d-none d-sm-inline-block">Welcome, <img v-if="user.supporter" src="@img/icon_supporter.svg" alt="Supporter" class="supporter-badge" height="30" /> {{ citizen ? citizen.actualHandle.handle : (user.nickname !== null ? user.nickname : user.email.substr(0, user.email.indexOf('@'))) }}</b-nav-text>
-                <b-nav-text v-if="user != null && user.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ user.coins }}</b-nav-text>
-                <b-nav-item v-if="user != null" class="px-3" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</b-nav-item>
+                <b-nav-text v-if="$auth.isAuthenticated" class="px-3 d-none d-sm-inline-block">Welcome, <img v-if="user.supporter" src="@img/icon_supporter.svg" alt="Supporter" class="supporter-badge" height="30" /> {{ citizen ? citizen.actualHandle.handle : (user.nickname !== null ? user.nickname : user.email.substr(0, user.email.indexOf('@'))) }}</b-nav-text>
+                <b-nav-text v-if="$auth.isAuthenticated && user.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ user.coins }}</b-nav-text>
+                <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i> Logout</b-nav-item>
                 <b-nav-item v-else class="px-3" v-b-modal.modal-login><i class="fas fa-sign-in-alt"></i> Login</b-nav-item>
             </b-navbar-nav>
         </AppHeader>
@@ -153,6 +153,11 @@
         },
         methods: {
             ...mapMutations(['updateUser']),
+            logout() {
+                this.$auth.logout({
+                    returnTo: window.location.origin
+                });
+            },
             findLastVersion() {
                 axios.get('https://api.github.com/repos/Ioni14/starcitizen-fleet-manager/tags').then(response => {
                     this.lastVersion = response.data[0].name;
@@ -176,3 +181,13 @@
         }
     };
 </script>
+
+<style lang="scss">
+    $fa-font-path: '~@fortawesome/fontawesome-free/webfonts/';
+    @import '~@fortawesome/fontawesome-free/scss/fontawesome';
+    @import '~@fortawesome/fontawesome-free/scss/solid';
+    @import '~@fortawesome/fontawesome-free/scss/brands';
+    /*@import '~@fortawesome/fontawesome-free/scss/regular';*/
+    @import '~bootstrap-vue/dist/bootstrap-vue.css';
+    @import '~@styles/style.scss';
+</style>
