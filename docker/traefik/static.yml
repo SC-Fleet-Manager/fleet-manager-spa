@@ -1,0 +1,20 @@
+api:
+    dashboard: true
+
+log:
+    level: INFO
+    filePath: "/var/log/traefik/traefik.log"
+accessLog: {}
+
+entryPoints:
+    web:
+        address: ":80"
+    web-secure:
+        address: ":443"
+
+providers:
+    file:
+        filename: dynamic.yml
+    docker:
+        exposedbydefault: false
+        network: traefik

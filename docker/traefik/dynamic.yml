@@ -1,0 +1,4 @@
+tls:
+    certificates:
+        - certFile: /etc/ssl/_wildcard.traefik.test.pem
+          keyFile: /etc/ssl/_wildcard.traefik.test-key.pem

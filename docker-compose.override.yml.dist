@@ -1,5 +1,31 @@
 version: '3.5'
+networks:
+    traefik:
+        name: traefik
 services:
+    traefik:
+        image: traefik:v2.3
+        hostname: traefik
+        ports:
+            - 80:80
+            - 443:443
+        networks:
+            - traefik
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./docker/traefik/static.yml:/etc/traefik/traefik.yml:ro
+            - ./docker/traefik/dynamic.yml:/dynamic.yml:ro
+            - ./docker/tls:/etc/ssl:ro
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.dashboard_insecure.rule=Host(`dashboard.traefik.test`)"
+            - "traefik.http.routers.dashboard_insecure.entrypoints=web"
+            - "traefik.http.routers.dashboard.rule=Host(`dashboard.traefik.test`)"
+            - "traefik.http.routers.dashboard.tls=true"
+            - "traefik.http.routers.dashboard.entrypoints=web-secure"
+            - "traefik.http.routers.dashboard.service=api@internal"
+            - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
+        restart: unless-stopped
     apache:
         build:
             context: .
@@ -7,6 +33,17 @@ services:
             dockerfile: ./docker/Dockerfile
         volumes:
             - .:/app
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.fleet-manager_spa_insecure.rule=Host(`fleet-manager.traefik.test`)"
+            - "traefik.http.routers.fleet-manager_spa_insecure.entrypoints=web"
+            - "traefik.http.routers.fleet-manager_spa.rule=Host(`fleet-manager.traefik.test`)"
+            - "traefik.http.routers.fleet-manager_spa.tls=true"
+            - "traefik.http.routers.fleet-manager_spa.entrypoints=web-secure"
+            - "traefik.http.services.fleet-manager_spa.loadbalancer.server.port=80"
+        networks:
+            - default
+            - traefik
         ports:
             - 8000:80
     bundle-analyzer:
