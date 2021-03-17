@@ -14,7 +14,7 @@ Encore
     .setPublicPath(process.env.PUBLIC_URL ? process.env.PUBLIC_URL : '/build')
     .setManifestKeyPrefix('build/')
 
-    .addEntry('main', './src/main.js')
+    .addEntry('main', './src/main.ts')
 
     .splitEntryChunks()
     .disableSingleRuntimeChunk()

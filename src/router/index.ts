@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router, {Route} from 'vue-router';
 import axios from 'axios';
 import store from '@/store/store';
 
@@ -23,7 +23,9 @@ Vue.use(Router);
 const router = new Router({
     mode: 'history',
     linkActiveClass: 'open active',
-    scrollBehavior: () => ({y: 0}),
+    scrollBehavior(to, from, savedPosition) {
+        return {x: 0, y: 0};
+    },
     routes: [
         {
             path: '/',
@@ -69,7 +71,7 @@ const router = new Router({
                             },
                             {
                                 property: 'og:url',
-                                content: async (to) => {
+                                content: async (to: Route) => {
                                     return `${window.location.protocol}//${window.location.host}${to.path}`;
                                 },
                             },
@@ -97,7 +99,7 @@ const router = new Router({
                             },
                             {
                                 property: 'og:url',
-                                content: async (to) => {
+                                content: async (to: Route) => {
                                     return `${window.location.protocol}//${window.location.host}${to.path}`;
                                 },
                             },
@@ -126,7 +128,7 @@ const router = new Router({
                             },
                             {
                                 property: 'og:url',
-                                content: async (to) => {
+                                content: async (to: Route) => {
                                     return `${window.location.protocol}//${window.location.host}${to.path}`;
                                 },
                             },
@@ -156,7 +158,7 @@ const router = new Router({
                     },
                     {
                         property: 'og:url',
-                        content: async (to) => {
+                        content: async (to: Route) => {
                             return `${window.location.protocol}//${window.location.host}${to.path}`;
                         },
                     },
@@ -220,7 +222,7 @@ const router = new Router({
     ]
 });
 
-async function refreshSeoTags(to)
+async function refreshSeoTags(to: Route)
 {
     if (to.meta.titleTag) {
         if (typeof to.meta.titleTag === 'function') {
@@ -246,7 +248,7 @@ async function refreshSeoTags(to)
                 meta.setAttribute('name', metaTag.name);
                 document.head.append(meta);
             }
-            meta.content = content;
+            meta.setAttribute('content', content);
         } else if (metaTag.property) {
             let meta = document.head.querySelector(`meta[property="${metaTag.property}"]`);
             if (!meta) {
@@ -254,7 +256,7 @@ async function refreshSeoTags(to)
                 meta.setAttribute('property', metaTag.property);
                 document.head.append(meta);
             }
-            meta.content = content;
+            meta.setAttribute('content', content);
         }
     }
 }

@@ -369,7 +369,7 @@
 import anime from 'animejs/lib/anime.es.js';
 import axios from 'axios';
 import AnimatedNumber from 'animated-number-vue';
-import Config from '@config/config.json';
+import Config from '@config/config';
 
 export default {
     name: 'Home',

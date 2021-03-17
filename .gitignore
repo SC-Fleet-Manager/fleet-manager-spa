@@ -5,4 +5,4 @@
 /public/index.html
 npm-debug.log
 yarn-error.log
-/config/config.json
+/config/config.ts

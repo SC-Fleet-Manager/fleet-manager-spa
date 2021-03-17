@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@styles/*": ["./assets/styles/*"],
+      "@img/*": ["./assets/img/*"],
+      "@fonts/*": ["./assets/fonts/*"],
+      "@config/*": ["./config/*"]
+    },
+    "target": "esnext",
+    "module": "esnext",
+    // this enables stricter inference for data properties on `this`
+    "strict": true,
+    "moduleResolution": "node"
+  },
+  "exclude": ["public"]
+}
