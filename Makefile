@@ -2,7 +2,7 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 UID := $(shell id -u)
 GID := $(shell id -g)
 DOCKER_COMPOSE?=docker-compose
-EXEC_NODE=docker container run --rm -it -u ${UID}:${GID} -v ${PROJECT_DIR}:/app -w /app node:12-alpine
+EXEC_NODE=docker container run --rm -it -u ${UID}:${GID} -v ${PROJECT_DIR}:/app -w /app node:14-alpine
 EXEC_YARN=$(EXEC_NODE) yarn
 
 .PHONY: help

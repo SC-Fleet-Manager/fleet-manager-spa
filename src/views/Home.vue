@@ -234,6 +234,7 @@
                                     <li>
                                         <span class="screens-ship">2</span>
                                         <p>Export your fleet as JSON and use it anywhere.</p>
+                                    </li>
                                     <li>
                                         <span class="screens-ship">3</span>
                                         <p>Available on Chrome and Firefox.</p>
@@ -423,13 +424,10 @@ export default {
         });
 
         this.$auth.$on('loaded', async () => {
-            console.log('loaded');
             const token = await this.$auth.getTokenSilently();
             if (!this.$auth.isAuthenticated) {
                 return;
             }
-
-            console.log(this.$auth.user);
 
             axios.get(`${Config.api_base_url}/api/me`, {
                 headers: {

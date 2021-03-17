@@ -1,13 +1,11 @@
-import {Vue as _Vue} from 'vue';
+import {App, defineComponent, DefineComponent} from 'vue';
 import createAuth0Client, {Auth0Client, LogoutOptions, RedirectLoginOptions} from '@auth0/auth0-spa-js';
-import { RedirectOption } from 'vue-router';
-import { VueConstructor } from 'vue/types/umd';
 
 /** Define a default action to perform after authentication */
-const DEFAULT_REDIRECT_CALLBACK = () =>
+const DEFAULT_REDIRECT_CALLBACK = (_: any) =>
     window.history.replaceState({}, document.title, window.location.pathname);
 
-let instance: Vue;
+let instance: DefineComponent;
 
 /** Returns the current instance of the SDK */
 export const getInstance = () => instance;
@@ -21,7 +19,7 @@ export const useAuth0 = ({
     if (instance) return instance;
 
     // The 'instance' is simply a Vue object
-    instance = new _Vue({
+    instance = defineComponent({
         data() {
             return {
                 loading: true,
@@ -85,7 +83,7 @@ export const useAuth0 = ({
         async created() {
             // Create a new instance of the SDK client using members of the given options object
             this.auth0Client = await createAuth0Client({
-                ...options,
+                ...options as {domain: string},
                 client_id: options.clientId,
                 redirect_uri: redirectUri,
             });
@@ -122,7 +120,7 @@ export const useAuth0 = ({
 
 // Create a simple Vue plugin to expose the wrapper object throughout the application
 export const Auth0Plugin = {
-    install(Vue: _Vue, options:{domain:string}) {
+    install(Vue: App, options:{domain:string}) {
         Vue.config.globalProperties.$auth = useAuth0(options);
     },
 };

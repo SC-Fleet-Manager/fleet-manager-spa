@@ -1,31 +1,25 @@
-import Vue from 'vue';
-import Router, {Route} from 'vue-router';
+import { createWebHistory, createRouter, RouteLocationNormalized } from "vue-router";
 import axios from 'axios';
 import store from '@/store/store';
 
 // Containers
-const DefaultContainer = () => import('@/containers/DefaultContainer');
+const DefaultContainer = () => import('@/containers/DefaultContainer.vue');
 
 // Views
-const Home = () => import('@/views/Home');
-const MyFleet = () => import('@/views/MyFleet');
-const CorpoFleets = () => import('@/views/CorpoFleets');
-const Profile = () => import('@/views/Profile');
-const Supporter = () => import('@/views/Supporter');
-const MyBackings = () => import('@/views/MyBackings');
+const Home = () => import('@/views/Home.vue');
+const MyFleet = () => import('@/views/MyFleet.vue');
+const CorpoFleets = () => import('@/views/CorpoFleets.vue');
+const Profile = () => import('@/views/Profile.vue');
+const Supporter = () => import('@/views/Supporter.vue');
+const MyBackings = () => import('@/views/MyBackings.vue');
 
 // Views - Pages
-const PrivacyPolicy = () => import('@/views/PrivacyPolicy');
-const Page404 = () => import('@/views/Page404');
+const PrivacyPolicy = () => import('@/views/PrivacyPolicy.vue');
+const Page404 = () => import('@/views/Page404.vue');
 
-Vue.use(Router);
-
-const router = new Router({
-    mode: 'history',
+const router = createRouter({
+    history: createWebHistory(),
     linkActiveClass: 'open active',
-    scrollBehavior(to, from, savedPosition) {
-        return {x: 0, y: 0};
-    },
     routes: [
         {
             path: '/',
@@ -71,7 +65,7 @@ const router = new Router({
                             },
                             {
                                 property: 'og:url',
-                                content: async (to: Route) => {
+                                content: async (to: RouteLocationNormalized) => {
                                     return `${window.location.protocol}//${window.location.host}${to.path}`;
                                 },
                             },
@@ -99,7 +93,7 @@ const router = new Router({
                             },
                             {
                                 property: 'og:url',
-                                content: async (to: Route) => {
+                                content: async (to: RouteLocationNormalized) => {
                                     return `${window.location.protocol}//${window.location.host}${to.path}`;
                                 },
                             },
@@ -128,7 +122,7 @@ const router = new Router({
                             },
                             {
                                 property: 'og:url',
-                                content: async (to: Route) => {
+                                content: async (to: RouteLocationNormalized) => {
                                     return `${window.location.protocol}//${window.location.host}${to.path}`;
                                 },
                             },
@@ -158,7 +152,7 @@ const router = new Router({
                     },
                     {
                         property: 'og:url',
-                        content: async (to: Route) => {
+                        content: async (to: RouteLocationNormalized) => {
                             return `${window.location.protocol}//${window.location.host}${to.path}`;
                         },
                     },
@@ -222,19 +216,21 @@ const router = new Router({
     ]
 });
 
-async function refreshSeoTags(to: Route)
+type MetaTag = {content: string|((to: RouteLocationNormalized) => string), name?: string, property?: string};
+
+async function refreshSeoTags(to: RouteLocationNormalized)
 {
     if (to.meta.titleTag) {
         if (typeof to.meta.titleTag === 'function') {
             document.title = await to.meta.titleTag(to);
         } else {
-            document.title = to.meta.titleTag;
+            document.title = to.meta.titleTag as string;
         }
     }
     if (!to.meta.metaTags) {
         return;
     }
-    for (let metaTag of to.meta.metaTags) {
+    for (let metaTag of to.meta.metaTags as MetaTag[]) {
         let content = '';
         if (typeof metaTag.content === 'function') {
             content = await metaTag.content(to);
@@ -261,7 +257,7 @@ async function refreshSeoTags(to: Route)
     }
 }
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     refreshSeoTags(to);
 
     if (!to.meta.requireAuth) {
@@ -271,7 +267,7 @@ router.beforeEach((to, from, next) => {
     }
 
     // need auth
-    axios.get('/api/me').then(response => {
+    axios.get('/api/me').then(_ => {
         next();
     }).catch(err => {
         const status = err.response.status;

@@ -53,6 +53,8 @@ Encore
     .enableTypeScriptLoader()
     .enableVueLoader(function(options) {
         // https://vue-loader.vuejs.org/options.html
+    }, {
+        version: 3
     })
 
     .copyFiles({

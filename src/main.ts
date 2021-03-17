@@ -1,23 +1,10 @@
-import Vue from 'vue';
-import router from './router';
-
-// see Discord OAuth2 implicit grant https://discord.com/developers/docs/topics/oauth2#implicit-grant
+import { createApp } from 'vue';
 import Config from "@config/config";
+import router from './router';
+import store from '@/store/store';
+// import VueToastr from "vue-toastr";
+// see Discord OAuth2 implicit grant https://discord.com/developers/docs/topics/oauth2#implicit-grant
 import { Auth0Plugin } from "./auth";
-Vue.use(Auth0Plugin, {
-    domain: Config.auth0_domain,
-    clientId: Config.auth0_clientId,
-    audience: Config.auth0_audience,
-    redirectUri: 'https://fleet-manager.traefik.test/profile',
-    onRedirectCallback: appState => {
-        router.push(
-            appState && appState.targetUrl
-                ? appState.targetUrl
-                : window.location.pathname
-        );
-    }
-});
-
 import {
     LayoutPlugin,
     FormPlugin,
@@ -44,48 +31,55 @@ import {
     TablePlugin,
     VBTooltipPlugin,
 } from 'bootstrap-vue';
-import VueToastr from "vue-toastr";
-import App from '@/App';
-import store from '@/store/store';
 
-Vue.use(LayoutPlugin);
-Vue.use(FormPlugin);
-Vue.use(FormGroupPlugin);
-Vue.use(FormInputPlugin);
-Vue.use(FormCheckboxPlugin);
-Vue.use(FormFilePlugin);
-Vue.use(FormRadioPlugin);
-Vue.use(InputGroupPlugin);
-Vue.use(ButtonPlugin);
-Vue.use(ButtonGroupPlugin);
-Vue.use(AlertPlugin);
-Vue.use(CardPlugin);
-Vue.use(ModalPlugin);
-Vue.use(DropdownPlugin);
-Vue.use(SpinnerPlugin);
-Vue.use(LinkPlugin);
-Vue.use(NavPlugin);
-Vue.use(NavbarPlugin);
-Vue.use(PaginationPlugin);
-Vue.use(BadgePlugin);
-Vue.use(CollapsePlugin);
-Vue.use(ProgressPlugin);
-Vue.use(TablePlugin);
-Vue.use(VBTooltipPlugin);
-
-Vue.use(VueToastr, {
-    defaultTimeout: 3000,
-    defaultProgressBar: false,
-    defaultProgressBarValue: 0,
-    defaultPosition: "toast-bottom-right",
-    defaultCloseOnHover: false,
-    defaultClassNames: ["animated", "zoomInUp"]
+import AppToto from '@/views/App.vue';
+const app = createApp(AppToto);
+app.use(router);
+app.use(Auth0Plugin, {
+    domain: Config.auth0_domain,
+    clientId: Config.auth0_clientId,
+    audience: Config.auth0_audience,
+    redirectUri: 'https://fleet-manager.traefik.test/profile',
+    onRedirectCallback: (appState: any) => {
+        router.push(
+            appState && appState.targetUrl
+                ? appState.targetUrl
+                : window.location.pathname
+        );
+    }
 });
+app.use(LayoutPlugin);
+app.use(FormPlugin);
+app.use(FormGroupPlugin);
+app.use(FormInputPlugin);
+app.use(FormCheckboxPlugin);
+app.use(FormFilePlugin);
+app.use(FormRadioPlugin);
+app.use(InputGroupPlugin);
+app.use(ButtonPlugin);
+app.use(ButtonGroupPlugin);
+app.use(AlertPlugin);
+app.use(CardPlugin);
+app.use(ModalPlugin);
+app.use(DropdownPlugin);
+app.use(SpinnerPlugin);
+app.use(LinkPlugin);
+app.use(NavPlugin);
+app.use(NavbarPlugin);
+app.use(PaginationPlugin);
+app.use(BadgePlugin);
+app.use(CollapsePlugin);
+app.use(ProgressPlugin);
+app.use(TablePlugin);
+app.use(VBTooltipPlugin);
 
-new Vue({
-    el: '#app',
-    router,
-    store,
-    template: '<App/>',
-    components: {App},
-});
+// app.use(VueToastr, {
+//     defaultTimeout: 3000,
+//     defaultProgressBar: false,
+//     defaultProgressBarValue: 0,
+//     defaultPosition: "toast-bottom-right",
+//     defaultCloseOnHover: false,
+//     defaultClassNames: ["animated", "zoomInUp"]
+// });
+
+app.mount('#app');

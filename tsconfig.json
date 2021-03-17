@@ -1,11 +1,22 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@styles/*": ["./assets/styles/*"],
-      "@img/*": ["./assets/img/*"],
-      "@fonts/*": ["./assets/fonts/*"],
-      "@config/*": ["./config/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@styles/*": [
+        "assets/styles/*"
+      ],
+      "@img/*": [
+        "assets/img/*"
+      ],
+      "@fonts/*": [
+        "assets/fonts/*"
+      ],
+      "@config/*": [
+        "config/*"
+      ]
     },
     "target": "esnext",
     "module": "esnext",
@@ -13,5 +24,10 @@
     "strict": true,
     "moduleResolution": "node"
   },
-  "exclude": ["public"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "tests/**/*.ts"
+  ],
+  "exclude": ["node_modules", "public"]
 }
