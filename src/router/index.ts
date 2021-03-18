@@ -2,20 +2,16 @@ import { createWebHistory, createRouter, RouteLocationNormalized } from "vue-rou
 import axios from 'axios';
 import store from '@/store/store';
 
-// Containers
-const DefaultContainer = () => import('@/containers/DefaultContainer.vue');
-
 // Views
 const Home = () => import('@/views/Home.vue');
-const MyFleet = () => import('@/views/MyFleet.vue');
-const CorpoFleets = () => import('@/views/CorpoFleets.vue');
-const Profile = () => import('@/views/Profile.vue');
-const Supporter = () => import('@/views/Supporter.vue');
-const MyBackings = () => import('@/views/MyBackings.vue');
+const MainContainer = () => import('@/views/MainContainer.vue');
+const MyFleet = () => import('@/views/MyFleet/MyFleet.vue');
+const MyOrganizations = () => import('@/views/MyOrganizations/MyOrganizations.vue');
+const Profile = () => import('@/views/Profile/Profile.vue');
 
 // Views - Pages
-const PrivacyPolicy = () => import('@/views/PrivacyPolicy.vue');
-const Page404 = () => import('@/views/Page404.vue');
+const PrivacyPolicy = () => import('@/views/Pages/PrivacyPolicy.vue');
+const Page404 = () => import('@/views/Pages/Page404.vue');
 
 const router = createRouter({
     history: createWebHistory(),
@@ -29,12 +25,12 @@ const router = createRouter({
         {
             path: '/',
             name: 'App',
-            component: DefaultContainer,
+            component: MainContainer,
             children: [
                 {
                     path: 'my-organizations',
                     name: 'My organizations',
-                    component: CorpoFleets,
+                    component: MyOrganizations,
                     meta: {
                         requireAuth: true,
                     }
@@ -54,63 +50,6 @@ const router = createRouter({
                     meta: {
                         requireAuth: true,
                         titleTag: 'Profile - Fleet Manager',
-                        metaTags: [
-                            {
-                                name: 'description',
-                                content: '',
-                            },
-                            {
-                                property: 'og:description',
-                                content: '',
-                            },
-                            {
-                                property: 'og:url',
-                                content: async (to: RouteLocationNormalized) => {
-                                    return `${window.location.protocol}//${window.location.host}${to.path}`;
-                                },
-                            },
-                            {
-                                property: 'og:image',
-                                content: `${window.location.protocol}//${window.location.host}/icons/favicon-96x96.png`,
-                            }
-                        ],
-                    },
-                },
-                {
-                    path: 'supporters',
-                    name: 'Supporters',
-                    component: Supporter,
-                    meta: {
-                        titleTag: 'Supporters - Fleet Manager',
-                        metaTags: [
-                            {
-                                name: 'description',
-                                content: 'Follows the great supporters of Fleet Manager. Big thanks for all of them!',
-                            },
-                            {
-                                property: 'og:description',
-                                content: 'Follows the great supporters of Fleet Manager. Big thanks for all of them!',
-                            },
-                            {
-                                property: 'og:url',
-                                content: async (to: RouteLocationNormalized) => {
-                                    return `${window.location.protocol}//${window.location.host}${to.path}`;
-                                },
-                            },
-                            {
-                                property: 'og:image',
-                                content: `${window.location.protocol}//${window.location.host}/icons/favicon-96x96.png`,
-                            }
-                        ],
-                    },
-                },
-                {
-                    path: 'my-backings',
-                    name: 'My Backings',
-                    component: MyBackings,
-                    meta: {
-                        requireAuth: true,
-                        titleTag: 'My Backings - Fleet Manager',
                         metaTags: [
                             {
                                 name: 'description',
@@ -164,32 +103,7 @@ const router = createRouter({
             },
         },
         {
-            path: '/404',
-            component: Page404,
-            meta: {
-                titleTag: '404 - Fleet Manager',
-                metaTags: [
-                    {
-                        name: 'description',
-                        content: '',
-                    },
-                    {
-                        property: 'og:description',
-                        content: '',
-                    },
-                    {
-                        property: 'og:url',
-                        content: '',
-                    },
-                    {
-                        property: 'og:image',
-                        content: `${window.location.protocol}//${window.location.host}/icons/favicon-96x96.png`,
-                    }
-                ],
-            },
-        },
-        {
-            path: '*',
+            path: '/:pathMatch(.*)*',
             component: Page404,
             meta: {
                 titleTag: '404 - Fleet Manager',
@@ -268,7 +182,6 @@ router.beforeEach(async (to, from, next) => {
 
     // need auth
     axios.get('/api/me').then(_ => {
-        next();
     }).catch(err => {
         const status = err.response.status;
         const data = err.response.data;
@@ -277,6 +190,8 @@ router.beforeEach(async (to, from, next) => {
             window.location = data.loginUrl;
         }
     });
+
+    next();
 });
 
 export default router;

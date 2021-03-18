@@ -20,9 +20,10 @@
     },
     "target": "esnext",
     "module": "esnext",
-    // this enables stricter inference for data properties on `this`
     "strict": true,
-    "moduleResolution": "node"
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*.ts",

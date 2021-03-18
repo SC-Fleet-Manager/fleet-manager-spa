@@ -1,12 +1,5 @@
 <template>
-    <div class="animated fadeIn">
-        <b-row>
-            <b-col>
-                <b-card>
-
-                </b-card>
-            </b-col>
-        </b-row>
+    <div>
     </div>
 </template>
 
@@ -15,7 +8,7 @@
 
     export default {
         name: 'my-fleet',
-        props: ['userHandle'],
+        props: [],
         components: {},
         data() {
             return {

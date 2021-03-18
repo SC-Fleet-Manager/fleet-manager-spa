@@ -44,7 +44,6 @@ Encore
         "showErrors": true,
         "chunks": "all",
         "excludeChunks": [],
-        // "title": "Webpack App",
     }))
 
     .enableSassLoader()

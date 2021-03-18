@@ -1,0 +1,40 @@
+{
+  "extends": [
+    // add more generic rulesets here, such as:
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-base",
+    "plugin:vue/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "rules": {
+    "vue/html-indent": ["error", 4],
+    "indent": ["error", 4],
+    "no-alert": 0,
+    "no-unused-vars": "warn",
+    "spaced-comment": "off",
+    "no-param-reassign": 0,
+    "import/extensions": 0,
+    "import/no-unresolved": 0,
+    "import/prefer-default-export": 0,
+    "import/no-extraneous-dependencies": ["error", {
+      // allow devDependencies for packages
+      "devDependencies": true
+    }],
+    "lines-between-class-members": "off",
+    "no-restricted-syntax": "off"
+  }
+}

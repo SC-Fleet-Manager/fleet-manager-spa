@@ -5,7 +5,7 @@ import createAuth0Client, {Auth0Client, LogoutOptions, RedirectLoginOptions} fro
 const DEFAULT_REDIRECT_CALLBACK = (_: any) =>
     window.history.replaceState({}, document.title, window.location.pathname);
 
-let instance: DefineComponent;
+let instance: any;
 
 /** Returns the current instance of the SDK */
 export const getInstance = () => instance;
@@ -124,3 +124,9 @@ export const Auth0Plugin = {
         Vue.config.globalProperties.$auth = useAuth0(options);
     },
 };
+
+declare module '@vue/runtime-core' {
+    interface ComponentCustomProperties {
+        $auth: any;
+    }
+}
