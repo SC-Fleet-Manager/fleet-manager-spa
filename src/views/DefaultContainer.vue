@@ -41,8 +41,6 @@
             </b-nav>
         </TheFooter>
 
-        <RegistrationAndLoginModal discord-login-url="/connect/discord"></RegistrationAndLoginModal>
-
         <b-modal id="modal-patch-notes" ref="modalPatchNotes" size="lg" centered scrollable title="What's new?" hide-footer @show="onShowPatchNotes">
             <div v-for="patchNote in patchNotes" :key="patchNote.id">
                 <h5>{{ patchNote.title }}</h5>
@@ -64,12 +62,10 @@
         Footer as TheFooter
     } from '@coreui/vue';
     import { mapMutations } from 'vuex';
-    import RegistrationAndLoginModal from "../views/RegistrationAndLoginModal_old";
 
     export default {
         name: 'DefaultContainer',
         components: {
-            RegistrationAndLoginModal,
             AppHeader,
             AppSidebar,
             TheFooter,
@@ -133,20 +129,7 @@
                             disabled: !this.user,
                         },
                     },
-                    {
-                        name: 'Supporters',
-                        url: '/supporters',
-                        icon: 'fas fa-star',
-                    }
                 );
-
-                if (this.user) {
-                    nav.push({
-                        name: 'My backings',
-                        url: '/my-backings',
-                        icon: 'fas fa-hands-helping',
-                    });
-                }
 
                 return nav;
             }

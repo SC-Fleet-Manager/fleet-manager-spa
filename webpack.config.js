@@ -44,13 +44,11 @@ Encore
         "showErrors": true,
         "chunks": "all",
         "excludeChunks": [],
-        // "title": "Webpack App",
     }))
 
     .enableSassLoader()
     .enablePostCssLoader()
 
-    .enableTypeScriptLoader()
     .enableVueLoader(function(options) {
         // https://vue-loader.vuejs.org/options.html
     })

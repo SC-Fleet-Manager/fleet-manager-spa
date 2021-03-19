@@ -25,17 +25,11 @@
                 </b-card>
             </b-col>
         </b-row>
-        <b-row>
-            <b-col col md="6" v-if="user != null">
-                <Security :user="user" @accountLinked="onAccountLinked"></Security>
-            </b-col>
-        </b-row>
     </div>
 </template>
 
 <script>
     import axios from 'axios';
-    import Security from "./Security";
     import { mapMutations } from 'vuex';
     import VueClipboard from 'vue-clipboard2';
 
@@ -44,7 +38,7 @@
 
     export default {
         name: 'profile',
-        components: {Security},
+        components: {},
         data() {
             return {
                 form: {

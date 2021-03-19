@@ -3,20 +3,14 @@ import Router from 'vue-router'
 import axios from 'axios';
 import store from '@/store/store';
 
-// Containers
-const DefaultContainer = () => import('@/containers/DefaultContainer');
-
 // Views
 const Home = () => import('@/views/Home');
-const MyFleet = () => import('@/views/MyFleet');
-const CorpoFleets = () => import('@/views/CorpoFleets');
-const Profile = () => import('@/views/Profile');
-const Supporter = () => import('@/views/Supporter');
-const MyBackings = () => import('@/views/MyBackings');
-
-// Views - Pages
-const PrivacyPolicy = () => import('@/views/PrivacyPolicy');
-const Page404 = () => import('@/views/Page404');
+const DefaultContainer = () => import('@/views/DefaultContainer');
+const MyFleet = () => import('@/views/MyFleet/MyFleet');
+const MyOrganizations = () => import('@/views/MyOrganizations/MyOrganizations');
+const Profile = () => import('@/views/Profile/Profile');
+const PrivacyPolicy = () => import('@/views/Pages/PrivacyPolicy');
+const Page404 = () => import('@/views/Pages/Page404');
 
 Vue.use(Router);
 
@@ -38,7 +32,7 @@ const router = new Router({
                 {
                     path: 'my-organizations',
                     name: 'My organizations',
-                    component: CorpoFleets,
+                    component: MyOrganizations,
                     meta: {
                         requireAuth: true,
                     }
@@ -58,63 +52,6 @@ const router = new Router({
                     meta: {
                         requireAuth: true,
                         titleTag: 'Profile - Fleet Manager',
-                        metaTags: [
-                            {
-                                name: 'description',
-                                content: '',
-                            },
-                            {
-                                property: 'og:description',
-                                content: '',
-                            },
-                            {
-                                property: 'og:url',
-                                content: async (to) => {
-                                    return `${window.location.protocol}//${window.location.host}${to.path}`;
-                                },
-                            },
-                            {
-                                property: 'og:image',
-                                content: `${window.location.protocol}//${window.location.host}/icons/favicon-96x96.png`,
-                            }
-                        ],
-                    },
-                },
-                {
-                    path: 'supporters',
-                    name: 'Supporters',
-                    component: Supporter,
-                    meta: {
-                        titleTag: 'Supporters - Fleet Manager',
-                        metaTags: [
-                            {
-                                name: 'description',
-                                content: 'Follows the great supporters of Fleet Manager. Big thanks for all of them!',
-                            },
-                            {
-                                property: 'og:description',
-                                content: 'Follows the great supporters of Fleet Manager. Big thanks for all of them!',
-                            },
-                            {
-                                property: 'og:url',
-                                content: async (to) => {
-                                    return `${window.location.protocol}//${window.location.host}${to.path}`;
-                                },
-                            },
-                            {
-                                property: 'og:image',
-                                content: `${window.location.protocol}//${window.location.host}/icons/favicon-96x96.png`,
-                            }
-                        ],
-                    },
-                },
-                {
-                    path: 'my-backings',
-                    name: 'My Backings',
-                    component: MyBackings,
-                    meta: {
-                        requireAuth: true,
-                        titleTag: 'My Backings - Fleet Manager',
                         metaTags: [
                             {
                                 name: 'description',

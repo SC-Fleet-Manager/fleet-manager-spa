@@ -2,30 +2,28 @@
     <div class="animated fadeIn">
         <b-row>
             <b-col>
+                <b-card>
 
+                </b-card>
             </b-col>
         </b-row>
     </div>
 </template>
 
 <script>
-    import axios from 'axios';
-    import vSelect from 'vue-select';
-    import {createNamespacedHelpers} from 'vuex';
+    import placeholderShipUri from '@img/static/placeholder_ship.svg';
 
     export default {
-        name: 'organizations-fleets',
+        name: 'my-organizations',
         props: [],
         components: {},
         data() {
             return {
+                placeholderShipUri,
             };
         },
         created() {
-        },
-        mounted() {
-        },
-        computed: {
+
         },
         methods: {
         }

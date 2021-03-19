@@ -15,7 +15,7 @@
 
     export default {
         name: 'my-fleet',
-        props: ['userHandle'],
+        props: [],
         components: {},
         data() {
             return {
