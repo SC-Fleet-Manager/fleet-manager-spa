@@ -3,3 +3,10 @@ services:
     apache:
         image: fleet-manager-spa-apache:latest
         hostname: apache
+    cypress:
+        image: piopirahl/cypress-desktop-browsers:all-1.0.1
+        volumes:
+            - ./cypress:/src/cypress
+        ports:
+            - 6901:6901
+            - 5901:5901
