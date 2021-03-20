@@ -28,6 +28,7 @@
     import axios from 'axios';
     import moment from 'moment-timezone';
     import {mapGetters} from "vuex";
+    import Config from '@config/config.json';
 
     export default {
         name: 'my-backings',
@@ -118,7 +119,7 @@
                 return moment(value).format('LLL');
             },
             refreshBackings() {
-                axios.get('/api/funding/my-backings').then(response => {
+                axios.get(`${Config.api_base_url}/api/funding/my-backings`).then(response => {
                     this.backings = this.computeBalances(response.data);
                 }).catch(err => {
                     this.$toastr.e('Unable to retrieve your backings list. Please retry in a moment.');

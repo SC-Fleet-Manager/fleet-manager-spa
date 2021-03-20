@@ -1,23 +1,11 @@
 import Vue from 'vue';
 import router from './router';
-
 // see Discord OAuth2 implicit grant https://discord.com/developers/docs/topics/oauth2#implicit-grant
 import Config from "@config/config.json";
 import { Auth0Plugin } from "./auth";
-Vue.use(Auth0Plugin, {
-    domain: Config.auth0_domain,
-    clientId: Config.auth0_clientId,
-    audience: Config.auth0_audience,
-    redirectUri: 'https://fleet-manager.traefik.test/profile',
-    onRedirectCallback: appState => {
-        router.push(
-            appState && appState.targetUrl
-                ? appState.targetUrl
-                : window.location.pathname
-        );
-    }
-});
-
+import App from './App';
+import store from './store/store';
+import VueToastr from "vue-toastr";
 import {
     LayoutPlugin,
     FormPlugin,
@@ -44,10 +32,20 @@ import {
     TablePlugin,
     VBTooltipPlugin,
 } from 'bootstrap-vue';
-import VueToastr from "vue-toastr";
-import App from './App';
-import store from './store/store';
 
+Vue.use(Auth0Plugin, {
+    domain: Config.auth0_domain,
+    clientId: Config.auth0_clientId,
+    audience: Config.auth0_audience,
+    redirectUri: 'https://fleet-manager.traefik.test/profile',
+    onRedirectCallback: appState => {
+        router.push(
+            appState && appState.targetUrl
+                ? appState.targetUrl
+                : window.location.pathname
+        );
+    }
+});
 Vue.use(LayoutPlugin);
 Vue.use(FormPlugin);
 Vue.use(FormGroupPlugin);
@@ -72,7 +70,6 @@ Vue.use(CollapsePlugin);
 Vue.use(ProgressPlugin);
 Vue.use(TablePlugin);
 Vue.use(VBTooltipPlugin);
-
 Vue.use(VueToastr, {
     defaultTimeout: 3000,
     defaultProgressBar: false,

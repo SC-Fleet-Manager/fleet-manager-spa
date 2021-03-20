@@ -8,8 +8,8 @@
             </b-link>
             <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen="true" ref="sidebarDesktop"/>
             <b-navbar-nav class="ml-auto">
-                <b-nav-text v-if="$auth.isAuthenticated" class="px-3 d-none d-sm-inline-block">Welcome, <img v-if="user.supporter" src="@img/icon_supporter.svg" alt="Supporter" class="supporter-badge" height="30" /> {{ citizen ? citizen.actualHandle.handle : (user.nickname !== null ? user.nickname : user.email.substr(0, user.email.indexOf('@'))) }}</b-nav-text>
-                <b-nav-text v-if="$auth.isAuthenticated && user.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ user.coins }}</b-nav-text>
+                <b-nav-text v-if="user !== null" class="px-3 d-none d-sm-inline-block">Welcome, {{ user.auth0Username }}</b-nav-text>
+                <b-nav-text v-if="user !== null && user.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ user.coins }}</b-nav-text>
                 <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i> Logout</b-nav-item>
                 <b-nav-item v-else class="px-3" v-b-modal.modal-login><i class="fas fa-sign-in-alt"></i> Login</b-nav-item>
             </b-navbar-nav>
@@ -62,6 +62,7 @@
         Footer as TheFooter
     } from '@coreui/vue';
     import { mapMutations } from 'vuex';
+    import Config from '@config/config.json';
 
     export default {
         name: 'DefaultContainer',
@@ -83,26 +84,12 @@
             }
         },
         created() {
-            axios.get('/api/profile').then(response => {
-                this.user = response.data;
-                this.updateUser(this.user);
-            });
-
-            this.findLastVersion();
-
-            try {
-                axios.get('/api/has-new-patch-note').then(response => {
-                    if (response.data.hasNewPatchNote === true) {
-                        this.$bvModal.show('modal-patch-notes');
-                    }
-                });
-            } catch (err) {
-                if (err.response.status === 401) {
-                    // not connected
-                    return;
-                }
-                console.error(err);
+            if (!this.$auth.loading) {
+                this.loadAuthRequests();
+            } else {
+                this.$auth.$on('loaded', this.loadAuthRequests);
             }
+            this.findLastVersion();
         },
         computed: {
             name() {
@@ -141,14 +128,52 @@
                     returnTo: window.location.origin
                 });
             },
+            async loadAuthRequests() {
+                const token = await this.$auth.getTokenSilently();
+                if (!this.$auth.isAuthenticated) {
+                    return;
+                }
+                this.loadProfile(token);
+                this.loadNewPatchNoteIfNew(token);
+            },
+            loadProfile(token) {
+                axios.get(`${Config.api_base_url}/api/profile`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                }).then(response => {
+                    this.user = response.data;
+                    this.updateUser(this.user);
+                });
+            },
+            loadNewPatchNoteIfNew(token) {
+                axios.get(`${Config.api_base_url}/api/has-new-patch-note`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                }).then(response => {
+                    if (response.data.hasNewPatchNote === true) {
+                        this.$bvModal.show('modal-patch-notes');
+                    }
+                });
+            },
             findLastVersion() {
                 axios.get('https://api.github.com/repos/Ioni14/starcitizen-fleet-manager/tags').then(response => {
                     this.lastVersion = response.data[0].name;
                 });
             },
-            async onShowPatchNotes(ev) {
+            async onShowPatchNotes() {
+                const token = await this.$auth.getTokenSilently();
+                if (!this.$auth.isAuthenticated) {
+                    this.$toastr.e('Sorry, we are unable to display the last patch notes for the moment. Please try again later.');
+                    return;
+                }
                 try {
-                    const response = await axios.get('/api/last-patch-notes');
+                    const response = await axios.get(`${Config.api_base_url}/api/last-patch-notes`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    });
                     this.patchNotes = response.data.patchNotes;
                 } catch (err) {
                     if (err.response.data.errorMessage) {

@@ -319,27 +319,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="gradient-blue">
-                    <div class="container" id="supporters">
-                        <div class="row">
-                            <div class="col">
-                                <h2>They supported us</h2>
-                                <p>
-                                    These Citizens are our top backers, they helped us cover the cost of hosting and maintenance while being active and invested members of the community.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row" ref="supporters-backers" id="supporters-backers">
-                            <div class="col" v-for="supporter in topSupporters" :key="supporter.name">
-                                <img :src="supporter.avatarUrl" :alt="'avatar '+supporter.name">
-                                <div class="supporter-description">
-                                    <div class="supporter-name">{{ supporter.name }}</div>
-                                    <p>{{ supporter.mainOrgaName }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </section>
         </main>
 
@@ -377,7 +356,6 @@ export default {
     data() {
         return {
             actualYear: (new Date()).getFullYear(),
-            topSupporters: [],
             countOrga: 0,
             countUsers: 0,
             countShips: 0,
@@ -410,38 +388,8 @@ export default {
         };
     },
     created() {
-        axios.get(`${Config.api_base_url}/api/numbers`).then(response => {
-            this.countOrga = response.data.organizations;
-            this.countUsers = response.data.users;
-            this.countShips = response.data.ships;
-        });
-        axios.get(`${Config.api_base_url}/api/funding/ladder-alltime`).then(response => {
-            this.topSupporters = response.data.topFundings.slice(0, 12);
-            this.$nextTick(() => {
-                this.onScroll();
-            });
-        });
-
-        this.$auth.$on('loaded', async () => {
-            console.log('loaded');
-            const token = await this.$auth.getTokenSilently();
-            if (!this.$auth.isAuthenticated) {
-                return;
-            }
-
-            console.log(this.$auth.user);
-
-            axios.get(`${Config.api_base_url}/api/me`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            }).then(response => {
-                this.user = response.data;
-            }).catch(response => {
-            }).then(_ => {
-                this.userStated = true;
-            });
-        });
+        this.loadNumbers();
+        this.loadUser();
 
         window.addEventListener('scroll', this.onScroll);
     },
@@ -455,6 +403,25 @@ export default {
         logout() {
             this.$auth.logout({
                 returnTo: window.location.origin
+            });
+        },
+        loadNumbers() {
+            axios.get(`${Config.api_base_url}/api/numbers`).then(response => {
+                this.countUsers = response.data.users;
+            });
+        },
+        loadUser() {
+            this.$auth.$on('loaded', async () => {
+                const token = await this.$auth.getTokenSilently();
+                if (!this.$auth.isAuthenticated) {
+                    return;
+                }
+                const response = await axios.get(`${Config.api_base_url}/api/me`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+                this.user = response.data;
             });
         },
         formatSatistics(value) {
@@ -613,28 +580,6 @@ export default {
                     }
                 }
             });
-
-            if (!this.animateEls['supporters-backers'] && this.topSupporters.length > 0) {
-                const el = this.$refs['supporters-backers'];
-                const pos = this.getPosition(el);
-                const elTopScreenY = pos.y;
-                const elBottomScreenY = pos.y + el.clientHeight;
-                if (elBottomScreenY >= thresholdFromBottom && elTopScreenY <= thresholdFromTop) {
-                    this.animateEls['supporters-backers'] = true;
-                    document.querySelectorAll('#supporters-backers .col').forEach((el) => {
-                        el.style.transform = 'translateY(50px)';
-                    });
-                    anime({
-                        targets: '#supporters-backers .col',
-                        opacity: 1,
-                        translateY: '-=50',
-                        easing: 'easeInOutQuad',
-                        delay: function(el, i) {
-                            return i * 75;
-                        },
-                    });
-                }
-            }
         },
         smoothScroll(cssSelector) {
             const el = document.querySelector(cssSelector);

@@ -126,6 +126,7 @@
 <script>
     import axios from 'axios';
     import AnimatedNumber from 'animated-number-vue';
+    import Config from '@config/config.json';
 
     export default {
         name: 'supporters',
@@ -156,7 +157,7 @@
             this.refreshMonthlyLadder();
         },
         mounted() {
-            axios.get('/api/funding/configuration').then(response => {
+            axios.get(`${Config.api_base_url}/api/funding/configuration`).then(response => {
                 let paypalScript = document.createElement('script');
                 paypalScript.setAttribute('src', `https://www.paypal.com/sdk/js?currency=${response.data.currency}&client-id=${response.data.paypalClientId}`);
                 document.head.appendChild(paypalScript);

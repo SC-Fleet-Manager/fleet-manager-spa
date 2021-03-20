@@ -198,24 +198,7 @@ async function refreshSeoTags(to)
 
 router.beforeEach((to, from, next) => {
     refreshSeoTags(to);
-
-    if (!to.meta.requireAuth) {
-        // no need auth
-        next();
-        return;
-    }
-
-    // need auth
-    axios.get('/api/me').then(response => {
-        next();
-    }).catch(err => {
-        const status = err.response.status;
-        const data = err.response.data;
-        if ((status === 401 && data.error === 'no_auth')
-            || (status === 403 && data.error === 'forbidden')) {
-            window.location = data.loginUrl;
-        }
-    });
+    next();
 });
 
 export default router;
