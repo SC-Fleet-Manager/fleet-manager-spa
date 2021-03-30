@@ -234,6 +234,7 @@
                                     <li>
                                         <span class="screens-ship">2</span>
                                         <p>Export your fleet as JSON and use it anywhere.</p>
+                                    </li>
                                     <li>
                                         <span class="screens-ship">3</span>
                                         <p>Available on Chrome and Firefox.</p>
