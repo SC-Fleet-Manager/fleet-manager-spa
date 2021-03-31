@@ -3,14 +3,12 @@
         <div class="btn-edit-ships d-flex flex-row-reverse m-2">
             <b-button variant="secondary" role="button">Edit ships and fleet</b-button>
         </div>
-        <div class="list-ships">
-            <b-row class="row">
-                <ShipCard v-for="(ship, index) in listOfShips" :key="index"
-                    :shipName="ship.name"
-                    :number="ship.number"
-                    :image="ship.image"
-                />
-            </b-row>
+        <div class="d-flex flex-row flex-wrap">
+            <ShipCard v-for="(ship, index) in listOfShips" :key="index"
+                :shipName="ship.name"
+                :number="ship.number"
+                :image="ship.image"
+            />
         </div>
     </div>
 </template>
@@ -30,10 +28,20 @@
                 // placeholderShipUri,
                 listOfShips:[
                     {name: 'Avenger S', number:5},
-                    {name: 'Avenger Titan', number:1},
+                    {name: 'Avenger Titan', number:0},
                     {name: 'Mercury', number:1},
                     {name: 'Avenger S', number:1},
-                    {name: '85X', number:3}
+                    {name: '85X', number:3},
+                    {name: '85X', number:3},
+                    {name: '85X', number:10},
+                    {name: 'Avenger Titan super mega stalker super mega', number:100},
+                    {name: 'Avenger S', number:5},
+                    {name: 'Avenger Titan super stalker ', number:0},
+                    {name: 'Mercury', number:1},
+                    {name: 'Avenger S', number:1},
+                    {name: 'Avenger Titan', number:0},
+                    {name: 'Mercury', number:1},
+                    {name: 'Avenger S', number:1}
                 ],
             };
         },

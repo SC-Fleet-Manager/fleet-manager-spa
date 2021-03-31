@@ -1,10 +1,12 @@
 <template>
-    <b-card class="col col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-        <b-card-text class="text-center">
-            {{ shipName }} [{{number}}]
-        </b-card-text>
-        <img class="img-fluid" :src="placeholderShipImg" alt="">
-    </b-card>
+    <div class="col col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="card">
+            <header class="d-flex justify-content-between align-items-center px-4 py-3 h5">
+                {{shipName}}<span v-if="number" class="badge badge-primary badge-pill">{{number}}</span>
+            </header>
+            <img class="img-fluid" :src="placeholderShipImg" alt="">
+        </div>
+    </div>
 
 </template>
 <script>
