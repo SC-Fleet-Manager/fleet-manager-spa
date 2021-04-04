@@ -21,17 +21,22 @@ jobs:
                     key: ${{ runner.os }}-node_modules-build-${{ hashFiles('**/yarn.lock') }}
                     restore-keys: |
                         ${{ runner.os }}-node_modules-build-
+            -   name: Launch web server for tests
+                run: |
+                    docker-compose -f docker-compose.ci.yml up -d apache
             -   name: Build SPA
                 uses: cypress-io/github-action@v2
                 with:
-                    runTests: false
+#                    runTests: false
+                    browser: chrome
+                    wait-on: 'http://localhost'
                     build: yarn build
             -   name: Clean config
                 run: rm -f config/config.json
-            -   name: Launch tests
-                run: |
-                    docker-compose -f docker-compose.ci.yml up -d apache
-                    docker-compose -f docker-compose.ci.yml up cypress
+#            -   name: Launch tests
+#                run: |
+#                    docker-compose -f docker-compose.ci.yml up -d apache
+#                    docker-compose -f docker-compose.ci.yml up cypress
             -   name: Archive cypress videos
                 uses: actions/upload-artifact@v2
                 with:

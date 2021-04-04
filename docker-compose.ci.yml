@@ -5,6 +5,8 @@ services:
         hostname: apache
         volumes:
             - ./public:/usr/local/apache2/htdocs/:ro
+        ports:
+            - 127.0.0.1:80:80
     cypress:
         image: cypress/included:6.8.0
         depends_on: [apache]
