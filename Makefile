@@ -3,9 +3,7 @@ USER_ID ?= $(shell id -u)
 GROUP_ID ?= $(shell id -g)
 DOCKER_COMPOSE?=docker-compose
 EXEC_NODE=docker container run --rm -it -u ${USER_ID}:${GROUP_ID} -v ${PROJECT_DIR}:/app -w /app node:14-alpine
-EXEC_NODE_NOTTY=docker container run --rm -u ${USER_ID}:${GROUP_ID} -v ${PROJECT_DIR}:/app -w /app node:14-alpine
 EXEC_YARN=$(EXEC_NODE) yarn
-EXEC_YARN_NOTTY=$(EXEC_NODE_NOTTY) yarn
 
 .PHONY: help
 help:
@@ -16,17 +14,17 @@ help:
 ##---------------------------------------------------------------------------
 .PHONY: node yarn yi yu watch build
 node:									## execute a node command
-	$(EXEC_NODE_NOTTY) $(c)
+	$(EXEC_NODE) $(c)
 yarn: 									## executes yarn with arbitrary args c="<args>"
-	$(EXEC_YARN_NOTTY) $(c)
+	$(EXEC_YARN) $(c)
 yi:									## yarn install
-	$(EXEC_YARN_NOTTY) install
+	$(EXEC_YARN) install
 yu:									## yarn upgrade
-	$(EXEC_YARN_NOTTY) upgrade
+	$(EXEC_YARN) upgrade
 watch:									## yarn watch
-	$(EXEC_YARN_NOTTY) watch
+	$(EXEC_YARN) watch
 build:									## yarn build
-	$(EXEC_YARN_NOTTY) build
+	$(EXEC_YARN) build
 
 ##
 ##Setups
