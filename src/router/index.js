@@ -7,6 +7,7 @@ import store from '@/store/store';
 const Home = () => import('@/views/Home');
 const DefaultContainer = () => import('@/views/DefaultContainer');
 const MyFleet = () => import('@/views/MyFleet/MyFleet');
+const EditShipsAndFleet = () => import('@/views/MyFleet/EditShipsAndFleet');
 const MyOrganizations = () => import('@/views/MyOrganizations/MyOrganizations');
 const Profile = () => import('@/views/Profile/Profile');
 const PrivacyPolicy = () => import('@/views/Pages/PrivacyPolicy');
@@ -39,11 +40,28 @@ const router = new Router({
                 },
                 {
                     path: 'my-fleet',
-                    name: 'My fleet',
-                    component: MyFleet,
-                    meta: {
-                        requireAuth: true,
-                    },
+                    component: {
+                        // Inline declaration of a component that renders our <router-view>
+                        render: (c) => c('router-view'),
+                      },
+                    children: [
+                        {
+                            path: '',
+                            name: 'My fleet',
+                            component: MyFleet,
+                            meta: {
+                                requireAuth: true,
+                            },
+                        },
+                        {
+                            path: 'edit-ships-and-fleet',
+                            name: 'Edit ships and fleet',
+                            component: EditShipsAndFleet,
+                            meta: {
+                                requireAuth: true,
+                            },
+                        }
+                    ]
                 },
                 {
                     path: 'profile',

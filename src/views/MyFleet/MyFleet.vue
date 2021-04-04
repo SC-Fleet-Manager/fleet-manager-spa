@@ -1,7 +1,7 @@
 <template>
     <div class="animated fadeIn">
         <div class="btn-edit-ships d-flex flex-row-reverse m-2">
-            <b-button variant="secondary" role="button">Edit ships and fleet</b-button>
+            <router-link to="/my-fleet/edit-ships-and-fleet"><b-button variant="secondary" role="button">Edit ships and fleet</b-button></router-link>
         </div>
         <div class="d-flex flex-row flex-wrap">
             <ShipCard v-for="(ship, index) in listOfShips" :key="index"
