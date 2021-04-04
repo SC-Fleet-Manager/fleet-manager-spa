@@ -23,8 +23,8 @@ jobs:
                         ${{ runner.os }}-node_modules-build-
             -   name: Launch web server for tests
                 run: |
-                    docker-compose -f docker-compose.ci.yml up -d apache
-            -   name: Build SPA
+                    docker run -d --rm -p 80:80 -v $PWD/public:/usr/local/apache2/htdocs/:ro httpd:2.4
+            -   name: Build SPA and Launch cypress
                 uses: cypress-io/github-action@v2
                 env:
                     CYPRESS_baseUrl: 'http://localhost'
@@ -35,10 +35,6 @@ jobs:
                     build: yarn build
             -   name: Clean config
                 run: rm -f config/config.json
-#            -   name: Launch tests
-#                run: |
-#                    docker-compose -f docker-compose.ci.yml up -d apache
-#                    docker-compose -f docker-compose.ci.yml up cypress
             -   name: Archive cypress videos
                 uses: actions/upload-artifact@v2
                 with:
