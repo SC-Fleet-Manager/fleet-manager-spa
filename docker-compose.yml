@@ -1,12 +1,17 @@
 version: '3.5'
 services:
     apache:
-        image: fleet-manager-spa-apache:latest
+        image: httpd:2.4
         hostname: apache
+        volumes:
+            - ./public:/usr/local/apache2/htdocs/:ro
     cypress:
         image: piopirahl/cypress-desktop-browsers:all-1.0.1
+        depends_on: [ apache ]
         volumes:
             - ./cypress:/src/cypress
         ports:
             - 6901:6901
             - 5901:5901
+        environment:
+            CYPRESS_baseUrl: 'http://apache'

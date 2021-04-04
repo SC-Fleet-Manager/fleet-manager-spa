@@ -1,8 +1,8 @@
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-UID := $(shell id -u)
-GID := $(shell id -g)
+USER_ID ?= $(shell id -u)
+GROUP_ID ?= $(shell id -g)
 DOCKER_COMPOSE?=docker-compose
-EXEC_NODE=docker container run --rm -it -u ${UID}:${GID} -v ${PROJECT_DIR}:/app -w /app node:14-alpine
+EXEC_NODE=docker container run --rm -it -u ${USER_ID}:${GROUP_ID} -v ${PROJECT_DIR}:/app -w /app node:14-alpine
 EXEC_YARN=$(EXEC_NODE) yarn
 
 .PHONY: help
@@ -12,17 +12,19 @@ help:
 ##
 ##Utilities
 ##---------------------------------------------------------------------------
-.PHONY: node yarn yi yu watch composer ci cu console cc
+.PHONY: node yarn yi yu watch build
 node:									## execute a node command
 	$(EXEC_NODE) $(c)
-yarn: 									## launch an ephemeral node container for executing yarn with arbitrary args c="<args>"
+yarn: 									## executes yarn with arbitrary args c="<args>"
 	$(EXEC_YARN) $(c)
-yi:										## yarn install
+yi:									## yarn install
 	$(EXEC_YARN) install
-yu:										## yarn upgrade
+yu:									## yarn upgrade
 	$(EXEC_YARN) upgrade
 watch:									## yarn watch
 	$(EXEC_YARN) watch
+build:									## yarn build
+	$(EXEC_YARN) build
 
 ##
 ##Setups

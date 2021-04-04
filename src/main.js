@@ -37,7 +37,7 @@ Vue.use(Auth0Plugin, {
     domain: Config.auth0_domain,
     clientId: Config.auth0_clientId,
     audience: Config.auth0_audience,
-    redirectUri: 'https://fleet-manager.traefik.test/profile',
+    redirectUri: `${Config.spa_base_url}/profile`,
     onRedirectCallback: appState => {
         router.push(
             appState && appState.targetUrl
