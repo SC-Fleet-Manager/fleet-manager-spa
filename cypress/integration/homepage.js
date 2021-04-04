@@ -3,7 +3,7 @@ describe('Homepage', () => {
         cy.intercept('GET', '/api/numbers', { fixture: 'numbers.json' }).as('getNumbers');
         cy.intercept('GET', '/api/funding/ladder-alltime', { fixture: 'funding_ladder-alltime.json' }).as('getFundingLadder');
 
-        cy.visit('http://apache');
+        cy.visit('/');
 
         cy.contains('learn more').click();
 

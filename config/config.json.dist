@@ -1,5 +1,6 @@
 {
     "api_base_url": "http://localhost:8100",
+    "spa_base_url": "http://localhost:8000",
     "auth0_domain": "",
     "auth0_clientId": "",
     "auth0_audience": ""

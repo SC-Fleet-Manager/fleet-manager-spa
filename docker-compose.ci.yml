@@ -6,12 +6,10 @@ services:
         volumes:
             - ./public:/usr/local/apache2/htdocs/:ro
     cypress:
-        image: piopirahl/cypress-desktop-browsers:all-1.0.1
-        depends_on: [ apache ]
+        image: cypress/included:6.8.0
+        depends_on: [apache]
+        working_dir: /app
         volumes:
-            - ./cypress:/src/cypress
-        ports:
-            - 6901:6901
-            - 5901:5901
+            - .:/app
         environment:
             CYPRESS_baseUrl: 'http://apache'
