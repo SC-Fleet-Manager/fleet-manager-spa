@@ -26,6 +26,8 @@ jobs:
                     docker-compose -f docker-compose.ci.yml up -d apache
             -   name: Build SPA
                 uses: cypress-io/github-action@v2
+                env:
+                    CYPRESS_baseUrl: 'http://localhost'
                 with:
 #                    runTests: false
                     browser: chrome
