@@ -8,6 +8,7 @@ const Home = () => import('@/views/Home');
 const DefaultContainer = () => import('@/views/DefaultContainer');
 const MyFleet = () => import('@/views/MyFleet/MyFleet');
 const EditShipsAndFleet = () => import('@/views/MyFleet/EditShipsAndFleet');
+const AddNewShip = () => import('@/views/MyFleet/AddNewShip');
 const MyOrganizations = () => import('@/views/MyOrganizations/MyOrganizations');
 const Profile = () => import('@/views/Profile/Profile');
 const PrivacyPolicy = () => import('@/views/Pages/PrivacyPolicy');
@@ -55,14 +56,55 @@ const router = new Router({
                         },
                         {
                             path: 'edit-ships-and-fleet',
-                            name: 'Edit ships and fleet',
-                            component: EditShipsAndFleet,
-                            meta: {
-                                requireAuth: true,
+                            component: {
+                                render: (c) => c('router-view'),
                             },
+                            children: [
+                                {
+                                    path: '',
+                                    name: 'Edit ships and fleet',
+                                    component: EditShipsAndFleet,
+                                    meta: {
+                                        requireAuth: true,
+                                    },
+                                },
+                                {
+                                    path: 'add-new-ship',
+                                    name: 'Add new ships',
+                                    component: AddNewShip,
+                                    meta: {
+                                        requireAuth: true,
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
+                // {
+                //     path: 'my-fleet',
+                //     component: {
+                //         // Inline declaration of a component that renders our <router-view>
+                //         render: (c) => c('router-view'),
+                //       },
+                //     children: [
+                //         {
+                //             path: '',
+                //             name: 'My fleet',
+                //             component: MyFleet,
+                //             meta: {
+                //                 requireAuth: true,
+                //             },
+                //         },
+                //         {
+                //             path: 'edit-ships-and-fleet',
+                //             name: 'Edit ships and fleet',
+                //             component: EditShipsAndFleet,
+                //             meta: {
+                //                 requireAuth: true,
+                //             },
+                //         }
+                //     ]
+                // },
                 {
                     path: 'profile',
                     name: 'Profile',

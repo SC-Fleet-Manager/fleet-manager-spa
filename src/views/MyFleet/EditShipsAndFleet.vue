@@ -2,7 +2,7 @@
     <div class="animated fadeIn">
         <div class="d-flex justify-content-between mb-4">
             <router-link to="/my-fleet"><b-button variant="secondary" role="button">Back to my fleet</b-button></router-link>
-            <router-link to="/add-new-ship"><b-button variant="secondary" role="button">Add new ship</b-button></router-link>
+            <router-link to="/my-fleet/edit-ships-and-fleet/add-new-ship"><b-button variant="secondary" role="button">Add new ship</b-button></router-link>
         </div>
         <input type="text" v-model="searchValue" placeholder="Search a ship" id="search-input" class="w-25 mb-4"/>
         <div v-if="listOfShips.length !== 0" class="card container-xxl">
