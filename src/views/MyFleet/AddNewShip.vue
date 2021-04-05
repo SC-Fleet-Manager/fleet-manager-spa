@@ -1,7 +1,8 @@
 <template>
     <div class="animated fadeIn">
         <router-link to="/my-fleet/edit-ships-and-fleet"><b-button variant="secondary" role="button">Back to fleet edit</b-button></router-link>
-        <div>
+        <div class="card mt-4 p-4">
+            <h4>Add a new ship</h4>
             <b-form @submit="onSubmit">
                 <b-form-group
                     id="input-group-1"
@@ -29,8 +30,8 @@
                     required
                     ></b-form-input>
                 </b-form-group>
-                {{url}}
-                <img v-if="showImage" v-bind:src="url" alt="" width="250px">
+                <p v-if="error">{{url}}</p>
+                <img v-bind:src="url" alt="" width="250px">
                 <b-form-group
                     id="input-group-3"
                     label="Quantity:"
@@ -43,7 +44,9 @@
                     required
                     ></b-form-input>
                 </b-form-group>
-                <b-form-checkbox value="me">Add another ship</b-form-checkbox>
+                <b-form-group>
+                    <b-form-checkbox value="me">Add another ship</b-form-checkbox>
+                </b-form-group>
                 <b-button type="submit" variant="primary">Add ship</b-button>
             </b-form>
         </div>
@@ -65,7 +68,9 @@
                 },
                 showImage: false,
                 imageShip: '',
-                errorMessage: 'Please enter a valid url'
+                error: false,
+                errorMessage: 'Please enter a valid url',
+                authorizedLinks: ['https://media.robertsspaceindustries.com/', 'https://robertsspaceindustries.com/media/', 'https://starcitizen.tools/images/thumb/']
             }
         },
         methods: {
@@ -76,14 +81,19 @@
         },
         computed: {
             url() {
-                if(this.imageShip.includes('https://media.robertsspaceindustries.com/')){
-                    this.showImage = true
-                    return this.imageShip
+                let authorized = this.authorizedLinks.some(el => this.imageShip.includes(el))
+                if(authorized) {
+                    if(this.error == true) this.error = false;
+                    this.showImage = true;
+                    return this.imageShip;
+                } else if (this.imageShip !== '') {
+                    this.error = true;
+                    return this.errorMessage;
                 }
-                else {
-                    return this.errorMessage
-                }
-            }
+            },
+            // errorUrl(){
+
+            // }
         }
     }
 </script>
