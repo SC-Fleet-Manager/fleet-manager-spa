@@ -31,6 +31,7 @@ import {
     ProgressPlugin,
     TablePlugin,
     VBTooltipPlugin,
+    ImagePlugin
 } from 'bootstrap-vue';
 
 Vue.use(Auth0Plugin, {
@@ -70,6 +71,7 @@ Vue.use(CollapsePlugin);
 Vue.use(ProgressPlugin);
 Vue.use(TablePlugin);
 Vue.use(VBTooltipPlugin);
+Vue.use(ImagePlugin);
 Vue.use(VueToastr, {
     defaultTimeout: 3000,
     defaultProgressBar: false,
@@ -78,6 +80,7 @@ Vue.use(VueToastr, {
     defaultCloseOnHover: false,
     defaultClassNames: ["animated", "zoomInUp"]
 });
+
 
 new Vue({
     el: '#app',

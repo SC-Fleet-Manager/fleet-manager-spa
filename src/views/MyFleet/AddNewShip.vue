@@ -27,11 +27,13 @@
                     v-model="imageShip"
                     type="text"
                     placeholder="https://media.robertsspaceindustries.com/wj92rqzvhnecb/store_small.jpg"
-                    required
+                    :state="!error"
                     ></b-form-input>
+                    <b-form-invalid-feedback :state="!error">
+                       Invalid Url.
+                    </b-form-invalid-feedback>
+                    <b-img :src="url" fluid alt="" class="col-xl-4 mt-3"></b-img>
                 </b-form-group>
-                <p v-if="error">{{url}}</p>
-                <img v-bind:src="url" alt="" width="250px">
                 <b-form-group
                     id="input-group-3"
                     label="Quantity:"
@@ -40,7 +42,8 @@
                     <b-form-input
                     id="input-ship-quantity"
                     type="number"
-                    placeholder="0"
+                    placeholder="1"
+                    v-model="quantity"
                     required
                     ></b-form-input>
                 </b-form-group>
@@ -65,6 +68,7 @@
             return {
                 form: {
                     name: '',
+                    quantity: 1
                 },
                 showImage: false,
                 imageShip: '',
@@ -91,9 +95,6 @@
                     return this.errorMessage;
                 }
             },
-            // errorUrl(){
-
-            // }
         }
     }
 </script>
