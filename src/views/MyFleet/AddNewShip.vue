@@ -24,7 +24,7 @@
                 >
                     <b-form-input
                     id="input-ship-image"
-                    v-model="imageShip"
+                    v-model="form.imageShip"
                     type="text"
                     placeholder="https://media.robertsspaceindustries.com/wj92rqzvhnecb/store_small.jpg"
                     :state="!error"
@@ -33,19 +33,6 @@
                        Invalid Url.
                     </b-form-invalid-feedback>
                     <b-img :src="url" fluid alt="" class="col-xl-4 mt-3"></b-img>
-                </b-form-group>
-                <b-form-group
-                    id="input-group-3"
-                    label="Quantity:"
-                    label-for="input-ship-quantity"
-                >
-                    <b-form-input
-                    id="input-ship-quantity"
-                    type="number"
-                    placeholder="1"
-                    v-model="quantity"
-                    required
-                    ></b-form-input>
                 </b-form-group>
                 <b-form-group>
                     <b-form-checkbox value="me">Add another ship</b-form-checkbox>
@@ -57,6 +44,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+    import Config from '@config/config.json';
 
     export default {
         name: 'edit-ships-and-fleet',
@@ -68,10 +57,9 @@
             return {
                 form: {
                     name: '',
-                    quantity: 1
+                    imageShip: ''
                 },
                 showImage: false,
-                imageShip: '',
                 error: false,
                 errorMessage: 'Please enter a valid url',
                 authorizedLinks: ['https://media.robertsspaceindustries.com/', 'https://robertsspaceindustries.com/media/', 'https://starcitizen.tools/images/thumb/']
@@ -80,17 +68,39 @@
         methods: {
             onSubmit(event) {
                 event.preventDefault()
-                alert(JSON.stringify(this.form))
-            }
+                this.saveNewShip()
+            },
+            async saveNewShip() {
+                const token = await this.$auth.getTokenSilently();
+                if (!this.$auth.isAuthenticated) {
+                    this.$toastr.e('Sorry, we are unable to save your ship for the moment. Please try again later.');
+                    return;
+                }
+                try {
+                    const sendShip = await axios.post(`${Config.api_base_url}/api/my-fleet/create-ship`, {
+                        name: this.form.name,
+                        pictureUrl: this.form.imageShip
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    console.log(sendShip)
+                    this.$toastr.s('Changes saved');
+                } catch (err) {
+                    console.log(err)
+                    this.$toastr.e('Sorry' + err.response.data.violations.detail);
+                }
+            },
         },
         computed: {
             url() {
-                let authorized = this.authorizedLinks.some(el => this.imageShip.includes(el))
+                let authorized = this.authorizedLinks.some(el => this.form.imageShip.includes(el))
                 if(authorized) {
                     if(this.error == true) this.error = false;
                     this.showImage = true;
-                    return this.imageShip;
-                } else if (this.imageShip !== '') {
+                    return this.form.imageShip;
+                } else if (this.form.imageShip !== '') {
                     this.error = true;
                     return this.errorMessage;
                 }

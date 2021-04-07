@@ -147,7 +147,7 @@
                 });
             },
             loadNewPatchNoteIfNew(token) {
-                axios.get(`${Config.api_base_url}/api/has-new-patch-note`, {
+                axios.get(`${Config.api_base_url}/api/patch-note/has-new-patch-note`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
@@ -169,7 +169,7 @@
                     return;
                 }
                 try {
-                    const response = await axios.get(`${Config.api_base_url}/api/last-patch-notes`, {
+                    const response = await axios.get(`${Config.api_base_url}/api/patch-note/has-new-patch-note`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         }

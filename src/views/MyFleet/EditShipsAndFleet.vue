@@ -5,7 +5,7 @@
             <router-link to="/my-fleet/edit-ships-and-fleet/add-new-ship"><b-button variant="secondary" role="button">Add new ship</b-button></router-link>
         </div>
         <input type="text" v-model="searchValue" placeholder="Search a ship" id="search-input" class="col-md-6 p-2"/>
-        <b-list-group v-if="listOfShips.length !== 0" class="col-xl-8 my-4">
+        <b-list-group v-if="!noShip" class="col-xl-8 my-4">
             <b-list-group-item  v-for="(ship, index) in filteredShips" :key="index" class="d-flex justify-content-between">
                 <input class="col-6" v-model="ship.name">
                 <b-button-group class="btn-actions p-0">
@@ -17,7 +17,7 @@
             </b-list-group-item>
         </b-list-group>
         <div v-else class="card p-2">
-            <p class=" m-0 mx-auto">You have no ships</p>
+            <p class=" m-0 mx-auto">{{noShipMessage}}</p>
         </div>
     </div>
 </template>
@@ -33,7 +33,6 @@
         data() {
             return {
                 searchValue: '',
-                // placeholderShipUri,
                 listOfShips:[
                     {name: 'Avenger S', number:5},
                     {name: 'Avenger Titan', number:0},
