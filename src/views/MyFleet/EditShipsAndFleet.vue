@@ -4,18 +4,18 @@
             <router-link to="/my-fleet"><b-button variant="secondary" role="button">Back to my fleet</b-button></router-link>
             <router-link to="/my-fleet/edit-ships-and-fleet/add-new-ship"><b-button variant="secondary" role="button">Add new ship</b-button></router-link>
         </div>
-        <input type="text" v-model="searchValue" placeholder="Search a ship" id="search-input" class="w-25 mb-4"/>
-        <div v-if="listOfShips.length !== 0" class="card container-xxl">
-            <div v-for="(ship, index) in filteredShips" :key="index" class="row m-0">
-                <input class="col-10" v-model="ship.name">
-                <b-button-group class="btn-actions col-2">
-                    <b-button class="border px-2">{{ship.number}}</b-button>
-                    <b-button class="border px-2" @click="addShip(ship)">+</b-button>
-                    <b-button class="border px-2" @click="subShip(ship)">-</b-button>
-                    <b-button class="border px-2" @click="removeShip(ship)"><i class="fas fa-trash"></i></b-button>
+        <input type="text" v-model="searchValue" placeholder="Search a ship" id="search-input" class="col-md-6 p-2"/>
+        <b-list-group v-if="listOfShips.length !== 0" class="col-xl-8 my-4">
+            <b-list-group-item  v-for="(ship, index) in filteredShips" :key="index" class="d-flex justify-content-between">
+                <input class="col-6" v-model="ship.name">
+                <b-button-group class="btn-actions p-0">
+                    <b-button class="border">{{ship.number}}</b-button>
+                    <b-button class="border" @click="addShip(ship)">+</b-button>
+                    <b-button class="border" @click="subShip(ship)">-</b-button>
+                    <b-button class="border" @click="removeShip(ship)"><i class="fas fa-trash"></i></b-button>
                 </b-button-group>
-            </div>
-        </div>
+            </b-list-group-item>
+        </b-list-group>
         <div v-else class="card p-2">
             <p class=" m-0 mx-auto">You have no ships</p>
         </div>

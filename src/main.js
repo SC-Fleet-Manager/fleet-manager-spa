@@ -31,7 +31,8 @@ import {
     ProgressPlugin,
     TablePlugin,
     VBTooltipPlugin,
-    ImagePlugin
+    ImagePlugin,
+    ListGroupPlugin
 } from 'bootstrap-vue';
 
 Vue.use(Auth0Plugin, {
@@ -72,6 +73,7 @@ Vue.use(ProgressPlugin);
 Vue.use(TablePlugin);
 Vue.use(VBTooltipPlugin);
 Vue.use(ImagePlugin);
+Vue.use(ListGroupPlugin);
 Vue.use(VueToastr, {
     defaultTimeout: 3000,
     defaultProgressBar: false,
