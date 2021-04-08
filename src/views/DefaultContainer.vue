@@ -13,6 +13,7 @@
                 <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i> Logout</b-nav-item>
                 <b-nav-item v-else class="px-3" v-b-modal.modal-login><i class="fas fa-sign-in-alt"></i> Login</b-nav-item>
             </b-navbar-nav>
+            <div v-if="beta" class="beta-flag"></div>
         </AppHeader>
         <div class="app-body">
             <AppSidebar fixed>
@@ -81,6 +82,7 @@
                 citizen: null,
                 lastVersion: null,
                 patchNotes: [],
+                beta: false
             }
         },
         created() {
@@ -119,6 +121,11 @@
                 );
 
                 return nav;
+            },
+            betaCheck() {
+                if(`${Config.spa_base_url}` === 'https://beta.fleet-manager.space/'){
+                    return beta = true;
+                }
             }
         },
         methods: {
