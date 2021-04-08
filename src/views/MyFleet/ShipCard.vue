@@ -13,7 +13,7 @@
 <script>
     import placeholderShipImg from '@img/vaisseau-2.png';
     export default {
-        name: 'ShipCard,',
+        name: 'ShipCard',
         props: ['shipName', 'quantity', 'image'],
         data(){
             return {

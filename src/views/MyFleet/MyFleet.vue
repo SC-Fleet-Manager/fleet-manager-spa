@@ -51,7 +51,6 @@
                         },
                     });
                     this.listOfShips = response.data.ships.items;
-                    console.log(this.listOfShips)
                 } catch (err) {
                     if(err.response.status == 404){
                         this.noShip = true

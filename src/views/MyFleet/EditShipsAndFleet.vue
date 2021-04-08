@@ -9,7 +9,7 @@
             <b-list-group-item  v-for="(ship, index) in filteredShips" :key="index" class="d-flex justify-content-between">
                 <input class="col-6" v-model="ship.name">
                 <b-button-group class="btn-actions p-0">
-                    <b-button class="border">{{ship.number}}</b-button>
+                    <b-button class="border">{{ship.quantity}}</b-button>
                     <b-button class="border" @click="addShip(ship)">+</b-button>
                     <b-button class="border" @click="subShip(ship)">-</b-button>
                     <b-button class="border" @click="removeShip(ship)"><i class="fas fa-trash"></i></b-button>
@@ -24,6 +24,9 @@
 
 <script>
 
+    import axios from 'axios';
+    import Config from '@config/config.json';
+
     export default {
         name: 'edit-ships-and-fleet',
         props: ['userHandle'],
@@ -33,24 +36,12 @@
         data() {
             return {
                 searchValue: '',
-                listOfShips:[
-                    {name: 'Avenger S', number:5},
-                    {name: 'Avenger Titan', number:0},
-                    {name: 'Mercury', number:1},
-                    {name: 'Avenger S', number:1},
-                    {name: '85X', number:3},
-                    {name: '85X', number:3},
-                    {name: '85X', number:10},
-                    {name: 'Avenger Titan super mega stalker super mega', number:100},
-                    {name: 'Avenger S', number:5},
-                    {name: 'Avenger Titan super stalker ', number:0},
-                    {name: 'Mercury', number:1},
-                    {name: 'Avenger S', number:1},
-                    {name: 'Avenger Titan', number:0},
-                    {name: 'Mercury', number:1},
-                    {name: 'Avenger S', number:1}
-                ],
+                listOfShips: null,
+                noShip: false
             };
+        },
+        created() {
+            this.loadShipList()
         },
         computed: {
             filteredShips() {
@@ -66,17 +57,86 @@
             }
         },
         methods: {
-            addShip(ship) {
-                ship.number += 1
+            async loadShipList() {
+                const token = await this.$auth.getTokenSilently();
+                if (!this.$auth.isAuthenticated) {
+                    this.$toastr.e('Sorry, we are unable to load your ships for the moment.');
+                    return;
+                }
+                try {
+                    const response = await axios.get(`${Config.api_base_url}/api/my-fleet`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    console.log(response)
+                    this.listOfShips = response.data.ships.items;
+                } catch (err) {
+                    if(err.response.status == 404){
+                        this.noShip = true
+                        this.noShipMessage = err.response.data.errorMessage
+                    } else {
+                        this.noShip = true
+                        this.$toastr.e('Sorry, we are unable to load your ships for the moment.');
+                    }
+
+                }
 
             },
-            subShip(ship) {
-                if(ship.number > 0) {
-                    ship.number -= 1
+            async addShip(ship) {
+                const token = await this.$auth.getTokenSilently();
+                if (!this.$auth.isAuthenticated) {
+                    this.$toastr.e('Sorry, we are unable to load your ships for the moment.');
+                    return;
+                }
+                try {
+                    const response = await axios.post(`${Config.api_base_url}/api/my-fleet/increment-quantity-ship`,{
+                        params: {
+                            id: ship.id,
+                            step: 1
+                        }
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    ship.quantity += 1
+                    console.log(response)
+                    this.listOfShips = response.data.ships.items;
+                } catch (err) {
+                    console.log(err)
+                    // this.$toastr.e('Sorry' + err.response.data.violations.detail);
                 }
             },
-            removeShip(ship){
-                this.listOfShips.splice(this.listOfShips.indexOf(ship), 1);
+            subShip(ship) {
+                if(ship.quantity > 0) {
+                    ship.quantity -= 1
+                }
+            },
+            async removeShip(ship){
+                const token = await this.$auth.getTokenSilently();
+                if (!this.$auth.isAuthenticated) {
+                    this.$toastr.e('Sorry, we are unable to load your ships for the moment.');
+                    return;
+                }
+                try {
+                    const response = await axios.post(`${Config.api_base_url}/api/my-fleet/delete-ship`,{
+                        params: {
+                            id: ship.id
+                        }
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    this.listOfShips.splice(this.listOfShips.indexOf(ship), 1);
+                    console.log(response)
+                    this.listOfShips = response.data.ships.items;
+                } catch (err) {
+                    console.log(err)
+                    // this.$toastr.e('Sorry' + err.response.data.violations.detail);
+                }
             }
         }
     }
