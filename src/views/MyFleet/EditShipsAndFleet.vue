@@ -90,17 +90,14 @@
                     return;
                 }
                 try {
+                    console.log(ship.id)
                     const response = await axios.post(`${Config.api_base_url}/api/my-fleet/increment-quantity-ship`,{
-                        params: {
-                            id: ship.id,
-                            step: 1
-                        }
+                        shipId: ship.id
                     }, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
-                    ship.quantity += 1
                     console.log(response)
                     this.listOfShips = response.data.ships.items;
                 } catch (err) {
@@ -121,16 +118,14 @@
                 }
                 try {
                     const response = await axios.post(`${Config.api_base_url}/api/my-fleet/delete-ship`,{
-                        params: {
-                            id: ship.id
-                        }
+                        shipId: ship.id
                     },
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
-                    this.listOfShips.splice(this.listOfShips.indexOf(ship), 1);
+                    // this.listOfShips.splice(this.listOfShips.indexOf(ship), 1);
                     console.log(response)
                     this.listOfShips = response.data.ships.items;
                 } catch (err) {
