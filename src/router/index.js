@@ -7,8 +7,7 @@ import store from '@/store/store';
 const Home = () => import('@/views/Home');
 const DefaultContainer = () => import('@/views/DefaultContainer');
 const MyFleet = () => import('@/views/MyFleet/MyFleet');
-const EditShipsAndFleet = () => import('@/views/MyFleet/EditShipsAndFleet');
-const AddNewShip = () => import('@/views/MyFleet/AddNewShip');
+const ManageMyFleet = () => import('@/views/MyFleet/ManageMyFleet');
 const MyOrganizations = () => import('@/views/MyOrganizations/MyOrganizations');
 const Profile = () => import('@/views/Profile/Profile');
 const PrivacyPolicy = () => import('@/views/Pages/PrivacyPolicy');
@@ -55,28 +54,12 @@ const router = new Router({
                             },
                         },
                         {
-                            path: 'edit-ships-and-fleet',
-                            component: {
-                                render: (c) => c('router-view'),
-                            },
-                            children: [
-                                {
-                                    path: '',
-                                    name: 'Edit ships and fleet',
-                                    component: EditShipsAndFleet,
-                                    meta: {
-                                        requireAuth: true,
-                                    },
-                                },
-                                {
-                                    path: 'add-new-ship',
-                                    name: 'Add new ships',
-                                    component: AddNewShip,
-                                    meta: {
-                                        requireAuth: true,
-                                    }
-                                }
-                            ]
+                            path: 'manage-my-fleet',
+                            name: 'Manage my fleet',
+                            component: ManageMyFleet,
+                            meta: {
+                                requireAuth: true,
+                            }
                         }
                     ]
                 },

@@ -1,24 +1,56 @@
 <template>
-    <div class="col col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+    <b-col sm="12" md="6" lg="4" xl="3">
         <div class="card">
-            <header class="d-flex justify-content-between align-items-center px-4 py-3 h5 mb-0">
-                {{shipName}}<span class="badge badge-primary badge-pill">{{quantity}}</span>
-            </header>
-            <img v-if="image" class="img-fluid" :src="image" alt="">
-            <img v-else class="img-fluid" :src="placeholderShipImg" alt="">
+            <header class="px-4 py-3 h4 d-flex justify-content-between">{{ shipName }} <span class="edit-ship" @click=""><i class="cil-pencil"></i></span></header>
+            <div class="text-center position-relative placeholder_ship">
+                <div :src="image" class="aspect-ratio-box" :style="'background-image: url('+ image +')'" />
+                <div class="ship-family-detail-variant-counter">{{ quantity }}</div>
+            </div>
         </div>
-    </div>
-
+    </b-col>
 </template>
 <script>
-    import placeholderShipImg from '@img/vaisseau-2.png';
     export default {
         name: 'ShipCard',
         props: ['shipName', 'quantity', 'image'],
-        data(){
+        data() {
             return {
-                placeholderShipImg
             }
+        },
+        created() {
         }
     }
 </script>
+
+<style lang="scss">
+@import '~@styles/vendors/variables';
+@import '~@coreui/icons';
+
+.edit-ship {
+    cursor: pointer;
+    color: $primary;
+}
+.placeholder_ship {
+    max-width: 100%;
+    background-image: url('~@img/static/Placeholder-FM_1.svg');
+    background-size: cover;
+    background-position: center;
+}
+.aspect-ratio-box {
+    overflow: hidden;
+    height: 0;
+    padding-top: 56.25%;
+    background-size: cover;
+    background-position: center;
+}
+.ship-family-detail-variant-counter {
+    font-family: "Josefin Sans", Helvetica Neue, Arial, sans-serif;
+    font-size: 4rem;
+    position: absolute;
+    bottom: 0;
+    right: 0.6rem;
+    line-height: 1;
+    color: $gray-200;
+    text-shadow: 0 0 4px rgba(30, 30, 30, 1);
+}
+</style>

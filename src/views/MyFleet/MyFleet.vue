@@ -1,18 +1,20 @@
 <template>
     <div class="animated fadeIn">
-        <div class="btn-edit-ships d-flex flex-row-reverse m-2">
-            <router-link to="/my-fleet/edit-ships-and-fleet"><b-button variant="secondary" role="button">Edit ships and fleet</b-button></router-link>
-        </div>
-        <div v-if="!noShip" class="d-flex flex-row flex-wrap mt-3">
-            <ShipCard v-for="(ship, index) in listOfShips" :key="index"
-                :shipName="ship.name"
-                :quantity="ship.quantity"
-                :image="ship.imageUrl"
-            />
-        </div>
-        <div v-else class="card p-2">
-            <p class=" m-0 mx-auto">{{noShipMessage}}</p>
-        </div>
+        <b-card>
+            <b-card-body>
+                <div class="btn-edit-ships d-flex mb-3">
+                    <b-button variant="primary" role="button" @click="createShip">Create a ship</b-button>
+                </div>
+                <b-row cols-lg="mt-3">
+                    <ShipCard v-for="ship in listOfShips" :key="ship.id"
+                        :shipName="ship.name"
+                        :quantity="ship.quantity"
+                        :image="ship.imageUrl"
+                    />
+                </b-row>
+                <b-alert v-if="notFoundFleet" show variant="warning">You have no ships yet. Why don't you create one?</b-alert>
+            </b-card-body>
+        </b-card>
     </div>
 </template>
 
@@ -24,20 +26,24 @@
     export default {
         name: 'my-fleet',
         props: ['userHandle'],
-        components: {
-            ShipCard
-        },
+        components: {ShipCard},
         data() {
             return {
-                noShip: false,
-                noShipMessage: '',
-                listOfShips: null
+                notFoundFleet: false,
+                listOfShips: []
             };
         },
         created() {
-            this.loadShipList()
+            if (!this.$auth.loading) {
+                this.loadAuthRequests();
+            } else {
+                this.$auth.$on('loaded', this.loadAuthRequests);
+            }
         },
         methods: {
+            loadAuthRequests() {
+                this.loadShipList();
+            },
             async loadShipList() {
                 const token = await this.$auth.getTokenSilently();
                 if (!this.$auth.isAuthenticated) {
@@ -52,12 +58,12 @@
                     });
                     this.listOfShips = response.data.ships.items;
                 } catch (err) {
-                    if(err.response.status == 404){
-                        this.noShip = true
-                        this.noShipMessage = err.response.data.errorMessage
+                    if(err.response.status == 404 && err.response.data.error === 'not_found_fleet'){
+                        this.notFoundFleet = true
                     }
-
                 }
+            },
+            createShip() {
 
             }
         }

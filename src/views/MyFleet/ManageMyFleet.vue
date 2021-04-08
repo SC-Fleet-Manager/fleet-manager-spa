@@ -28,7 +28,7 @@
     import Config from '@config/config.json';
 
     export default {
-        name: 'edit-ships-and-fleet',
+        name: 'manage-my-fleet',
         props: ['userHandle'],
         components: {
 
