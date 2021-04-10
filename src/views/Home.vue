@@ -11,7 +11,7 @@
                     <a target="_blank" href="https://discord.gg/5EyFpVP" aria-label="Discord"><i class="fab fa-discord"></i></a>
                 </div>
                 <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading"><i class="fas fa-sign-in-alt"></i> Login</button>
-                <a v-else v-once class="btn" href="/my-fleet"><i class="fas fa-space-shuttle"></i> Dashboard</a>
+                <router-link v-else v-once class="btn" to="/my-fleet"><i class="fas fa-space-shuttle"></i> Dashboard</router-link>
             </nav>
         </header>
         <main id="pg-main">
@@ -28,11 +28,11 @@
                         @img/citizen_723x941.png 723w
                     ">
                 <div class="gradient-down"></div>
-                <div class="container">
+                <div class="fp-container">
                     <h1 id="title">Fleet Manager <span id="subtitle">for Star Citizen</span></h1>
                     <p>Best tool in the verse to manage and share your organization's and personal fleet.</p>
                     <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading">Use Now</button>
-                    <a v-else v-once class="btn" href="/my-fleet">Use Now</a>
+                    <router-link v-else v-once class="btn" to="/my-fleet">Use Now</router-link>
                     <span class="learn-more" @click="smoothScroll('#join-citizens')">learn more <i class="fas fa-angle-down"></i></span>
                 </div>
             </section>
@@ -48,24 +48,24 @@
                         @img/vaisseau-1_512x.png 512w,
                         @img/vaisseau-1_765x.png 765w
                     ">
-                <div class="container" ref="join-citizens" id="join-citizens">
+                <div class="fp-container" ref="join-citizens" id="join-citizens">
                     <h2>Join thousands of citizens!</h2>
                     <div class="row-stats">
-                        <div class="col">
+                        <div class="fp-col">
                             <h4>
                                 <animated-number v-if="canCountStatistics" :value="countOrga" :formatValue="formatSatistics" :duration="1000"/>
                                 <span v-else>0</span>
                             </h4>
                             <p>Organization Fleets</p>
                         </div>
-                        <div class="col">
+                        <div class="fp-col">
                             <h4>
                                 <animated-number v-if="canCountStatistics" :value="countUsers" :formatValue="formatSatistics" :duration="1000"/>
                                 <span v-else>0</span>
                             </h4>
                             <p>Citizens Registered</p>
                         </div>
-                        <div class="col">
+                        <div class="fp-col">
                             <h4>
                                 <animated-number v-if="canCountStatistics" :value="countShips" :formatValue="formatSatistics" :duration="1000"/>
                                 <span v-else>0</span>
@@ -75,9 +75,9 @@
                     </div>
                 </div>
                 <section class="screens">
-                    <div class="container" id="manager-your-orga-fleet">
-                        <div class="row">
-                            <div class="col-2">
+                    <div class="fp-container" id="manager-your-orga-fleet">
+                        <div class="fp-row">
+                            <div class="fp-col-2">
                                 <div class="screens-aside-media">
                                     <svg v-show="!this.screenshots['sprite-first-screenshot']" viewBox="0 0 750 422"><rect width="750" height="422" style="fill:#031217"></rect></svg>
                                     <img
@@ -95,7 +95,7 @@
                                         ">
                                 </div>
                             </div>
-                            <div class="col-2">
+                            <div class="fp-col-2">
                                 <h2 class="screens-title">Manage your Organization's fleet</h2>
                                 <div class="screens-aside-media">
                                     <svg v-show="!this.screenshots['sprite-first-screenshot']" viewBox="0 0 750 422"><rect width="750" height="422" style="fill:#031217"></rect></svg>
@@ -135,9 +135,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="container" ref="review-personal-fleet" id="review-personal-fleet">
-                        <div class="row">
-                            <div class="col-2">
+                    <div class="fp-container" ref="review-personal-fleet" id="review-personal-fleet">
+                        <div class="fp-row">
+                            <div class="fp-col-2">
                                 <div class="screens-aside-media">
                                     <svg v-show="!this.screenshots['review-personal-fleet']" viewBox="0 0 750 422"><rect width="750" height="422" style="fill:#031217"></rect></svg>
                                     <img
@@ -156,7 +156,7 @@
                                     <img @load="onLoad('review-personal-fleet')" id="sprite-ship-right-top-1" src="@img/vaisseau-2.png" alt="Ship sprite">
                                 </div>
                             </div>
-                            <div class="col-2">
+                            <div class="fp-col-2">
                                 <h2 class="screens-title">Review your personal fleet</h2>
                                 <div class="screens-aside-media">
                                     <svg v-show="!this.screenshots['review-personal-fleet']" viewBox="0 0 750 422"><rect width="750" height="422" style="fill:#031217"></rect></svg>
@@ -189,83 +189,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="container" ref="official-extension" id="official-extension">
-                        <div class="row">
-                            <div class="col-2">
-                                <div class="screens-aside-media">
-                                    <svg v-show="!this.screenshots['official-extension']" viewBox="0 0 750 422"><rect width="750" height="422" style="fill:#031217"></rect></svg>
-                                    <img
-                                            v-show="this.screenshots['official-extension']"
-                                            @load="onLoad('official-extension', true)"
-                                            src="@img/screen_browser_extension_750x.png" alt="Screenshot web extension"
-                                            sizes="(min-width: 1290px) 750px,
-                                               (min-width: 1035px) 545px,
-                                               429px
-                                            "
-                                            srcset="
-                                                @img/screen_browser_extension_750x.png 750w,
-                                                @img/screen_browser_extension_545x.png 545w,
-                                                @img/screen_browser_extension_429x.png 429w
-                                            ">
-                                    <img @load="onLoad('official-extension')" id="sprite-ship-left-bottom-1" src="@img/vaisseau-3.png" alt="Ship sprite">
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <h2 class="screens-title">Official Browser Extension</h2>
-                                <div class="screens-aside-media">
-                                    <svg v-show="!this.screenshots['official-extension']" viewBox="0 0 750 422"><rect width="750" height="422" style="fill:#031217"></rect></svg>
-                                    <img
-                                            v-show="this.screenshots['official-extension']"
-                                            @load="onLoad('official-extension', true)"
-                                            src="@img/screen_browser_extension_750x.png" alt="Screenshot web extension"
-                                            sizes="100vw"
-                                            srcset="
-                                                @img/screen_browser_extension_750x.png 750w,
-                                                @img/screen_browser_extension_545x.png 545w,
-                                                @img/screen_browser_extension_429x.png 429w
-                                            ">
-                                    <img @load="onLoad('official-extension')" id="sprite-ship-left-bottom-1-reduced" src="@img/vaisseau-3.png" alt="Ship sprite">
-                                </div>
-                                <ul class="list-ships">
-                                    <li>
-                                        <span class="screens-ship">1</span>
-                                        <p>Update your fleet with a simple click and forget about updating your checklist or xml shared files.</p>
-                                    </li>
-                                    <li>
-                                        <span class="screens-ship">2</span>
-                                        <p>Export your fleet as JSON and use it anywhere.</p>
-                                    </li>
-                                    <li>
-                                        <span class="screens-ship">3</span>
-                                        <p>Available on Chrome and Firefox.</p>
-                                    </li>
-                                    <li>
-                                        <span class="screens-ship">4</span>
-                                        <p>Download extension<br/><a href="https://ext.fleet-manager.space/fleet_manager_extension-latest.xpi" title="Firefox"><i class="fab fa-firefox"></i></a>&nbsp;<a target="_blank" href="https://chrome.google.com/webstore/detail/fleet-manager-extension/hbbadomkekhkhemjjmhkhgiokjhpobhk" title="Chrome"><i class="fab fa-chrome"></i></a></p>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </section>
                 <div class="gradient-blue">
-                    <div class="container" ref="use-it-now" id="use-it-now">
-                        <div class="row">
+                    <div class="fp-container" ref="use-it-now" id="use-it-now">
+                        <div class="fp-row">
                             <img @load="onLoad('use-it-now')" id="sprite-useitnow-character-left" src="@img/character-2.png" alt="Sprite character">
-                            <div class="col">
+                            <div class="fp-col">
                                 <h2>Use it now</h2>
                                 <p>Fleet Manager is an online app to help you keep your organization’s fleet updated and get more insights about it. So you can better prepare your next operations and have fun all together.</p>
                                 <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading">Start using Fleet Manager</button>
-                                <a v-else v-once class="btn" href="/my-fleet">Start using Fleet Manager</a>
+                                <router-link v-else v-once class="btn" to="/my-fleet">Start using Fleet Manager</router-link>
                             </div>
                             <img @load="onLoad('use-it-now')" id="sprite-useitnow-character-right" src="@img/character-3.png" alt="Sprite character with bike">
                         </div>
                     </div>
                 </div>
-                <div class="container" id="meet-the-team">
+                <div class="fp-container" id="meet-the-team">
                     <h2>Meet the Team</h2>
-                    <div class="row">
-                        <div class="col">
+                    <div class="fp-row">
+                        <div class="fp-col">
                             <img
                                 src="@img/thomas_400x400.jpg" alt="Thomas photo"
                                 srcset="
@@ -282,7 +224,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="fp-col">
                             <img
                                 src="@img/valentin_400x400.jpg" alt="Valentin photo"
                                 srcset="
@@ -300,7 +242,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="fp-col">
                             <img
                                 src="@img/arnaud_400x400.jpg" alt="Arnaud photo"
                                 srcset="
@@ -578,10 +520,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     @import '~@styles/frontpage/setup/brand/icons_variables';
-    @import '~@fortawesome/fontawesome-free/scss/mixins';
-    @import '~@fortawesome/fontawesome-free/scss/core';
     @import '~@styles/frontpage/setup/brand/icons';
     @import '~@styles/frontpage/screen.scss';
 </style>

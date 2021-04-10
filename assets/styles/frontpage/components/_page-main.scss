@@ -41,7 +41,7 @@
                 width: 60vh;
             }
 
-            .container {
+            .fp-container {
                 display: flex;
                 flex-flow: wrap column;
                 position: relative;
@@ -106,12 +106,12 @@
             position: relative;
 
             section.screens {
-                .container {
+                .fp-container {
                     padding-top: calc(12vw + 20px);
                 }
 
                 // alternate side between screenshot and title+description
-                .container:nth-child(even) .row {
+                .fp-container:nth-child(even) .fp-row {
                     flex-flow: row-reverse;
                 }
             }
@@ -216,7 +216,7 @@
                 }
             }
 
-            .container {
+            .fp-container {
                 position: relative;
                 z-index: 10;
                 padding-top: 6%;
@@ -295,7 +295,7 @@
                     justify-content: center;
                     align-content: center;
 
-                    .col {
+                    .fp-col {
                         width: 20%;
                         margin-top: 20px;
 
@@ -312,12 +312,12 @@
                     }
                 }
 
-                .row {
+                .fp-row {
                     display: flex;
                     flex-flow: wrap row;
                     justify-content: center;
 
-                    .col-2 {
+                    .fp-col-2 {
                         display: flex;
                         flex-flow: wrap column;
                         width: calc((100% - 10%) / 2);
@@ -378,7 +378,7 @@
                     width: 100%;
                 }
 
-                .col {
+                .fp-col {
                     width: 45%;
                     margin: auto;
 
@@ -399,11 +399,11 @@
                     width: 100%;
                 }
 
-                .row {
+                .fp-row {
                     justify-content: center;
                 }
 
-                .col {
+                .fp-col {
                     padding: 0 calc(10px + 2vw);
                     margin-top: 40px;
 
@@ -443,12 +443,12 @@
                     width: 100%;
                 }
 
-                .row {
+                .fp-row {
                     display: flex;
                     flex-flow: wrap row;
                     justify-content: center;
 
-                    .col {
+                    .fp-col {
                         width: 45%;
                         margin: auto;
                     }
@@ -458,7 +458,7 @@
                     width: 80%;
                     margin: calc(10px + 2vw) auto auto;
 
-                    .col {
+                    .fp-col {
                         opacity: 0;
                         display: flex;
                         flex-flow: nowrap row;
@@ -499,7 +499,7 @@
             section.main {
                 #supporters {
                     #supporters-backers {
-                        .col {
+                        .fp-col {
                             width: 33.33333%;
                         }
                     }
@@ -520,48 +520,48 @@
 
             section.main {
                 section.screens {
-                    .container:nth-child(even) .row {
+                    .fp-container:nth-child(even) .fp-row {
                         flex-flow: column;
                     }
                 }
 
-                .container {
-                    .row {
+                .fp-container {
+                    .fp-row {
                         flex-flow: wrap column;
 
-                        .col {
+                        .fp-col {
                             margin: auto;
                         }
-                        .col-2 {
+                        .fp-col-2 {
                             width: 100%;
                         }
                     }
 
                     .row-stats {
-                        .col {
+                        .fp-col {
                             width: 33.33333%;
                         }
                     }
                 }
 
                 #use-it-now {
-                    .col {
+                    .fp-col {
                         width: 80%;
                     }
                 }
 
                 #meet-the-team {
-                    .col {
+                    .fp-col {
                         width: 50%;
                     }
                 }
 
                 #supporters {
-                    .row .col {
+                    .fp-row .fp-col {
                         width: 80%;
                     }
                     #supporters-backers {
-                        .col {
+                        .fp-col {
                             width: 50%;
                         }
                     }
@@ -579,7 +579,7 @@
                     left: -300px;
                 }
 
-                .container {
+                .fp-container {
                     p {
                         width: 70%;
                     }
@@ -587,9 +587,9 @@
             }
 
             section.main {
-                .container {
+                .fp-container {
                     .row-stats {
-                        .col {
+                        .fp-col {
                             width: 90%;
                             margin-left: auto;
                             margin-right: auto;
@@ -598,7 +598,7 @@
                 }
                 #supporters {
                     #supporters-backers {
-                        .col {
+                        .fp-col {
                             width: 60%;
                         }
                     }
@@ -627,20 +627,20 @@
                 }
 
                 #use-it-now {
-                    .col {
+                    .fp-col {
                         width: 100%;
                     }
                 }
 
                 #meet-the-team {
-                    .col {
+                    .fp-col {
                         width: 70%;
                     }
                 }
 
                 #supporters {
                     #supporters-backers {
-                        .col {
+                        .fp-col {
                             width: 90%;
                         }
                     }
@@ -654,19 +654,19 @@
     #pg {
         main#pg-main {
             section.header {
-                .container {
+                .fp-container {
                     h1 {
                         font-size: 4rem;
                     }
                 }
             }
             section.main {
-                .container {
+                .fp-container {
                     h2 {
                         font-size: 2.5rem;
                     }
-                    .row {
-                        .col-2 {
+                    .fp-row {
+                        .fp-col-2 {
                             ul {
                                 flex-direction: column;
 
@@ -676,21 +676,21 @@
                             }
                         }
 
-                        .col-3 {
+                        .fp-col-3 {
                             width: 100%;
                         }
                     }
                 }
                 #supporters {
                     #supporters-backers {
-                        .col {
+                        .fp-col {
                             width: 100%;
                         }
                     }
                 }
 
                 #meet-the-team {
-                    .col {
+                    .fp-col {
                         width: 90%;
                     }
                 }

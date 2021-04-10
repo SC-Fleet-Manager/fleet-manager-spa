@@ -45,13 +45,13 @@ i {
     padding: 0.3rem;
 }
 
-.container {
+.fp-container {
     width: auto;
     margin: 0 auto;
 }
 
 @media screen and (min-width: 768px) {
-    .container {
+    .fp-container {
         width: 100%;
     }
 }

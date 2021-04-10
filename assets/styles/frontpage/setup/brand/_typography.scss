@@ -28,12 +28,6 @@
     font-display: swap;
 }
 
-html,
-body {
-	font-family: "Open Sans", Arial, sans-serif;
-	font-weight: 400;
-}
-
 @mixin font {
 	font-family: "Open Sans", Arial, sans-serif;
 }
@@ -41,13 +35,11 @@ body {
 	font-family: "Univia Pro", Arial, serif;
 }
 
-html {
-	font-size: 100%;
-}
-body {
+#pg {
 	@include font;
-	font-size: $fontP;
-	font-weight: 400;
+    font-family: "Open Sans", Arial, sans-serif;
+    font-weight: 400;
+    font-size: $fontP;
 	color: $white;
 	text-align: center;
 	strong, b {

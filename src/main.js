@@ -80,9 +80,8 @@ Vue.use(VueToastr, {
     defaultProgressBarValue: 0,
     defaultPosition: "toast-bottom-right",
     defaultCloseOnHover: false,
-    defaultClassNames: ["animated", "zoomInUp"]
+    defaultClassNames: ["animated", "zoomInUp"],
 });
-
 
 new Vue({
     el: '#app',

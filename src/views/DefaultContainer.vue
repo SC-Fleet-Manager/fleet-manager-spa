@@ -28,10 +28,10 @@
         </div>
         <TheFooter class="font-lg">
             <div>
-                <a href="/">Fleet Manager</a>
+                <router-link to="/">Fleet Manager</router-link>
                 <a href="https://blog.fleet-manager.space/tag/change-logs/" target="_blank">{{ lastVersion }}</a>
                 <span class="ml-1">&copy; 2018 - {{ actualYear }}</span>
-                - <a href="/privacy-policy">Privacy policy</a>.
+                - <router-link to="/privacy-policy">Privacy policy</router-link>.
                 Star Citizen is a product of Cloud Imperium Rights LLC and Cloud Imperium Rights Ltd.
             </div>
             <b-nav class="ml-auto">
@@ -97,18 +97,24 @@
                         name: 'My Fleet',
                         url: `/my-fleet`,
                         icon: 'fas fa-fighter-jet',
+                        attributes: {
+                            disabled: !this.profile,
+                        },
                     },
                     {
                         name: 'My Orgas',
                         url: '/my-organizations',
                         icon: 'fas fa-space-shuttle',
+                        attributes: {
+                            disabled: !this.profile,
+                        },
                     },
                     {
                         name: "Profile",
                         url: '/profile',
                         icon: 'fas fa-user',
                         attributes: {
-                            disabled: !this.user,
+                            disabled: !this.profile,
                         },
                     },
                 );
@@ -173,13 +179,3 @@
         }
     };
 </script>
-
-<style lang="scss">
-    $fa-font-path: '~@fortawesome/fontawesome-free/webfonts/';
-    @import '~@fortawesome/fontawesome-free/scss/fontawesome';
-    @import '~@fortawesome/fontawesome-free/scss/solid';
-    @import '~@fortawesome/fontawesome-free/scss/brands';
-    /*@import '~@fortawesome/fontawesome-free/scss/regular';*/
-    @import '~bootstrap-vue/dist/bootstrap-vue.css';
-    @import '~@styles/style.scss';
-</style>

@@ -7,6 +7,7 @@ export default new Vuex.Store({
     modules: {
     },
     state: {
+        splashScreen: false,
         accessToken: null,
         profile: null,
     },
@@ -19,6 +20,9 @@ export default new Vuex.Store({
         },
     },
     mutations: {
+        splashScreen(state, payload) {
+            state.splashScreen = payload;
+        },
         profile(state, payload) {
             state.profile = payload;
         },

@@ -4,7 +4,6 @@ import axios from 'axios';
 import store from '@/store/store';
 import Config from '@config/config.json';
 
-// Views
 const Home = () => import('@/views/Home');
 const DefaultContainer = () => import('@/views/DefaultContainer');
 const MyFleet = () => import('@/views/MyFleet/MyFleet');
@@ -171,13 +170,19 @@ async function refreshSeoTags(to)
     }
 }
 
+router.afterEach((to, from) => {
+    store.commit('splashScreen', false);
+});
 router.beforeEach((to, from, next) => {
     refreshSeoTags(to);
 
     if (!to.meta.requireAuth) {
-        // no need auth
         next();
         return;
+    }
+
+    if (from.name === null || from.name === 'Home') {
+        store.commit('splashScreen', true);
     }
 
     const checkAuth = async () => {
@@ -186,23 +191,28 @@ router.beforeEach((to, from, next) => {
             return;
         }
 
-        const token = await Vue.prototype.$auth.getTokenSilently();
-        store.commit('accessToken', token);
+        if (!store.state.accessToken) {
+            const token = await Vue.prototype.$auth.getTokenSilently();
+            store.commit('accessToken', token);
+        }
         try {
             const response = await axios.get(`${Config.api_base_url}/api/profile`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${store.state.accessToken}`,
                 }
             });
             store.commit('profile', response.data);
             next();
         } catch (err) {
             if (err.response.status === 401 || err.response.status === 403) {
+                Vue.prototype.$toastr.e('Sorry you are not authorized to use the app for the moment.');
                 next({ path: '/', replace: true });
+                store.commit('splashScreen', false);
                 return;
             }
             console.error(err);
             next(false);
+            store.commit('splashScreen', false);
         }
     };
     if (!Vue.prototype.$auth.loading) {
