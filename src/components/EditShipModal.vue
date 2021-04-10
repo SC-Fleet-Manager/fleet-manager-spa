@@ -1,16 +1,16 @@
 <template>
     <b-form @submit="onSubmit">
         <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
-        <b-form-group class="mb-4" label="Ship name" label-for="input-ship-name">
+        <b-form-group class="mb-4" label="Model *" label-for="input-ship-model">
             <b-form-input
-                id="input-ship-name"
-                v-model="form.name.value"
+                id="input-ship-model"
+                v-model="form.model.value"
                 placeholder="Cutlass black"
                 type="text"
-                :state="stateName"
+                :state="stateModel"
                 required
             ></b-form-input>
-            <b-form-invalid-feedback :state="stateName">{{ form.name.violation }}</b-form-invalid-feedback>
+            <b-form-invalid-feedback :state="stateModel">{{ form.model.violation }}</b-form-invalid-feedback>
         </b-form-group>
         <b-form-group class="mb-4" label="Image URL" label-for="input-ship-image" description="Only from RSI or starcitizen.tools">
             <b-form-input
@@ -25,12 +25,13 @@
         <div v-if="form.imageUrl.value" class="mb-3">
             <b-img :src="form.imageUrl.value" fluid alt=""></b-img>
         </div>
-        <b-form-group class="mb-4" label="Quantity" label-for="input-ship-quantity">
+        <b-form-group class="mb-4" label="Quantity *" label-for="input-ship-quantity">
             <b-form-input
                 id="input-ship-quantity"
                 v-model="form.quantity.value"
                 type="number"
                 :state="stateQuantity"
+                required
                 :number="true"
                 min="1"
             ></b-form-input>
@@ -67,8 +68,8 @@ export default {
         }
     },
     computed: {
-        stateName() {
-            return this.form.name.violation !== null ? false : null;
+        stateModel() {
+            return this.form.model.violation !== null ? false : null;
         },
         stateImageUrl() {
             return this.form.imageUrl.violation !== null ? false : null;
@@ -83,7 +84,7 @@ export default {
         },
         resetForm() {
             this.form = {
-                name: {
+                model: {
                     value: this.ship.name,
                     violation: null,
                 },
@@ -131,11 +132,11 @@ export default {
             try {
                 this.submitDisabled = true;
                 this.globalViolation = null;
-                this.form.name.violation = null;
+                this.form.model.violation = null;
                 this.form.imageUrl.violation = null;
                 this.form.quantity.violation = null;
                 await axios.post(`${Config.api_base_url}/api/my-fleet/update-ship/${this.ship.id}`, {
-                    name: this.form.name.value,
+                    name: this.form.model.value,
                     pictureUrl: this.form.imageUrl.value || null,
                     quantity: this.form.quantity.value,
                 }, {
@@ -158,7 +159,7 @@ export default {
                         this.globalViolation = violation.title;
                         break;
                     case 'name':
-                        this.form.name.violation = violation.title;
+                        this.form.model.violation = violation.title;
                         break;
                     case 'pictureUrl':
                         this.form.imageUrl.violation = violation.title;
@@ -172,6 +173,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-</style>
