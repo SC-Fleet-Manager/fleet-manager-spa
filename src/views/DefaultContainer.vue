@@ -176,7 +176,7 @@
                     return;
                 }
                 try {
-                    const response = await axios.get(`${Config.api_base_url}/api/patch-note/has-new-patch-note`, {
+                    const response = await axios.get(`${Config.api_base_url}/api/patch-note/last-patch-notes`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         }

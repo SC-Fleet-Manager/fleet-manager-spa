@@ -1,10 +1,13 @@
 <template>
     <b-col sm="12" md="6" lg="4" xl="3">
         <div class="card">
-            <header class="px-4 py-3 h4 d-flex justify-content-between">{{ shipName }} <span class="edit-ship" @click=""><i class="cil-pencil"></i></span></header>
+            <header class="mb-0 px-4 py-3 h4 d-flex justify-content-between">
+                {{ ship.name }}
+                <span class="edit-ship" @click="$emit('edit', ship)"><i class="cil-pencil"></i></span>
+            </header>
             <div class="text-center position-relative placeholder_ship">
-                <div :src="image" class="aspect-ratio-box" :style="'background-image: url('+ image +')'" />
-                <div class="ship-family-detail-variant-counter">{{ quantity }}</div>
+                <div :src="ship.imageUrl" class="aspect-ratio-box" :style="'background-image: url('+ ship.imageUrl +')'" />
+                <div class="ship-family-detail-variant-counter">{{ ship.quantity }}</div>
             </div>
         </div>
     </b-col>
@@ -12,13 +15,10 @@
 <script>
     export default {
         name: 'ShipCard',
-        props: ['shipName', 'quantity', 'image'],
+        props: ['ship'],
         data() {
-            return {
-            }
+            return {};
         },
-        created() {
-        }
     }
 </script>
 
