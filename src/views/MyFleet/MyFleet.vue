@@ -19,7 +19,7 @@
                         <ShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship" @edit="onEditShip" />
                     </b-row>
                     <b-alert v-if="notFoundFleet" show variant="warning">You don't have any ships yet. Why don't you create one?</b-alert>
-                    <b-alert v-if="errorMessage !== null" show variant="error">{{ errorMessage }}</b-alert>
+                    <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
                 </div>
             </b-card-body>
         </b-card>
