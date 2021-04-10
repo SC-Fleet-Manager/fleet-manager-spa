@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import axios from 'axios';
 import store from '@/store/store';
+import Config from '@config/config.json';
 
 // Views
 const Home = () => import('@/views/Home');
@@ -172,7 +173,43 @@ async function refreshSeoTags(to)
 
 router.beforeEach((to, from, next) => {
     refreshSeoTags(to);
-    next();
+
+    if (!to.meta.requireAuth) {
+        // no need auth
+        next();
+        return;
+    }
+
+    const checkAuth = async () => {
+        if (!Vue.prototype.$auth.isAuthenticated) {
+            next({ path: '/', replace: true });
+            return;
+        }
+
+        const token = await Vue.prototype.$auth.getTokenSilently();
+        store.commit('accessToken', token);
+        try {
+            const response = await axios.get(`${Config.api_base_url}/api/profile`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            store.commit('profile', response.data);
+            next();
+        } catch (err) {
+            if (err.response.status === 401 || err.response.status === 403) {
+                next({ path: '/', replace: true });
+                return;
+            }
+            console.error(err);
+            next(false);
+        }
+    };
+    if (!Vue.prototype.$auth.loading) {
+        checkAuth();
+    } else {
+        Vue.prototype.$auth.$on('loaded', checkAuth);
+    }
 });
 
 export default router;

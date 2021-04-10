@@ -18,7 +18,7 @@
                     <b-row cols-lg="mt-3">
                         <ShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship" @edit="onEditShip" />
                     </b-row>
-                    <b-alert v-if="notFoundFleet" show variant="warning">You don't have any ships yet. Why don't you create one?</b-alert>
+                    <b-alert v-if="notFoundFleet || listOfShips.length === 0" show variant="warning">You don't have any ships yet. Why don't you create one?</b-alert>
                     <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
                 </div>
             </b-card-body>
@@ -94,6 +94,10 @@
                     });
                     this.listOfShips = response.data.ships.items;
                 } catch (err) {
+                    if (err.response.status === 401 || err.response.status === 403) {
+                        this.$router.push('/');
+                        return;
+                    }
                     if(err.response.status == 404 && err.response.data.error === 'not_found_fleet'){
                         this.notFoundFleet = true
                         return;

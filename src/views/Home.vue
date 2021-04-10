@@ -11,7 +11,7 @@
                     <a target="_blank" href="https://discord.gg/5EyFpVP" aria-label="Discord"><i class="fab fa-discord"></i></a>
                 </div>
                 <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading"><i class="fas fa-sign-in-alt"></i> Login</button>
-                <a v-else v-once class="btn" href="/profile"><i class="fas fa-space-shuttle"></i> Dashboard</a>
+                <a v-else v-once class="btn" href="/my-fleet"><i class="fas fa-space-shuttle"></i> Dashboard</a>
             </nav>
         </header>
         <main id="pg-main">
@@ -32,7 +32,7 @@
                     <h1 id="title">Fleet Manager <span id="subtitle">for Star Citizen</span></h1>
                     <p>Best tool in the verse to manage and share your organization's and personal fleet.</p>
                     <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading">Use Now</button>
-                    <a v-else v-once class="btn" href="/profile">Use Now</a>
+                    <a v-else v-once class="btn" href="/my-fleet">Use Now</a>
                     <span class="learn-more" @click="smoothScroll('#join-citizens')">learn more <i class="fas fa-angle-down"></i></span>
                 </div>
             </section>
@@ -256,7 +256,7 @@
                                 <h2>Use it now</h2>
                                 <p>Fleet Manager is an online app to help you keep your organization’s fleet updated and get more insights about it. So you can better prepare your next operations and have fun all together.</p>
                                 <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading">Start using Fleet Manager</button>
-                                <a v-else v-once class="btn" href="/profile">Start using Fleet Manager</a>
+                                <a v-else v-once class="btn" href="/my-fleet">Start using Fleet Manager</a>
                             </div>
                             <img @load="onLoad('use-it-now')" id="sprite-useitnow-character-right" src="@img/character-3.png" alt="Sprite character with bike">
                         </div>
@@ -361,8 +361,6 @@ export default {
             countUsers: 0,
             countShips: 0,
             canCountStatistics: false,
-            user: null,
-            userStated: false,
             animateEls: {
                 'sprite-character-1': false,
                 'join-citizens': false,
@@ -390,7 +388,6 @@ export default {
     },
     created() {
         this.loadNumbers();
-        this.loadUser();
 
         window.addEventListener('scroll', this.onScroll);
     },
@@ -409,20 +406,6 @@ export default {
         loadNumbers() {
             axios.get(`${Config.api_base_url}/api/numbers`).then(response => {
                 this.countUsers = response.data.users;
-            });
-        },
-        loadUser() {
-            this.$auth.$on('loaded', async () => {
-                const token = await this.$auth.getTokenSilently();
-                if (!this.$auth.isAuthenticated) {
-                    return;
-                }
-                const response = await axios.get(`${Config.api_base_url}/api/me`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                });
-                this.user = response.data;
             });
         },
         formatSatistics(value) {

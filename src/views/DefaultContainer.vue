@@ -2,15 +2,15 @@
     <div class="app">
         <AppHeader fixed>
             <SidebarToggler class="d-lg-none" display="md" mobile/>
-            <b-link class="navbar-brand" href="/">
+            <router-link class="navbar-brand" to="/my-fleet">
                 <img class="navbar-brand-full" src="@img/logo_fm_blue.svg" alt="SC Fleet Manager" height="40">
                 <img class="navbar-brand-minimized" src="@img/icon_fm_blue.svg" alt="FM" height="40">
-            </b-link>
+            </router-link>
             <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen="true" ref="sidebarDesktop"/>
             <div v-if="displayEnv" class="p-3 bg-danger text-white text-uppercase">{{ environment }}</div>
             <b-navbar-nav class="ml-auto">
-                <b-nav-text v-if="user !== null" class="px-3 d-none d-sm-inline-block">Welcome, {{ user.nickname }}</b-nav-text>
-                <b-nav-text v-if="user !== null && user.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ user.coins }}</b-nav-text>
+                <b-nav-text v-if="profile !== null" class="px-3 d-none d-sm-inline-block">Welcome, {{ profile.nickname }}</b-nav-text>
+                <b-nav-text v-if="profile !== null && profile.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ profile.coins }}</b-nav-text>
                 <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i> Logout</b-nav-item>
                 <b-nav-item v-else class="px-3" v-b-modal.modal-login><i class="fas fa-sign-in-alt"></i> Login</b-nav-item>
             </b-navbar-nav>
@@ -62,7 +62,7 @@
         SidebarNav,
         Footer as TheFooter
     } from '@coreui/vue';
-    import { mapMutations } from 'vuex';
+    import { mapState } from 'vuex';
     import Config from '@config/config.json';
 
     export default {
@@ -77,25 +77,18 @@
         },
         data() {
             return {
-                actualYear: (new Date()).getFullYear(),
-                user: null,
-                citizen: null,
                 lastVersion: null,
                 patchNotes: [],
-                beta: false
             }
         },
         created() {
-            if (!this.$auth.loading) {
-                this.loadAuthRequests();
-            } else {
-                this.$auth.$on('loaded', this.loadAuthRequests);
-            }
+            this.loadNewPatchNoteIfNew();
             this.findLastVersion();
         },
         computed: {
-            name() {
-                return this.$route.name
+            ...mapState(['accessToken', 'profile']),
+            actualYear() {
+                return (new Date()).getFullYear();
             },
             nav() {
                 const nav = [];
@@ -130,40 +123,23 @@
             }
         },
         methods: {
-            ...mapMutations(['updateUser']),
             logout() {
                 this.$auth.logout({
                     returnTo: window.location.origin
                 });
             },
-            async loadAuthRequests() {
-                const token = await this.$auth.getTokenSilently();
-                if (!this.$auth.isAuthenticated) {
+            async loadNewPatchNoteIfNew() {
+                if (!this.accessToken) {
                     return;
                 }
-                this.loadProfile(token);
-                this.loadNewPatchNoteIfNew(token);
-            },
-            loadProfile(token) {
-                axios.get(`${Config.api_base_url}/api/profile`, {
+                const response = await axios.get(`${Config.api_base_url}/api/patch-note/has-new-patch-note`, {
                     headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                }).then(response => {
-                    this.user = response.data;
-                    this.updateUser(this.user);
-                });
-            },
-            loadNewPatchNoteIfNew(token) {
-                axios.get(`${Config.api_base_url}/api/patch-note/has-new-patch-note`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                }).then(response => {
-                    if (response.data.hasNewPatchNote === true) {
-                        this.$bvModal.show('modal-patch-notes');
+                        Authorization: `Bearer ${this.accessToken}`,
                     }
                 });
+                if (response.data.hasNewPatchNote) {
+                    this.$bvModal.show('modal-patch-notes');
+                }
             },
             findLastVersion() {
                 axios.get('https://api.github.com/repos/Ioni14/starcitizen-fleet-manager/tags').then(response => {

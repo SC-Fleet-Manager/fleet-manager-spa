@@ -39,7 +39,7 @@ Vue.use(Auth0Plugin, {
     domain: Config.auth0_domain,
     clientId: Config.auth0_clientId,
     audience: Config.auth0_audience,
-    redirectUri: `${Config.spa_base_url}/profile`,
+    redirectUri: `${Config.spa_base_url}/my-fleet`,
     onRedirectCallback: appState => {
         router.push(
             appState && appState.targetUrl
