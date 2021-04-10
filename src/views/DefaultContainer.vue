@@ -7,13 +7,13 @@
                 <img class="navbar-brand-minimized" src="@img/icon_fm_blue.svg" alt="FM" height="40">
             </b-link>
             <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen="true" ref="sidebarDesktop"/>
+            <div v-if="displayEnv" class="p-3 bg-danger text-white text-uppercase">{{ environment }}</div>
             <b-navbar-nav class="ml-auto">
                 <b-nav-text v-if="user !== null" class="px-3 d-none d-sm-inline-block">Welcome, {{ user.nickname }}</b-nav-text>
                 <b-nav-text v-if="user !== null && user.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ user.coins }}</b-nav-text>
                 <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i> Logout</b-nav-item>
                 <b-nav-item v-else class="px-3" v-b-modal.modal-login><i class="fas fa-sign-in-alt"></i> Login</b-nav-item>
             </b-navbar-nav>
-            <div v-if="beta" class="beta-flag"></div>
         </AppHeader>
         <div class="app-body">
             <AppSidebar fixed>
@@ -122,10 +122,11 @@
 
                 return nav;
             },
-            betaCheck() {
-                if(`${Config.spa_base_url}` === 'https://beta.fleet-manager.space/'){
-                    return beta = true;
-                }
+            environment() {
+                return Config.environment;
+            },
+            displayEnv() {
+                return Config.environment === 'beta';
             }
         },
         methods: {
