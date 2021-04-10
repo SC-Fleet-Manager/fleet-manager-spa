@@ -1,7 +1,6 @@
 <template>
     <div id="pg">
         <header id="pg-hdr">
-            <div class="beta-flag"></div>
             <div class="logo">
                 <a href="/"><img src="@img/logo_fm_white.svg" alt="Logo Fleet Manager"></a>
             </div>

@@ -127,6 +127,7 @@ export default {
                 if (this.form.addAnother.value) {
                     this.$emit('newShip', { shouldClose: false });
                     this.resetForm();
+                    this.form.addAnother.value = true;
                     return;
                 }
                 this.$emit('newShip', { shouldClose: true });

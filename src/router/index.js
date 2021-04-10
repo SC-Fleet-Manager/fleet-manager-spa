@@ -7,7 +7,6 @@ import store from '@/store/store';
 const Home = () => import('@/views/Home');
 const DefaultContainer = () => import('@/views/DefaultContainer');
 const MyFleet = () => import('@/views/MyFleet/MyFleet');
-const ManageMyFleet = () => import('@/views/MyFleet/ManageMyFleet');
 const MyOrganizations = () => import('@/views/MyOrganizations/MyOrganizations');
 const Profile = () => import('@/views/Profile/Profile');
 const PrivacyPolicy = () => import('@/views/Pages/PrivacyPolicy');
@@ -31,6 +30,13 @@ const router = new Router({
             component: DefaultContainer,
             children: [
                 {
+                    path: 'my-fleet',
+                    component: MyFleet,
+                    meta: {
+                        requireAuth: true,
+                    },
+                },
+                {
                     path: 'my-organizations',
                     name: 'My organizations',
                     component: MyOrganizations,
@@ -38,56 +44,6 @@ const router = new Router({
                         requireAuth: true,
                     }
                 },
-                {
-                    path: 'my-fleet',
-                    component: {
-                        // Inline declaration of a component that renders our <router-view>
-                        render: (c) => c('router-view'),
-                      },
-                    children: [
-                        {
-                            path: '',
-                            name: 'My fleet',
-                            component: MyFleet,
-                            meta: {
-                                requireAuth: true,
-                            },
-                        },
-                        {
-                            path: 'manage-my-fleet',
-                            name: 'Manage my fleet',
-                            component: ManageMyFleet,
-                            meta: {
-                                requireAuth: true,
-                            }
-                        }
-                    ]
-                },
-                // {
-                //     path: 'my-fleet',
-                //     component: {
-                //         // Inline declaration of a component that renders our <router-view>
-                //         render: (c) => c('router-view'),
-                //       },
-                //     children: [
-                //         {
-                //             path: '',
-                //             name: 'My fleet',
-                //             component: MyFleet,
-                //             meta: {
-                //                 requireAuth: true,
-                //             },
-                //         },
-                //         {
-                //             path: 'edit-ships-and-fleet',
-                //             name: 'Edit ships and fleet',
-                //             component: EditShipsAndFleet,
-                //             meta: {
-                //                 requireAuth: true,
-                //             },
-                //         }
-                //     ]
-                // },
                 {
                     path: 'profile',
                     name: 'Profile',
@@ -139,31 +95,6 @@ const router = new Router({
                         content: async (to) => {
                             return `${window.location.protocol}//${window.location.host}${to.path}`;
                         },
-                    },
-                    {
-                        property: 'og:image',
-                        content: `${window.location.protocol}//${window.location.host}/icons/favicon-96x96.png`,
-                    }
-                ],
-            },
-        },
-        {
-            path: '/404',
-            component: Page404,
-            meta: {
-                titleTag: '404 - Fleet Manager',
-                metaTags: [
-                    {
-                        name: 'description',
-                        content: '',
-                    },
-                    {
-                        property: 'og:description',
-                        content: '',
-                    },
-                    {
-                        property: 'og:url',
-                        content: '',
                     },
                     {
                         property: 'og:image',

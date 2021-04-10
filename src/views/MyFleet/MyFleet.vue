@@ -5,12 +5,22 @@
                 <div class="btn-edit-ships d-flex mb-3">
                     <b-button variant="primary" role="button" @click="createShip">Create a ship</b-button>
                 </div>
-                <input type="text" placeholder="Search a ship" />
-                <b-row cols-lg="mt-3">
-                    <ShipCard v-for="ship in listOfShips" :key="ship.id" :ship="ship" @edit="onEditShip" />
-                </b-row>
-                <b-alert v-if="notFoundFleet" show variant="warning">You have no ships yet. Why don't you create one?</b-alert>
-                <b-alert v-if="errorMessage !== null" show variant="error">{{ errorMessage }}</b-alert>
+                <b-input-group class="mb-3">
+                    <template #prepend>
+                        <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
+                    </template>
+                    <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
+                </b-input-group>
+                <div v-if="!listOfShipsLoaded" class="d-flex justify-content-center">
+                    <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
+                </div>
+                <div v-else>
+                    <b-row cols-lg="mt-3">
+                        <ShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship" @edit="onEditShip" />
+                    </b-row>
+                    <b-alert v-if="notFoundFleet" show variant="warning">You don't have any ships yet. Why don't you create one?</b-alert>
+                    <b-alert v-if="errorMessage !== null" show variant="error">{{ errorMessage }}</b-alert>
+                </div>
             </b-card-body>
         </b-card>
         <b-modal id="modal-edit-ship" ref="modalEditShip" size="lg" centered title="Edit ship" hide-footer>
@@ -28,12 +38,18 @@
     import Config from '@config/config.json';
     import EditShipModal from '@/components/EditShipModal';
     import CreateShipModal from '@/components/CreateShipModal';
+    import exported from 'locale-index-of';
+    const localeIndexOf = exported(Intl);
 
     export default {
         name: 'my-fleet',
         components: {EditShipModal, CreateShipModal, ShipCard},
         data() {
             return {
+                form: {
+                    search: null,
+                },
+                listOfShipsLoaded: false,
                 notFoundFleet: false,
                 errorMessage: null,
                 listOfShips: [],
@@ -45,6 +61,17 @@
                 this.loadAuthRequests();
             } else {
                 this.$auth.$on('loaded', this.loadAuthRequests);
+            }
+        },
+        computed: {
+            filteredlistOfShips() {
+                if (!this.form.search) {
+                    return this.listOfShips;
+                }
+
+                return this.listOfShips.filter((ship) => {
+                    return -1 !== localeIndexOf(ship.name, this.form.search, 'en', { sensitivity: 'base', ignorePunctuation: true });
+                });
             }
         },
         methods: {
@@ -72,6 +99,8 @@
                         return;
                     }
                     this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
+                } finally {
+                    this.listOfShipsLoaded = true;
                 }
             },
             onEditShip(ship) {
