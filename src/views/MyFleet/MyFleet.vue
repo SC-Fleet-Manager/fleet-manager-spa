@@ -86,22 +86,18 @@
                 this.loadShipList();
             },
             async loadShipList() {
-                const token = await this.$auth.getTokenSilently();
-                if (!this.$auth.isAuthenticated) {
-                    this.$toastr.e('Sorry, we are unable to load your ships for the moment. Please, try again later.');
-                    return;
-                }
                 try {
                     this.notFoundFleet = false;
                     this.errorMessage = null;
                     const response = await axios.get(`${Config.api_base_url}/api/my-fleet`, {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${this.$store.state.accessToken}`,
                         },
                     });
                     this.listOfShips = response.data.ships.items;
                 } catch (err) {
                     if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
                         this.$router.push({ name: 'Home' });
                         return;
                     }
@@ -149,6 +145,12 @@
                     });
                     this.onDeleteShip();
                 } catch (err) {
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
+                        this.$router.push({ name: 'Home' });
+                        return;
+                    }
+                    console.error(err);
                     this.$toastr.e('Sorry, we are unable to delete your ship for the moment. Please, try again later.');
                 }
             },

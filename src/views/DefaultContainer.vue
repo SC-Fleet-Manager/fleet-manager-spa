@@ -138,13 +138,22 @@
                 if (!this.accessToken) {
                     return;
                 }
-                const response = await axios.get(`${Config.api_base_url}/api/patch-note/has-new-patch-note`, {
-                    headers: {
-                        Authorization: `Bearer ${this.accessToken}`,
+                try {
+                    const response = await axios.get(`${Config.api_base_url}/api/patch-note/has-new-patch-note`, {
+                        headers: {
+                            Authorization: `Bearer ${this.accessToken}`,
+                        }
+                    });
+                    if (response.data.hasNewPatchNote) {
+                        this.$bvModal.show('modal-patch-notes');
                     }
-                });
-                if (response.data.hasNewPatchNote) {
-                    this.$bvModal.show('modal-patch-notes');
+                } catch (err) {
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
+                        this.$router.push({ name: 'Home' });
+                        return;
+                    }
+                    console.error(err);
                 }
             },
             findLastVersion() {
@@ -153,24 +162,24 @@
                 });
             },
             async onShowPatchNotes() {
-                const token = await this.$auth.getTokenSilently();
-                if (!this.$auth.isAuthenticated) {
-                    this.$toastr.e('Sorry, we are unable to display the last patch notes for the moment. Please try again later.');
-                    return;
-                }
                 try {
                     const response = await axios.get(`${Config.api_base_url}/api/patch-note/last-patch-notes`, {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${this.$store.state.accessToken}`,
                         }
                     });
                     this.patchNotes = response.data.patchNotes;
                 } catch (err) {
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
+                        this.$router.push({ name: 'Home' });
+                        return;
+                    }
                     if (err.response.data.errorMessage) {
                         this.$toastr.e(err.response.data.errorMessage);
-                    } else {
-                        this.$toastr.e('Sorry, an unexpected error has occurred when requesting the last patch notes. Please try again later.');
+                        return;
                     }
+                    this.$toastr.e('Sorry, an unexpected error has occurred when requesting the last patch notes. Please try again later.');
                 }
             },
             nl2br(str) {

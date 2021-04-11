@@ -128,6 +128,11 @@ export default {
                 }
                 this.$emit('newShip', { shouldClose: true });
             } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
                 this.handleViolations(err.response);
             } finally {
                 this.submitDisabled = false;

@@ -41,6 +41,7 @@ export default {
                 });
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected.');
                     this.$router.push({ name: 'Home' });
                     return;
                 }
