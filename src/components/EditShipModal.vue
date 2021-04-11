@@ -16,6 +16,7 @@
             <b-form-input
                 id="input-ship-image"
                 v-model="form.imageUrl.value"
+                debounce="500"
                 type="url"
                 placeholder="https://media.robertsspaceindustries.com/wj92rqzvhnecb/store_small.jpg"
                 :state="stateImageUrl"

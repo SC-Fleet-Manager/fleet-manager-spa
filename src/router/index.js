@@ -204,9 +204,9 @@ router.beforeEach((to, from, next) => {
             store.commit('profile', response.data);
             next();
         } catch (err) {
-            if (err.response.status === 401 || err.response.status === 403) {
+            if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                 Vue.prototype.$toastr.e('Sorry you are not authorized to use the app for the moment.');
-                next({ path: '/', replace: true });
+                next({ name: 'Home', replace: true });
                 store.commit('splashScreen', false);
                 return;
             }

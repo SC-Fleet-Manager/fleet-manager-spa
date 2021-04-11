@@ -5,8 +5,8 @@
                 {{ ship.model }}
                 <span class="edit-ship" @click="$emit('edit', ship)"><i class="cil-pencil"></i></span>
             </header>
-            <div class="text-center position-relative placeholder_ship">
-                <div :src="ship.imageUrl" class="aspect-ratio-box" :style="'background-image: url('+ ship.imageUrl +')'" />
+            <div class="position-relative placeholder-ship">
+                <div class="aspect-ratio-box" :style="stylePictureShip" />
                 <div class="ship-family-detail-variant-counter">{{ ship.quantity }}</div>
             </div>
         </div>
@@ -19,6 +19,14 @@
         data() {
             return {};
         },
+        computed: {
+            stylePictureShip() {
+                if (this.ship.imageUrl !== null) {
+                    return `background-image: url(${this.ship.imageUrl})`
+                }
+                return '';
+            },
+        },
     }
 </script>
 
@@ -30,7 +38,7 @@
     cursor: pointer;
     color: $primary;
 }
-.placeholder_ship {
+.placeholder-ship {
     max-width: 100%;
     background-image: url('~@img/static/Placeholder-FM_1.svg');
     background-size: cover;

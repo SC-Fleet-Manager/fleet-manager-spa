@@ -37,9 +37,9 @@
 </template>
 
 <script>
-    import ShipCard from './ShipCard.vue';
     import axios from 'axios';
     import Config from '@config/config.json';
+    import ShipCard from '@/components/ShipCard.vue';
     import EditShipModal from '@/components/EditShipModal';
     import CreateShipModal from '@/components/CreateShipModal';
     import exported from 'locale-index-of';
@@ -101,8 +101,8 @@
                     });
                     this.listOfShips = response.data.ships.items;
                 } catch (err) {
-                    if (err.response.status === 401 || err.response.status === 403) {
-                        this.$router.push('/');
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$router.push({ name: 'Home' });
                         return;
                     }
                     if (err.response.status == 400 && err.response.data.error === 'not_found_fleet'){
