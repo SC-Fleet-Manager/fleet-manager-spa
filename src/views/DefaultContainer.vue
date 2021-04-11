@@ -9,10 +9,11 @@
             <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen="true" ref="sidebarDesktop"/>
             <div v-if="displayEnv" class="p-3 bg-danger text-white text-uppercase">{{ environment }}</div>
             <b-navbar-nav class="ml-auto">
+                <b-nav-item v-if="hasFeedbackForm" class="px-3" v-b-modal.modal-give-feedback><i class="fa fa-comment"></i> Give feedback</b-nav-item>
                 <b-nav-text v-if="profile !== null" class="px-3 d-none d-sm-inline-block">Welcome, {{ profile.nickname }}</b-nav-text>
                 <b-nav-text v-if="profile !== null && profile.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ profile.coins }}</b-nav-text>
                 <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i> Logout</b-nav-item>
-                <b-nav-item v-else class="px-3" v-b-modal.modal-login><i class="fas fa-sign-in-alt"></i> Login</b-nav-item>
+                <b-nav-item v-else class="px-3" @click="login"><i class="fas fa-sign-in-alt"></i> Login</b-nav-item>
             </b-navbar-nav>
         </AppHeader>
         <div class="app-body">
@@ -38,7 +39,7 @@
                 <b-nav-item link-classes="p-2" v-b-modal.modal-patch-notes>Patch notes</b-nav-item>
                 <b-nav-text class="p-2">–</b-nav-text>
                 <b-nav-item href="https://discord.gg/f6mrA3Y" target="_blank" link-classes="p-2"><i class="fab fa-discord" style="font-size: 1.4rem;"></i></b-nav-item>
-                <b-nav-item href="https://github.com/Ioni14/starcitizen-fleet-manager" target="_blank" link-classes="p-2"><i class="fab fa-github" style="font-size: 1.4rem;"></i></b-nav-item>
+                <b-nav-item href="https://github.com/Ioni14/fleet-manager-api" target="_blank" link-classes="p-2"><i class="fab fa-github" style="font-size: 1.4rem;"></i></b-nav-item>
             </b-nav>
         </TheFooter>
 
@@ -48,6 +49,9 @@
                 <p v-html="nl2br(patchNote.body)"></p>
                 <p v-if="patchNote.link"><a :href="patchNote.link" target="_blank">{{ patchNote.link }}</a></p>
             </div>
+        </b-modal>
+        <b-modal id="modal-give-feedback" ref="modalGiveFeedback" size="lg" centered title="Give feedback" hide-footer>
+            <CreateGiveFeedbackModal></CreateGiveFeedbackModal>
         </b-modal>
     </div>
 </template>
@@ -64,6 +68,7 @@
     } from '@coreui/vue';
     import { mapState } from 'vuex';
     import Config from '@config/config.json';
+    import CreateGiveFeedbackModal from '@/components/CreateGiveFeedbackModal';
 
     export default {
         name: 'DefaultContainer',
@@ -73,7 +78,8 @@
             TheFooter,
             SidebarNav,
             SidebarToggler,
-            SidebarMinimizer
+            SidebarMinimizer,
+            CreateGiveFeedbackModal,
         },
         data() {
             return {
@@ -87,6 +93,9 @@
         },
         computed: {
             ...mapState(['accessToken', 'profile']),
+            hasFeedbackForm() {
+                return Config.environment !== 'prod';
+            },
             lastVersion() {
                 let version = Config.version;
                 if (Config.environment !== 'prod') {
@@ -137,10 +146,48 @@
             }
         },
         methods: {
+            login() {
+                this.$auth.loginWithRedirect();
+            },
             logout() {
                 this.$auth.logout({
                     returnTo: window.location.origin
                 });
+            },
+            async giveFeedback() {
+                if (!this.accessToken) {
+                    return;
+                }
+                try {
+                    await axios.get(`${Config.api_base_url}/api/support/give-feedback`, {
+                        headers: {
+                            Authorization: `Bearer ${this.accessToken}`,
+                        }
+                    });
+                } catch (err) {
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
+                        this.$router.push({ name: 'Home' });
+                        return;
+                    }
+                    const data = response.data;
+                    for (const violation of data.violations.violations) {
+                        switch (violation.propertyPath) {
+                            case '':
+                                this.globalViolation = violation.title;
+                                break;
+                            case 'model':
+                                this.form.model.violation = violation.title;
+                                break;
+                            case 'pictureUrl':
+                                this.form.imageUrl.violation = violation.title;
+                                break;
+                            case 'quantity':
+                                this.form.quantity.violation = violation.title;
+                                break;
+                        }
+                    }
+                }
             },
             async loadVersionCommitHash() {
                 if (Config.environment === 'prod') {

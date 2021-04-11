@@ -11,6 +11,7 @@ import {
     FormPlugin,
     FormGroupPlugin,
     FormInputPlugin,
+    FormTextareaPlugin,
     FormCheckboxPlugin,
     FormFilePlugin,
     FormRadioPlugin,
@@ -52,6 +53,7 @@ Vue.use(LayoutPlugin);
 Vue.use(FormPlugin);
 Vue.use(FormGroupPlugin);
 Vue.use(FormInputPlugin);
+Vue.use(FormTextareaPlugin);
 Vue.use(FormCheckboxPlugin);
 Vue.use(FormFilePlugin);
 Vue.use(FormRadioPlugin);

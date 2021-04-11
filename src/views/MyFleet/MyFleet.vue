@@ -28,10 +28,10 @@
                 Edit ship
                 <b-button type="button" variant="danger" @click="deleteShip(editingShip)"><i class="fa fa-times"></i> Delete</b-button>
             </template>
-            <EditShipModal @success="" :ship="editingShip" @updateShip="onUpdateShip"></EditShipModal>
+            <EditShipModal :ship="editingShip" @updateShip="onUpdateShip"></EditShipModal>
         </b-modal>
         <b-modal id="modal-create-ship" ref="modalCreateShip" size="lg" centered title="Create ship" hide-footer>
-            <CreateShipModal @success="" @newShip="onNewShip"></CreateShipModal>
+            <CreateShipModal @newShip="onNewShip"></CreateShipModal>
         </b-modal>
     </div>
 </template>

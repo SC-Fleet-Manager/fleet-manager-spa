@@ -59,11 +59,6 @@ export default {
     },
     created() {
         this.resetForm();
-        if (!this.$auth.loading) {
-            this.onAuthenticated();
-        } else {
-            this.$auth.$on('loaded', this.onAuthenticated);
-        }
     },
     computed: {
         stateModel() {
@@ -77,9 +72,6 @@ export default {
         },
     },
     methods: {
-        onAuthenticated() {
-            this.submitDisabled = false;
-        },
         resetForm() {
             this.form = {
                 model: {
