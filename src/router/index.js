@@ -133,6 +133,16 @@ const router = new Router({
 
 async function refreshSeoTags(to)
 {
+    if (Config.environment !== 'prod') {
+        let meta = document.head.querySelector(`meta[name="robots"]`);
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', 'robots');
+            document.head.append(meta);
+        }
+        meta.setAttribute('content', 'noindex, nofollow');
+    }
+
     if (to.meta.titleTag) {
         if (typeof to.meta.titleTag === 'function') {
             document.title = await to.meta.titleTag(to);
