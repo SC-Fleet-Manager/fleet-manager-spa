@@ -15,6 +15,7 @@
         </b-row>
     </b-card>
 </template>
+
 <script>
 import axios from 'axios';
 import Config from '@config/config.json';
