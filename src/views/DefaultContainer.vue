@@ -77,16 +77,24 @@
         },
         data() {
             return {
-                lastVersion: null,
                 patchNotes: [],
+                versionCommitHash: null,
             }
         },
         created() {
             this.loadNewPatchNoteIfNew();
-            this.findLastVersion();
+            this.loadVersionCommitHash();
         },
         computed: {
             ...mapState(['accessToken', 'profile']),
+            lastVersion() {
+                let version = Config.version;
+                if (Config.environment !== 'prod') {
+                    version += `-${Config.environment}${this.versionCommitHash !== null ? '-'+this.versionCommitHash : ''}`;
+                }
+
+                return version;
+            },
             actualYear() {
                 return (new Date()).getFullYear();
             },
@@ -134,6 +142,20 @@
                     returnTo: window.location.origin
                 });
             },
+            async loadVersionCommitHash() {
+                if (Config.environment === 'prod') {
+                    return;
+                }
+                try {
+                    this.versionCommitHash = null;
+                    const response = await axios.get('https://api.github.com/repos/Ioni14/fleet-manager-spa/branches/master');
+                    if (response.data && response.data.commit) {
+                        this.versionCommitHash = response.data.commit.sha.substring(0, 6);
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            },
             async loadNewPatchNoteIfNew() {
                 if (!this.accessToken) {
                     return;
@@ -155,11 +177,6 @@
                     }
                     console.error(err);
                 }
-            },
-            findLastVersion() {
-                axios.get('https://api.github.com/repos/Ioni14/starcitizen-fleet-manager/tags').then(response => {
-                    this.lastVersion = response.data[0].name;
-                });
             },
             async onShowPatchNotes() {
                 try {
