@@ -41,7 +41,7 @@
         <b-form-group>
             <b-form-checkbox v-model="form.addAnother.value">Add another ship</b-form-checkbox>
         </b-form-group>
-        <b-button type="submit" :disabled="submitDisabled" variant="success">Create</b-button>
+        <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Create</b-button>
     </b-form>
 </template>
 
@@ -118,7 +118,7 @@ export default {
                 this.form.imageUrl.violation = null;
                 this.form.quantity.violation = null;
                 await axios.post(`${Config.api_base_url}/api/my-fleet/create-ship`, {
-                    name: this.form.model.value,
+                    model: this.form.model.value,
                     pictureUrl: this.form.imageUrl.value || null,
                     quantity: this.form.quantity.value,
                 }, {
@@ -146,7 +146,7 @@ export default {
                     case '':
                         this.globalViolation = violation.title;
                         break;
-                    case 'name':
+                    case 'model':
                         this.form.model.violation = violation.title;
                         break;
                     case 'pictureUrl':

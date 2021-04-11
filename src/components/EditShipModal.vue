@@ -37,10 +37,7 @@
             ></b-form-input>
             <b-form-invalid-feedback :state="stateQuantity">{{ form.quantity.violation }}</b-form-invalid-feedback>
         </b-form-group>
-        <div class="d-flex justify-content-between">
-            <b-button type="submit" :disabled="submitDisabled" variant="success">Save</b-button>
-            <b-button type="button" :disabled="submitDisabled" variant="danger" @click="deleteShip">Delete</b-button>
-        </div>
+        <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
     </b-form>
 </template>
 
@@ -85,7 +82,7 @@ export default {
         resetForm() {
             this.form = {
                 model: {
-                    value: this.ship.name,
+                    value: this.ship.model,
                     violation: null,
                 },
                 imageUrl: {
@@ -97,28 +94,6 @@ export default {
                     violation: null,
                 },
             };
-        },
-        async deleteShip() {
-            const token = await this.$auth.getTokenSilently();
-            if (!this.$auth.isAuthenticated) {
-                this.$toastr.e('Sorry, we are unable to create your ship for the moment. Please, try again later.');
-                return;
-            }
-
-            try {
-                this.submitDisabled = true;
-                this.globalViolation = null;
-                await axios.post(`${Config.api_base_url}/api/my-fleet/delete-ship/${this.ship.id}`, {}, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                this.$emit('deleteShip');
-            } catch (err) {
-                this.$toastr.e('Sorry, we are unable to delete your ship for the moment. Please, try again later.');
-            } finally {
-                this.submitDisabled = false;
-            }
         },
         async onSubmit(ev) {
             ev.preventDefault();
@@ -136,7 +111,7 @@ export default {
                 this.form.imageUrl.violation = null;
                 this.form.quantity.violation = null;
                 await axios.post(`${Config.api_base_url}/api/my-fleet/update-ship/${this.ship.id}`, {
-                    name: this.form.model.value,
+                    model: this.form.model.value,
                     pictureUrl: this.form.imageUrl.value || null,
                     quantity: this.form.quantity.value,
                 }, {
@@ -158,7 +133,7 @@ export default {
                     case '':
                         this.globalViolation = violation.title;
                         break;
-                    case 'name':
+                    case 'model':
                         this.form.model.violation = violation.title;
                         break;
                     case 'pictureUrl':

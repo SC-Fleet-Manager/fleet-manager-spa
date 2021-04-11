@@ -3,7 +3,7 @@
         <b-card>
             <b-card-body>
                 <div class="btn-edit-ships d-flex mb-3">
-                    <b-button variant="primary" role="button" @click="createShip">Create a ship</b-button>
+                    <b-button variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
                 </div>
                 <b-input-group class="mb-3">
                     <template #prepend>
@@ -23,8 +23,12 @@
                 </div>
             </b-card-body>
         </b-card>
-        <b-modal id="modal-edit-ship" ref="modalEditShip" size="lg" centered title="Edit ship" hide-footer>
-            <EditShipModal @success="" :ship="editingShip" @updateShip="onUpdateShip" @deleteShip="onDeleteShip"></EditShipModal>
+        <b-modal id="modal-edit-ship" ref="modalEditShip" size="lg" centered hide-footer>
+            <template #modal-title>
+                Edit ship
+                <b-button type="button" variant="danger" @click="deleteShip(editingShip)"><i class="fa fa-times"></i> Delete</b-button>
+            </template>
+            <EditShipModal @success="" :ship="editingShip" @updateShip="onUpdateShip"></EditShipModal>
         </b-modal>
         <b-modal id="modal-create-ship" ref="modalCreateShip" size="lg" centered title="Create ship" hide-footer>
             <CreateShipModal @success="" @newShip="onNewShip"></CreateShipModal>
@@ -70,7 +74,7 @@
                 }
 
                 return this.listOfShips.filter((ship) => {
-                    return -1 !== localeIndexOf(ship.name, this.form.search, 'en', { sensitivity: 'base', ignorePunctuation: true });
+                    return -1 !== localeIndexOf(ship.model, this.form.search, 'en', { sensitivity: 'base', ignorePunctuation: true });
                 });
             }
         },
@@ -132,7 +136,19 @@
                 this.loadShipList();
                 this.$refs.modalEditShip.hide();
                 this.editingShip = null;
-            }
+            },
+            async deleteShip(ship) {
+                try {
+                    await axios.post(`${Config.api_base_url}/api/my-fleet/delete-ship/${ship.id}`, {}, {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.state.accessToken}`,
+                        },
+                    });
+                    this.onDeleteShip();
+                } catch (err) {
+                    this.$toastr.e('Sorry, we are unable to delete your ship for the moment. Please, try again later.');
+                }
+            },
         }
     }
 </script>

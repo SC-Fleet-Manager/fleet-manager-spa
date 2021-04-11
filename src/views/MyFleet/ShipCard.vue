@@ -2,7 +2,7 @@
     <b-col sm="12" md="6" lg="4" xl="3">
         <div class="card">
             <header class="mb-0 px-4 py-3 h4 d-flex justify-content-between">
-                {{ ship.name }}
+                {{ ship.model }}
                 <span class="edit-ship" @click="$emit('edit', ship)"><i class="cil-pencil"></i></span>
             </header>
             <div class="text-center position-relative placeholder_ship">
