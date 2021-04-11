@@ -1,0 +1,20 @@
+{
+    "ships": {
+        "items": [
+            {
+                "id": "00000000-0000-0000-0000-000000000001",
+                "name": "Avenger Titan",
+                "imageUrl": "https://media.robertsspaceindustries.com/fmhdkmvhi8ify/store_small.jpg",
+                "quantity": 2
+            },
+            {
+                "id": "00000000-0000-0000-0000-000000000002",
+                "name": "Mercury Star Runner",
+                "imageUrl": null,
+                "quantity": 1
+            }
+        ],
+        "count": 2
+    },
+    "updatedAt": "2021-01-01T10:00:00+00:00"
+}

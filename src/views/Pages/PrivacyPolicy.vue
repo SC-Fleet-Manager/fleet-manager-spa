@@ -3,7 +3,7 @@
         <nav>
             <ul class="nav mb-3">
                 <li class="nav-item mr-3">
-                    <a class="nav-link btn btn-primary" href="/">Home</a>
+                    <router-link class="nav-link btn btn-primary" :to="{ name: 'Home' }">Home</router-link>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="nav-link btn btn-secondary" @click="$router.back()">Back</button>
@@ -17,19 +17,7 @@
 
             <h2>Collection of your Personal Information</h2>
 
-            <p>In order to better provide you with products and services offered on our Site, Fleet Manager may collect personally identifiable information, such as your:</p>
-            <ul>
-                <li>Discord handle</li>
-                <li>Email</li>
-            </ul>
-
-            <p>Please keep in mind that if you directly disclose personally identifiable information or personally sensitive data through Fleet Manager public pages, this information may be collected and used by others.</p>
-
-            <p>We do not collect any personal information about you unless you voluntarily provide it to us.</p>
-
-            <h2>Use of your Personal Information</h2>
-
-            <p>Fleet Manager uses your provided personal information to operate its website(s) and deliver the services you have requested.</p>
+            <p>We do not collect personally identifiable information except when you give feedback via the Fleet Manager website such as Email or Discord ID.</p>
 
             <h2>Sharing Information with Third Parties</h2>
 
@@ -55,7 +43,7 @@
 
             <ul>
                 <li>TLS Protocol for HTTPS requests</li>
-                <li>Argon2 for password hashes</li>
+                <li>Use Auth0 as an authorization server to authenticate users.</li>
             </ul>
 
             <p>We strive to take appropriate security measures to protect against unauthorized access to or alteration of your personal information. Unfortunately, no data transmission over the Internet or any wireless network can be guaranteed to be 100% secure. As a result, while we strive to protect your personal information, you acknowledge that: (a) there are security and privacy limitations inherent to the Internet which are beyond our control; and (b) security, integrity, and privacy of any and all information and data exchanged between you and us through this Site cannot be guaranteed.</p>
@@ -63,10 +51,6 @@
             <h2>Children Under Thirteen</h2>
 
             <p>Fleet Manager does not knowingly collect personally identifiable information from children under the age of thirteen. If you are under the age of thirteen, you must ask your parent or guardian for permission to use this website.</p>
-
-            <h2>Disconnecting your Fleet Manager Account from Third Party Websites</h2>
-
-            <p>You will be able to connect your Fleet Manager account to third party accounts. BY CONNECTING YOUR FLEET MANAGER ACCOUNT TO YOUR THIRD PARTY ACCOUNT, YOU ACKNOWLEDGE AND AGREE THAT YOU ARE CONSENTING TO THE CONTINUOUS RELEASE OF INFORMATION ABOUT YOU TO OTHERS (IN ACCORDANCE WITH YOUR PRIVACY SETTINGS ON THOSE THIRD PARTY SITES). IF YOU DO NOT WANT INFORMATION ABOUT YOU, INCLUDING PERSONALLY IDENTIFYING INFORMATION, TO BE SHARED INTHIS MANNER, DO NOT USE THE THIS FEATURE. You may disconnect your account from a third party account at any time. Users may disconnect their social logins from the account management page by clicking on the 'Logout' link in the top right corner of the page.</p>
 
             <h2>Changes to this Statement</h2>
 
@@ -76,12 +60,12 @@
 
             <p>Fleet Manager welcomes your questions or comments regarding this Statement of Privacy. If you believe that Fleet Manager has not adhered to this Statement, please contact Fleet Manager at <b><span class="reverse">moc.liamnotorp [ta] reganam-teelf</span></b>.</p>
 
-            <p>Effective as of May 30, 2019</p>
+            <p>Effective as of April 11, 2021</p>
         </section>
         <nav>
             <ul class="nav mb-3">
                 <li class="nav-item mr-3">
-                    <a class="nav-link btn btn-primary" href="/">Home</a>
+                    <router-link class="nav-link btn btn-primary" :to="{ name: 'Home' }">Home</router-link>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="nav-link btn btn-secondary" @click="$router.back()">Back</button>

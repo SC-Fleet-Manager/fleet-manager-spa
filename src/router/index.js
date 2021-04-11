@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import axios from 'axios';
 import store from '@/store/store';
+import Config from '@config/config.json';
 
-// Views
 const Home = () => import('@/views/Home');
 const DefaultContainer = () => import('@/views/DefaultContainer');
 const MyFleet = () => import('@/views/MyFleet/MyFleet');
@@ -30,20 +30,19 @@ const router = new Router({
             component: DefaultContainer,
             children: [
                 {
+                    path: 'my-fleet',
+                    component: MyFleet,
+                    meta: {
+                        requireAuth: true,
+                    },
+                },
+                {
                     path: 'my-organizations',
                     name: 'My organizations',
                     component: MyOrganizations,
                     meta: {
                         requireAuth: true,
                     }
-                },
-                {
-                    path: 'my-fleet',
-                    name: 'My fleet',
-                    component: MyFleet,
-                    meta: {
-                        requireAuth: true,
-                    },
                 },
                 {
                     path: 'profile',
@@ -105,35 +104,10 @@ const router = new Router({
             },
         },
         {
-            path: '/404',
-            component: Page404,
-            meta: {
-                titleTag: '404 - Fleet Manager',
-                metaTags: [
-                    {
-                        name: 'description',
-                        content: '',
-                    },
-                    {
-                        property: 'og:description',
-                        content: '',
-                    },
-                    {
-                        property: 'og:url',
-                        content: '',
-                    },
-                    {
-                        property: 'og:image',
-                        content: `${window.location.protocol}//${window.location.host}/icons/favicon-96x96.png`,
-                    }
-                ],
-            },
-        },
-        {
             path: '*',
             component: Page404,
             meta: {
-                titleTag: '404 - Fleet Manager',
+                titleTag: 'Page not found (404) - Fleet Manager',
                 metaTags: [
                     {
                         name: 'description',
@@ -159,6 +133,16 @@ const router = new Router({
 
 async function refreshSeoTags(to)
 {
+    if (Config.environment !== 'prod') {
+        let meta = document.head.querySelector(`meta[name="robots"]`);
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', 'robots');
+            document.head.append(meta);
+        }
+        meta.setAttribute('content', 'noindex, nofollow');
+    }
+
     if (to.meta.titleTag) {
         if (typeof to.meta.titleTag === 'function') {
             document.title = await to.meta.titleTag(to);
@@ -196,9 +180,56 @@ async function refreshSeoTags(to)
     }
 }
 
+router.afterEach((to, from) => {
+    store.commit('splashScreen', false);
+});
 router.beforeEach((to, from, next) => {
     refreshSeoTags(to);
-    next();
+
+    if (!to.meta.requireAuth) {
+        next();
+        return;
+    }
+
+    if (from.name === null || from.name === 'Home') {
+        store.commit('splashScreen', true);
+    }
+
+    const checkAuth = async () => {
+        if (!Vue.prototype.$auth.isAuthenticated) {
+            next({ path: '/', replace: true });
+            return;
+        }
+
+        if (!store.state.accessToken) {
+            const token = await Vue.prototype.$auth.getTokenSilently();
+            store.commit('accessToken', token);
+        }
+        try {
+            const response = await axios.get(`${Config.api_base_url}/api/profile`, {
+                headers: {
+                    Authorization: `Bearer ${store.state.accessToken}`,
+                }
+            });
+            store.commit('profile', response.data);
+            next();
+        } catch (err) {
+            if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                Vue.prototype.$toastr.e('Sorry you are not authorized to use the app for the moment.');
+                next({ name: 'Home', replace: true });
+                store.commit('splashScreen', false);
+                return;
+            }
+            console.error(err);
+            next(false);
+            store.commit('splashScreen', false);
+        }
+    };
+    if (!Vue.prototype.$auth.loading) {
+        checkAuth();
+    } else {
+        Vue.prototype.$auth.$on('loaded', checkAuth);
+    }
 });
 
 export default router;

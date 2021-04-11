@@ -246,11 +246,15 @@
                         }).catch(err => {
                             if (err.response.status === 401) {
                                 this.errorMessage = 'Sorry, but we need you to be connected to support us. Please click on "Login" top-right the page.';
-                            } else if (err.response.data.formErrors) {
+                                return;
+                            }
+                            if (err.response.data.formErrors) {
                                 for (let violation of err.response.data.formErrors.violations) {
                                     this.$set(this.formViolations, violation.propertyPath, violation.title);
                                 }
-                            } else if (err.response.data.error === 'paypal_error') {
+                                return;
+                            }
+                            if (err.response.data.error === 'paypal_error') {
                                 this.errorMessage = 'An error has occurred when submitting your backing to PayPal:';
                                 this.errorMessage += '<ul class="mb-0">';
                                 if (err.response.data.paypalError.details.length > 0) {
@@ -261,9 +265,9 @@
                                     this.errorMessage += `<li>${err.response.data.paypalError.message}</li>`;
                                 }
                                 this.errorMessage += '</ul>';
-                            } else {
-                                this.errorMessage = 'An unexpected error has occurred. Please try again in a moment.';
+                                return;
                             }
+                            this.errorMessage = 'An unexpected error has occurred. Please try again in a moment.';
                         });
                     },
                     onApprove: async data => {

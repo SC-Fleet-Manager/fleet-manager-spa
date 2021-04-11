@@ -7,16 +7,27 @@ export default new Vuex.Store({
     modules: {
     },
     state: {
-        user: null,
+        splashScreen: false,
+        accessToken: null,
+        profile: null,
     },
     getters: {
         user(state) {
             return state.user;
         },
+        accessToken(state) {
+            return state.accessToken;
+        },
     },
     mutations: {
-        updateUser(state, payload) {
-            state.user = payload;
+        splashScreen(state, payload) {
+            state.splashScreen = payload;
+        },
+        profile(state, payload) {
+            state.profile = payload;
+        },
+        accessToken(state, payload) {
+            state.accessToken = payload;
         },
     }
 });

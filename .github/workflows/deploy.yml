@@ -70,8 +70,20 @@ jobs:
                     build: yarn build
             -   name: Clean config
                 run: rm -f config/config.json
-            -   name: Deploy to AWS S3 prod
+            -   name: AWS S3 Sync root files
                 uses: awact/s3-action@master
+                with:
+                    args: --exclude 'build/*' --cache-control "public, max-age=300"
+                env:
+                    SOURCE_DIR: './public'
+                    AWS_REGION: eu-west-1
+                    AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET_BETA }}
+                    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            -   name: AWS S3 Sync build files
+                uses: awact/s3-action@master
+                with:
+                    args: --exclude '*' --include 'build/*' --cache-control "public, max-age=31536000, immutable"
                 env:
                     SOURCE_DIR: './public'
                     AWS_REGION: eu-west-1
@@ -107,8 +119,20 @@ jobs:
                     build: yarn build
             -   name: Clean config
                 run: rm -f config/config.json
-            -   name: Deploy to AWS S3 prod
+            -   name: AWS S3 Sync root files
                 uses: awact/s3-action@master
+                with:
+                    args: --exclude 'build/*' --cache-control "public, max-age=300"
+                env:
+                    SOURCE_DIR: './public'
+                    AWS_REGION: eu-west-1
+                    AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET_PROD }}
+                    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            -   name: AWS S3 Sync build files
+                uses: awact/s3-action@master
+                with:
+                    args: --exclude '*' --include 'build/*' --cache-control "public, max-age=31536000, immutable"
                 env:
                     SOURCE_DIR: './public'
                     AWS_REGION: eu-west-1

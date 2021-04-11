@@ -11,6 +11,7 @@ import {
     FormPlugin,
     FormGroupPlugin,
     FormInputPlugin,
+    FormTextareaPlugin,
     FormCheckboxPlugin,
     FormFilePlugin,
     FormRadioPlugin,
@@ -31,13 +32,15 @@ import {
     ProgressPlugin,
     TablePlugin,
     VBTooltipPlugin,
+    ImagePlugin,
+    ListGroupPlugin
 } from 'bootstrap-vue';
 
 Vue.use(Auth0Plugin, {
     domain: Config.auth0_domain,
     clientId: Config.auth0_clientId,
     audience: Config.auth0_audience,
-    redirectUri: `${Config.spa_base_url}/profile`,
+    redirectUri: `${Config.spa_base_url}/my-fleet`,
     onRedirectCallback: appState => {
         router.push(
             appState && appState.targetUrl
@@ -50,6 +53,7 @@ Vue.use(LayoutPlugin);
 Vue.use(FormPlugin);
 Vue.use(FormGroupPlugin);
 Vue.use(FormInputPlugin);
+Vue.use(FormTextareaPlugin);
 Vue.use(FormCheckboxPlugin);
 Vue.use(FormFilePlugin);
 Vue.use(FormRadioPlugin);
@@ -70,13 +74,15 @@ Vue.use(CollapsePlugin);
 Vue.use(ProgressPlugin);
 Vue.use(TablePlugin);
 Vue.use(VBTooltipPlugin);
+Vue.use(ImagePlugin);
+Vue.use(ListGroupPlugin);
 Vue.use(VueToastr, {
     defaultTimeout: 3000,
     defaultProgressBar: false,
     defaultProgressBarValue: 0,
     defaultPosition: "toast-bottom-right",
     defaultCloseOnHover: false,
-    defaultClassNames: ["animated", "zoomInUp"]
+    defaultClassNames: ["animated", "zoomInUp"],
 });
 
 new Vue({
