@@ -35,7 +35,7 @@
                     <span class="learn-more" @click="smoothScroll('#join-citizens')">learn more <i class="fas fa-angle-down"></i></span>
                 </div>
             </section>
-            <section class="main">
+            <section class="fp-main">
                 <div class="gradient-up"></div>
                 <img
                     @load="onLoad('join-citizens')"

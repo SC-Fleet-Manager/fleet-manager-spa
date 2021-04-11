@@ -105,12 +105,6 @@ export default {
         async onSubmit(ev) {
             ev.preventDefault();
 
-            const token = await this.$auth.getTokenSilently();
-            if (!this.$auth.isAuthenticated) {
-                this.$toastr.e('Sorry, we are unable to create your ship for the moment. Please, try again later.');
-                return;
-            }
-
             try {
                 this.submitDisabled = true;
                 this.globalViolation = null;
@@ -123,7 +117,7 @@ export default {
                     quantity: this.form.quantity.value,
                 }, {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
                 if (this.form.addAnother.value) {

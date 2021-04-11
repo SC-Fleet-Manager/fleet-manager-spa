@@ -100,7 +100,7 @@
             }
         }
 
-        section.main {
+        section.fp-main {
             overflow: hidden;
             background: url("~@img/grid.png") repeat center top;
             position: relative;
@@ -496,7 +496,7 @@
 @media screen and (max-width: 1440px) {
     #pg {
         main#pg-main {
-            section.main {
+            section.fp-main {
                 #supporters {
                     #supporters-backers {
                         .fp-col {
@@ -518,7 +518,7 @@
                 }
             }
 
-            section.main {
+            section.fp-main {
                 section.screens {
                     .fp-container:nth-child(even) .fp-row {
                         flex-flow: column;
@@ -586,7 +586,7 @@
                 }
             }
 
-            section.main {
+            section.fp-main {
                 .fp-container {
                     .row-stats {
                         .fp-col {
@@ -617,7 +617,7 @@
                 display: none;
             }
 
-            section.main {
+            section.fp-main {
                 .gradient-blue {
                     padding-top: 10vw;
                 }
@@ -660,7 +660,7 @@
                     }
                 }
             }
-            section.main {
+            section.fp-main {
                 .fp-container {
                     h2 {
                         font-size: 2.5rem;

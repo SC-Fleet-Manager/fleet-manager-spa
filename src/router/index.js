@@ -107,7 +107,7 @@ const router = new Router({
             path: '*',
             component: Page404,
             meta: {
-                titleTag: '404 - Fleet Manager',
+                titleTag: 'Page not found (404) - Fleet Manager',
                 metaTags: [
                     {
                         name: 'description',

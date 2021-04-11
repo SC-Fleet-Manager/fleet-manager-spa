@@ -18,7 +18,7 @@
                     <b-row cols-lg="mt-3">
                         <ShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship" @edit="onEditShip" />
                     </b-row>
-                    <b-alert v-if="notFoundFleet || listOfShips.length === 0" show variant="warning">You don't have any ships yet. Why don't you create one?</b-alert>
+                    <b-alert v-if="hasAnyShip" show variant="warning">You don't have any ships yet. Why don't you create one?</b-alert>
                     <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
                 </div>
             </b-card-body>
@@ -76,7 +76,10 @@
                 return this.listOfShips.filter((ship) => {
                     return -1 !== localeIndexOf(ship.model, this.form.search, 'en', { sensitivity: 'base', ignorePunctuation: true });
                 });
-            }
+            },
+            hasAnyShip() {
+                return this.notFoundFleet || this.listOfShips.length === 0;
+            },
         },
         methods: {
             loadAuthRequests() {
@@ -102,7 +105,7 @@
                         this.$router.push('/');
                         return;
                     }
-                    if(err.response.status == 404 && err.response.data.error === 'not_found_fleet'){
+                    if (err.response.status == 400 && err.response.data.error === 'not_found_fleet'){
                         this.notFoundFleet = true
                         return;
                     }
