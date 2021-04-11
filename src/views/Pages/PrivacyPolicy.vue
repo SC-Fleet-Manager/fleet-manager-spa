@@ -3,7 +3,7 @@
         <nav>
             <ul class="nav mb-3">
                 <li class="nav-item mr-3">
-                    <a class="nav-link btn btn-primary" href="/">Home</a>
+                    <router-link class="nav-link btn btn-primary" :to="{ name: 'Home' }">Home</router-link>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="nav-link btn btn-secondary" @click="$router.back()">Back</button>
@@ -81,7 +81,7 @@
         <nav>
             <ul class="nav mb-3">
                 <li class="nav-item mr-3">
-                    <a class="nav-link btn btn-primary" href="/">Home</a>
+                    <router-link class="nav-link btn btn-primary" :to="{ name: 'Home' }">Home</router-link>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="nav-link btn btn-secondary" @click="$router.back()">Back</button>

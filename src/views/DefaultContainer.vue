@@ -28,8 +28,8 @@
         </div>
         <TheFooter class="font-lg">
             <div>
-                <router-link to="/">Fleet Manager</router-link>
-                <a href="https://blog.fleet-manager.space/tag/change-logs/" target="_blank">{{ lastVersion }}</a>
+                <router-link :to="{ name: 'Home' }">Fleet Manager</router-link>
+                <span>{{ lastVersion }}</span>
                 <span class="ml-1">&copy; 2018 - {{ actualYear }}</span>
                 - <router-link to="/privacy-policy">Privacy policy</router-link>.
                 Star Citizen is a product of Cloud Imperium Rights LLC and Cloud Imperium Rights Ltd.

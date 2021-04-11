@@ -2,13 +2,12 @@
     <div id="pg">
         <header id="pg-hdr">
             <div class="logo">
-                <a href="/"><img src="@img/logo_fm_white.svg" alt="Logo Fleet Manager"></a>
+                <router-link :to="{ name: 'Home' }"><img src="@img/logo_fm_white.svg" alt="Logo Fleet Manager"></router-link>
             </div>
             <nav>
                 <div class="links">
-                    <a target="_blank" href="https://blog.fleet-manager.space" aria-label="Blog"><i class="fas fa-blog"></i></a>
-                    <a target="_blank" href="https://github.com/Ioni14/starcitizen-fleet-manager" aria-label="Github"><i class="fab fa-github"></i></a>
-                    <a target="_blank" href="https://discord.gg/5EyFpVP" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                    <a target="_blank" href="https://github.com/Ioni14/starcitizen-fleet-manager" aria-label="Github" rel="nofollow"><i class="fab fa-github"></i></a>
+                    <a target="_blank" href="https://discord.gg/5EyFpVP" aria-label="Discord" rel="nofollow"><i class="fab fa-discord"></i></a>
                 </div>
                 <button v-if="!$auth.isAuthenticated" v-once class="btn" type="button" @click="login" :disabled="$auth.loading"><i class="fas fa-sign-in-alt"></i> Login</button>
                 <router-link v-else v-once class="btn" to="/my-fleet"><i class="fas fa-space-shuttle"></i> Dashboard</router-link>
@@ -219,8 +218,8 @@
                                 <h4 class="name">Thomas Talbot</h4>
                                 <div class="description">Lead Developer - Solution Architect</div>
                                 <div class="links">
-                                    <a target="_blank" href="https://github.com/ioni14"><i class="fab fa-github"></i></a>
-                                    <a target="_blank" href="https://www.linkedin.com/in/thomas-talbot/"><i class="fab fa-linkedin"></i></a>
+                                    <a target="_blank" href="https://github.com/ioni14" rel="nofollow"><i class="fab fa-github"></i></a>
+                                    <a target="_blank" href="https://www.linkedin.com/in/thomas-talbot/" rel="nofollow"><i class="fab fa-linkedin"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -236,9 +235,9 @@
                                 <h4 class="name">Valentin Ronteix</h4>
                                 <div class="description">Community Manager - Project Manager</div>
                                 <div class="links">
-                                    <a target="_blank" href="https://github.com/vyrtualsynthese"><i class="fab fa-github"></i></a>
-                                    <a target="_blank" href="https://twitch.tv/ashuvidz/"><i class="fab fa-twitch"></i></a>
-                                    <a target="_blank" href="https://youtube.com/ashuvidz/"><i class="fab fa-youtube"></i></a>
+                                    <a target="_blank" href="https://github.com/vyrtualsynthese" rel="nofollow"><i class="fab fa-github"></i></a>
+                                    <a target="_blank" href="https://twitch.tv/ashuvidz/" rel="nofollow"><i class="fab fa-twitch"></i></a>
+                                    <a target="_blank" href="https://youtube.com/ashuvidz/" rel="nofollow"><i class="fab fa-youtube"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -254,9 +253,9 @@
                                 <h4 class="name">Arnaud Cantaloube</h4>
                                 <div class="description">Designer</div>
                                 <div class="links">
-                                    <a target="_blank" href="https://twitter.com/a_cantaloube"><i class="fab fa-twitter"></i></a>
-                                    <a target="_blank" href="https://www.linkedin.com/in/arnaudcantaloube/"><i class="fab fa-linkedin"></i></a>
-                                    <a target="_blank" href="https://www.arnaudcantaloube.fr/"><i class="fas fa-globe"></i></a>
+                                    <a target="_blank" href="https://twitter.com/a_cantaloube" rel="nofollow"><i class="fab fa-twitter"></i></a>
+                                    <a target="_blank" href="https://www.linkedin.com/in/arnaudcantaloube/" rel="nofollow"><i class="fab fa-linkedin"></i></a>
+                                    <a target="_blank" href="https://www.arnaudcantaloube.fr/" rel="nofollow"><i class="fas fa-globe"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -271,11 +270,10 @@
                     <img src="@img/logo_fm_white.svg" alt="Logo Fleet Manager">
                 </div>
                 <nav>
-                    <div class="policy"><a href="/privacy-policy">Privacy Policy</a><!-- - <a href="#">FAQ</a>--></div>
+                    <div class="policy"><router-link to="/privacy-policy">Privacy Policy</router-link></div>
                     <div class="links">
-                        <a target="_blank" href="https://blog.fleet-manager.space"><i class="fas fa-blog"></i></a>
-                        <a target="_blank" href="https://github.com/Ioni14/starcitizen-fleet-manager"><i class="fab fa-github"></i></a>
-                        <a target="_blank" href="https://discord.gg/5EyFpVP"><i class="fab fa-discord"></i></a>
+                        <a target="_blank" href="https://github.com/Ioni14/starcitizen-fleet-manager" rel="nofollow"><i class="fab fa-github"></i></a>
+                        <a target="_blank" href="https://discord.gg/5EyFpVP" rel="nofollow"><i class="fab fa-discord"></i></a>
                     </div>
                 </nav>
             </section>

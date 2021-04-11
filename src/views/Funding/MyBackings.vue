@@ -10,7 +10,7 @@
                              sort-by="createdAt" :sort-desc="true" responsive="sm" show-empty>
                         <template v-slot:empty="scope">
                             <div role="alert" aria-live="polite">
-                                <div class="text-center my-2">You have no backings! 😢 Feel free to <a href="/supporters">support us</a>. 😎</div>
+                                <div class="text-center my-2">You have no backings! 😢 Feel free to <router-link to="/supporters">support us</router-link>. 😎</div>
                             </div>
                         </template>
                         <template v-slot:cell(paypalStatus)="data">
