@@ -410,9 +410,13 @@
                     display: flex;
                     flex-flow: column;
 
-                    h4 {
-                        font-size: $fontTitle;
+                    .name {
+                        font-size: $fontName;
                         padding-bottom: $gridGutter;
+                    }
+                    .sub-name {
+                        font-size: $fontSubName;
+                        font-weight: normal;
                     }
 
                     .meta {
@@ -422,10 +426,6 @@
                         justify-content: space-around;
                         padding: 2rem;
                         flex-grow: 1;
-
-                        h4 {
-                            font-size: $fontName;
-                        }
 
                         .links {
                             display: flex;

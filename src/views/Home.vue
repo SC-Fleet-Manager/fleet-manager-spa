@@ -215,9 +215,13 @@
                                 "
                                 width="400">
                             <div class="meta">
-                                <h4 class="name">Thomas Talbot</h4>
+                                <h4 class="name">
+                                    Thomas Talbot
+                                    <div class="sub-name">a.k.a Ioni</div>
+                                </h4>
                                 <div class="description">Lead Developer - Solution Architect</div>
                                 <div class="links">
+                                    <a target="_blank" href="https://twitter.com/thomas_ioni14" rel="nofollow"><i class="fab fa-twitter"></i></a>
                                     <a target="_blank" href="https://github.com/ioni14" rel="nofollow"><i class="fab fa-github"></i></a>
                                     <a target="_blank" href="https://www.linkedin.com/in/thomas-talbot/" rel="nofollow"><i class="fab fa-linkedin"></i></a>
                                 </div>
@@ -232,7 +236,10 @@
                                 "
                                 width="400">
                             <div class="meta">
-                                <h4 class="name">Valentin Ronteix</h4>
+                                <h4 class="name">
+                                    Valentin Ronteix
+                                    <div class="sub-name">a.k.a VyrtualSynthese</div>
+                                </h4>
                                 <div class="description">Community Manager - Project Manager</div>
                                 <div class="links">
                                     <a target="_blank" href="https://github.com/vyrtualsynthese" rel="nofollow"><i class="fab fa-github"></i></a>
@@ -243,19 +250,21 @@
                         </div>
                         <div class="fp-col">
                             <img
-                                src="@img/arnaud_400x400.jpg" alt="Arnaud photo"
+                                src="@img/mathilde_400x400.jpg" alt="Mathilde photo"
                                 srcset="
-                                    @img/arnaud_400x400.jpg 1x,
-                                    @img/arnaud_800x800.jpg 2x
+                                    @img/mathilde_400x400.jpg 1x,
+                                    @img/mathilde_800x800.jpg 2x
                                 "
                                 width="400">
                             <div class="meta">
-                                <h4 class="name">Arnaud Cantaloube</h4>
-                                <div class="description">Designer</div>
+                                <h4 class="name">
+                                    Mathilde Wattrelos
+                                    <div class="sub-name">a.k.a Lunia</div>
+                                </h4>
+                                <div class="description">Front-end Developer</div>
                                 <div class="links">
-                                    <a target="_blank" href="https://twitter.com/a_cantaloube" rel="nofollow"><i class="fab fa-twitter"></i></a>
-                                    <a target="_blank" href="https://www.linkedin.com/in/arnaudcantaloube/" rel="nofollow"><i class="fab fa-linkedin"></i></a>
-                                    <a target="_blank" href="https://www.arnaudcantaloube.fr/" rel="nofollow"><i class="fas fa-globe"></i></a>
+                                    <a target="_blank" href="https://github.com/Lunia-UK" rel="nofollow"><i class="fab fa-github"></i></a>
+                                    <a target="_blank" href="https://www.linkedin.com/in/mathilde-wattrelos-09296b1b2/" rel="nofollow"><i class="fab fa-linkedin"></i></a>
                                 </div>
                             </div>
                         </div>
