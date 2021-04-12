@@ -1,5 +1,5 @@
 <template>
-    <b-col sm="12" md="6" lg="4" xl="3">
+    <b-col sm="6" md="4" lg="3" xl="2">
         <div class="card">
             <div class="position-relative placeholder-ship">
                 <div class="aspect-ratio-box" :style="stylePictureShip" />
@@ -37,14 +37,14 @@
 }
 .placeholder-ship {
     max-width: 100%;
-    background-image: url('~@img/static/Placeholder-FM_1.svg');
+    background-image: url('~@img/static/Placeholder-org.svg');
     background-size: cover;
     background-position: center;
 }
 .aspect-ratio-box {
     overflow: hidden;
     height: 0;
-    padding-top: 56.25%;
+    padding-top: 100%;
     background-size: cover;
     background-position: center;
 }

@@ -5,7 +5,7 @@
                 <div class="btn-edit-ships d-flex justify-content-between flex-wrap mb-3">
                     <h3>My organizations</h3>
                     <div>
-                        <b-button class="mx-2" variant="primary" role="button" @click="createOrga"><i class="fa fa-plus"></i> Create a orga</b-button>
+                        <b-button class="mr-2" variant="primary" role="button" @click="createOrga"><i class="fa fa-plus"></i> Create a orga</b-button>
                         <b-button variant="primary" role="button">Join a orga</b-button>
                     </div>
                 </div>
@@ -32,32 +32,24 @@
     import Config from '@config/config.json';
     import OrgaCard from '@/components/OrgaCard.vue';
     import CreateOrgaModal from '@/components/CreateOrgaModal';
-    // import exported from 'locale-index-of';
-    // const localeIndexOf = exported(Intl);
 
     export default {
         name: 'my-orga',
         components: {CreateOrgaModal, OrgaCard},
         data() {
             return {
-                listOfOrgasLoaded: true,
+                listOfOrgasLoaded: false,
                 notFoundOrgas: false,
                 errorMessage: null,
-                listOfOrgas: [
-                    {name: 'orga1', imageUrl: null},
-                    {name: 'orga2', imageUrl: null},
-                    {name: 'orga3', imageUrl: null},
-                    {name: 'orga4', imageUrl: null},
-                    {name: 'orga5', imageUrl: null}
-                ],
+                listOfOrgas: [],
             };
         },
         created() {
-            // if (!this.$auth.loading) {
-            //     this.loadAuthRequests();
-            // } else {
-            //     this.$auth.$on('loaded', this.loadAuthRequests);
-            // }
+            if (!this.$auth.loading) {
+                this.loadAuthRequests();
+            } else {
+                this.$auth.$on('loaded', this.loadAuthRequests);
+            }
         },
         computed: {
             hasAnyOrga() {
@@ -65,40 +57,40 @@
             },
         },
         methods: {
-            // loadAuthRequests() {
-            //     this.loadShipList();
-            // },
-            // async loadShipList() {
-            //     try {
-            //         this.notFoundFleet = false;
-            //         this.errorMessage = null;
-            //         const response = await axios.get(`${Config.api_base_url}/api/my-fleet`, {
-            //             headers: {
-            //                 Authorization: `Bearer ${this.$store.state.accessToken}`,
-            //             },
-            //         });
-            //         this.listOfShips = response.data.ships.items;
-            //     } catch (err) {
-            //         if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-            //             this.$toastr.e('You have been disconnected. Please login again.');
-            //             this.$router.push({ name: 'Home' });
-            //             return;
-            //         }
-            //         if (err.response.status == 400 && err.response.data.error === 'not_found_fleet'){
-            //             this.notFoundFleet = true
-            //             return;
-            //         }
-            //         this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
-            //     } finally {
-            //         this.listOfShipsLoaded = true;
-            //     }
-            // },
+            loadAuthRequests() {
+                this.loadShipList();
+            },
+            async loadShipList() {
+                try {
+                    this.notFoundFleet = false;
+                    this.errorMessage = null;
+                    const response = await axios.get(`${Config.api_base_url}/api/my-orga`, {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.state.accessToken}`,
+                        },
+                    });
+                    this.listOfOrgas = response.data.orga.items;
+                } catch (err) {
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
+                        this.$router.push({ name: 'Home' });
+                        return;
+                    }
+                    if (err.response.status == 400 && err.response.data.error === 'not_found_orga'){
+                        this.notFoundFleet = true
+                        return;
+                    }
+                    this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
+                } finally {
+                    this.listOfOrgaLoaded = true;
+                }
+            },
             createOrga() {
                 this.$refs.modalCreateOrga.show();
             },
             onNewOrga({ shouldClose }) {
                 this.$toastr.s('Your orga has been created!');
-                // this.loadOrgaList();
+                this.loadOrgaList();
                 if (shouldClose) {
                     this.$refs.modalCreateOrga.hide();
                 }

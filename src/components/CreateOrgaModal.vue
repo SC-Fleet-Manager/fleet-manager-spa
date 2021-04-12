@@ -5,12 +5,21 @@
             <b-form-input
                 id="input-orga-name"
                 v-model="form.name.value"
-                placeholder="Organization name"
                 type="text"
                 :state="stateName"
                 required
             ></b-form-input>
-            <b-form-invalid-feedback :state="statename">{{ form.name.violation }}</b-form-invalid-feedback>
+            <b-form-invalid-feedback :state="stateName">{{ form.name.violation }}</b-form-invalid-feedback>
+        </b-form-group>
+        <b-form-group class="mb-4" label="Sid *" label-for="input-orga-name">
+            <b-form-input
+                id="input-orga-sid"
+                v-model="form.sid.value"
+                type="text"
+                :state="stateSid"
+                required
+            ></b-form-input>
+            <b-form-invalid-feedback :state="stateSid">{{ form.sid.violation }}</b-form-invalid-feedback>
         </b-form-group>
         <b-form-group class="mb-4" label="Image URL" label-for="input-orga-image" description="Only from RSI">
             <b-form-input
@@ -18,7 +27,7 @@
                 v-model="form.imageUrl.value"
                 debounce="500"
                 type="url"
-                placeholder="https://media.robertsspaceindustries.com/wj92rqzvhnecb/store_small.jpg"
+                placeholder="https://robertsspaceindustries.com/rsi/static/images/organization/defaults/logo/generic.jpg"
                 :state="stateImageUrl"
             ></b-form-input>
             <b-form-invalid-feedback :state="stateImageUrl">{{ form.imageUrl.violation }}</b-form-invalid-feedback>
@@ -42,7 +51,8 @@ export default {
         return {
             form: {
                 name: '',
-                imageUrl: ''
+                imageUrl: '',
+                sid: ''
             },
             globalViolation: null,
             submitDisabled: false,
@@ -53,6 +63,9 @@ export default {
     computed: {
         stateName() {
             return this.form.name.violation !== null ? false : null;
+        },
+        stateSid() {
+            return this.form.sid.violation !== null ? false : null;
         },
         stateImageUrl() {
             return this.form.imageUrl.violation !== null ? false : null;
