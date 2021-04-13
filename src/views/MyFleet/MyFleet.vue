@@ -23,12 +23,8 @@
                 </div>
             </b-card-body>
         </b-card>
-        <b-modal id="modal-edit-ship" ref="modalEditShip" size="lg" centered hide-footer>
-            <template #modal-title>
-                Edit ship
-                <b-button type="button" variant="danger" @click="deleteShip(editingShip)"><i class="fa fa-times"></i> Delete</b-button>
-            </template>
-            <EditShipModal :ship="editingShip" @updateShip="onUpdateShip"></EditShipModal>
+        <b-modal id="modal-edit-ship" ref="modalEditShip" size="lg" centered title="Edit ship" hide-footer>
+            <EditShipModal :ship="editingShip" @updateShip="onUpdateShip" @deleteShip="onDeleteShip"></EditShipModal>
         </b-modal>
         <b-modal id="modal-create-ship" ref="modalCreateShip" size="lg" centered title="Create ship" hide-footer>
             <CreateShipModal @newShip="onNewShip"></CreateShipModal>
@@ -135,24 +131,6 @@
                 this.loadShipList();
                 this.$refs.modalEditShip.hide();
                 this.editingShip = null;
-            },
-            async deleteShip(ship) {
-                try {
-                    await axios.post(`${Config.api_base_url}/api/my-fleet/delete-ship/${ship.id}`, {}, {
-                        headers: {
-                            Authorization: `Bearer ${this.$store.state.accessToken}`,
-                        },
-                    });
-                    this.onDeleteShip();
-                } catch (err) {
-                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-                        this.$toastr.e('You have been disconnected. Please login again.');
-                        this.$router.push({ name: 'Home' });
-                        return;
-                    }
-                    console.error(err);
-                    this.$toastr.e('Sorry, we are unable to delete your ship for the moment. Please, try again later.');
-                }
             },
         }
     }

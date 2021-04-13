@@ -38,7 +38,10 @@
             ></b-form-input>
             <b-form-invalid-feedback :state="stateQuantity">{{ form.quantity.violation }}</b-form-invalid-feedback>
         </b-form-group>
-        <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
+        <div class="d-flex align-items-center">
+            <div class="text-danger" @click="deleteShip(ship.id)">Delete</div>
+            <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
+        </div>
     </b-form>
 </template>
 
@@ -136,7 +139,25 @@ export default {
                         break;
                 }
             }
-        }
+        },
+        async deleteShip(id) {
+            try {
+                await axios.post(`${Config.api_base_url}/api/my-fleet/delete-ship/${id}`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                this.$emit('deleteShip');
+            } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
+                console.error(err);
+                this.$toastr.e('Sorry, we are unable to delete your ship for the moment. Please, try again later.');
+            }
+        },
     }
 };
 </script>
