@@ -9,10 +9,10 @@
             <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen="true" ref="sidebarDesktop"/>
             <div v-if="displayEnv" class="p-3 bg-danger text-white text-uppercase">{{ environment }}</div>
             <b-navbar-nav class="ml-auto">
-                <b-nav-item v-if="hasFeedbackForm" class="px-3" v-b-modal.modal-give-feedback><i class="fa fa-comment"></i><span class="px-2 d-none d-sm-inline-block"> Give feedback</span></b-nav-item>
+                <b-nav-item v-if="hasFeedbackForm" class="px-2" v-b-modal.modal-give-feedback><i class="fa fa-comment"></i><div class="px-2 d-none d-sm-inline-block"> Give feedback</div></b-nav-item>
                 <b-nav-text v-if="profile !== null" class="px-3 d-none d-sm-inline-block">Welcome, {{ profile.nickname }}</b-nav-text>
                 <b-nav-text v-if="profile !== null && profile.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ profile.coins }}</b-nav-text>
-                <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i><spam class="px-2 d-none d-sm-inline-block"> Logout</spam></b-nav-item>
+                <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i><div class="px-2 d-none d-sm-inline-block"> Logout</div></b-nav-item>
                 <b-nav-item v-else class="px-3" @click="login"><i class="fas fa-sign-in-alt"></i> Login</b-nav-item>
             </b-navbar-nav>
         </AppHeader>

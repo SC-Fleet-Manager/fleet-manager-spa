@@ -4,7 +4,7 @@
             <div class="position-relative placeholder-ship">
                 <div class="aspect-ratio-box" :style="stylePictureShip" />
             </div>
-            <footer class=" mx-auto mb-0 py-3 h4">
+            <footer class="mb-0 py-3 px-2 text-center footer-orga-card">
                 {{ orga.name }}
             </footer>
         </div>
@@ -19,8 +19,8 @@
         },
         computed: {
             stylePictureShip() {
-                if (this.orga.imageUrl !== null) {
-                    return `background-image: url(${this.orga.imageUrl})`
+                if (this.orga.logoUrl !== null) {
+                    return `background-image: url(${this.orga.logoUrl}); background-color:#fff`
                 }
                 return '';
             },
@@ -57,5 +57,9 @@
     line-height: 1;
     color: $gray-200;
     text-shadow: 0 0 4px rgba(30, 30, 30, 1);
+}
+
+.footer-orga-card {
+    font-size: 1.2rem;
 }
 </style>
