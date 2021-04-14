@@ -4,7 +4,7 @@
             <div class="position-relative placeholder-ship">
                 <div class="aspect-ratio-box" :style="stylePictureShip" />
             </div>
-            <footer class="mb-0 py-3 px-2 text-center footer-orga-card">
+            <footer class="mb-0 py-3 px-2 text-center border-top footer-orga-card">
                 {{ orga.name }}
             </footer>
         </div>
@@ -28,7 +28,7 @@
     }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss" >
 @import '~@styles/vendors/variables';
 @import '~@coreui/icons';
 .edit-ship {

@@ -2,15 +2,17 @@
     <div class="animated fadeIn">
         <b-card>
             <b-card-body>
-                <div class="btn-edit-ships d-flex mb-3">
-                    <b-button variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
+                <p class="h3">My fleet</p>
+                <div class="btn-edit-ships d-flex justify-content-between flex-md-row-reverse flex-wrap my-3">
+                    <b-button class=" btn-block col-md-3 col-xl-2 px-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
+                    <b-input-group class="px-0 col-md-9">
+                        <template #prepend>
+                            <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
+                        </template>
+                        <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
+                    </b-input-group>
                 </div>
-                <b-input-group class="mb-3">
-                    <template #prepend>
-                        <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
-                    </template>
-                    <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
-                </b-input-group>
+
                 <div v-if="!listOfShipsLoaded" class="d-flex justify-content-center">
                     <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
                 </div>

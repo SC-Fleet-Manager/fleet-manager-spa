@@ -39,7 +39,7 @@
             <b-form-invalid-feedback :state="stateQuantity">{{ form.quantity.violation }}</b-form-invalid-feedback>
         </b-form-group>
         <div class="d-flex align-items-center">
-            <div class="text-danger" @click="deleteShip(ship.id)">Delete</div>
+            <b-link class="text-danger" @click="deleteShip(ship.id)">Delete</b-link>
             <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
         </div>
     </b-form>
