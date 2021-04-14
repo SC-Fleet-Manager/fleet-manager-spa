@@ -102,7 +102,7 @@ export default {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.$emit('newOrga', { shouldClose: true, name: this.form.name.value, sid: this.form.sid.value, logoUrl: this.form.logoUrl.value });
+                this.$emit('newOrga', { shouldClose: true });
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');

@@ -28,6 +28,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+    import Config from '@config/config.json';
     import OrgaCard from '@/components/OrgaCard.vue';
     import CreateOrgaModal from '@/components/CreateOrgaModal';
 
@@ -58,22 +60,40 @@
             loadAuthRequests() {
                 this.loadOrgaList();
             },
-            loadOrgaList() {
-                this.notFoundOrgas = false;
-                this.errorMessage = null;
-                this.listOfOrgasLoaded = true;
+            async loadOrgaList() {
+                try {
+                    this.notFoundOrgas = false;
+                    this.errorMessage = null;
+                    const response = await axios.get(`${Config.api_base_url}/api/my-organizations`, {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.state.accessToken}`,
+                        },
+                    });
+                    this.listOfOrgas = response.data.organizations;
+                } catch (err) {
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
+                        this.$router.push({ name: 'Home' });
+                        return;
+                    }
+                    if (err.response.status == 400 && err.response.data.error === 'not_found_orga'){
+                        this.notFoundOrga = true
+                        return;
+                    }
+                    this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
+                } finally {
+                    this.listOfOrgasLoaded = true;
+                }
             },
             createOrga() {
                 this.$refs.modalCreateOrga.show();
             },
-            onNewOrga({ shouldClose, name, sid, logoUrl }) {
+            onNewOrga({ shouldClose }) {
                 this.$toastr.s('Your orga has been created!');
                 this.loadOrgaList();
                 if (shouldClose) {
                     this.$refs.modalCreateOrga.hide();
                 }
-                const newOrga = {name, sid, logoUrl}
-                this.listOfOrgas.push(newOrga)
             }
         }
     }
