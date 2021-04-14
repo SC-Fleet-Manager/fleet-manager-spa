@@ -30,7 +30,7 @@
     }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @import '~@styles/vendors/variables';
 @import '~@coreui/icons';
 

@@ -15,7 +15,7 @@
                     <b-row cols-lg="mt-3">
                         <OrgaCard v-for="orga in listOfOrgas" :key="orga.id" :orga="orga"/>
                     </b-row>
-                    <b-alert v-if="hasAnyOrga" show variant="warning">You don't have any organization yet. Why don't you create one?</b-alert>
+                    <b-alert v-if="hasAnyOrga" show variant="warning">You don't have any organization yet. Why don't you join one ?</b-alert>
                     <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
                 </div>
             </b-card-body>
@@ -44,11 +44,7 @@
             };
         },
         created() {
-            if (!this.$auth.loading) {
-                this.loadAuthRequests();
-            } else {
-                this.$auth.$on('loaded', this.loadAuthRequests);
-            }
+            this.loadOrgaList();
         },
         computed: {
             hasAnyOrga() {
@@ -56,9 +52,6 @@
             },
         },
         methods: {
-            loadAuthRequests() {
-                this.loadOrgaList();
-            },
             async loadOrgaList() {
                 try {
                     this.notFoundOrgas = false;
@@ -87,12 +80,10 @@
             createOrga() {
                 this.$refs.modalCreateOrga.show();
             },
-            onNewOrga({ shouldClose }) {
+            onNewOrga() {
                 this.$toastr.s('Your orga has been created!');
                 this.loadOrgaList();
-                if (shouldClose) {
-                    this.$refs.modalCreateOrga.hide();
-                }
+                this.$refs.modalCreateOrga.hide();
             }
         }
     }

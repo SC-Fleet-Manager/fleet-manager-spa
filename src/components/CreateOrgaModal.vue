@@ -21,7 +21,7 @@
             ></b-form-input>
             <b-form-invalid-feedback :state="stateSid">{{ form.sid.violation }}</b-form-invalid-feedback>
         </b-form-group>
-        <b-form-group class="mb-4" label="Image URL (optional)" label-for="input-orga-image" description="Url only from RSI">
+        <b-form-group class="mb-4" label="Logo URL (optional)" label-for="input-orga-image" description="URL only from RSI">
             <b-form-input
                 id="input-orga-image"
                 v-model="form.logoUrl.value"
@@ -102,7 +102,7 @@ export default {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.$emit('newOrga', { shouldClose: true });
+                this.$emit('newOrga');
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
