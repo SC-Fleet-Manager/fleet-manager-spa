@@ -3,14 +3,18 @@
         <b-card>
             <b-card-body>
                 <p class="h3">My fleet</p>
-                <div class="btn-edit-ships d-flex justify-content-between flex-md-row-reverse flex-wrap my-3">
-                    <b-button class=" btn-block col-md-3 col-xl-2 px-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
-                    <b-input-group class="px-0 col-md-9">
-                        <template #prepend>
-                            <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
-                        </template>
-                        <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
-                    </b-input-group>
+                <div class="btn-edit-ships d-flex justify-content-between flex-sm-row-reverse">
+                    <div class="mb-2 text-right">
+                        <b-button variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
+                    </div>
+                    <div class="mb-2 search-bar-wrapper">
+                        <b-input-group>
+                            <template #prepend>
+                                <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
+                            </template>
+                            <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
+                        </b-input-group>
+                    </div>
                 </div>
 
                 <div v-if="!listOfShipsLoaded" class="d-flex justify-content-center">
@@ -137,3 +141,31 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+@import '~@styles/style.scss';
+.btn-edit-ships {
+    @include media-breakpoint-down(sm) {
+        flex-direction: column;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        @include media-breakpoint-up(sm) {
+            display: inline-block;
+        }
+    }
+
+    .search-bar-wrapper {
+        max-width: 100%;
+        & .input-group {
+            width: 250px;
+            max-width: 100%;
+            @include media-breakpoint-down(sm) {
+                width: 100%
+            }
+        }
+    }
+}
+</style>
