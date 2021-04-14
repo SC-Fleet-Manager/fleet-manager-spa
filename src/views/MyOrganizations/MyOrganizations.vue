@@ -5,7 +5,7 @@
                 <div class="btn-edit-ships d-flex justify-content-between flex-wrap mb-3">
                     <p class="h3">My organizations</p>
                     <div>
-                        <b-button class="mr-2" variant="primary" role="button" @click="createOrga"><i class="fa fa-plus"></i> Create a orga</b-button>
+                        <b-button variant="primary" role="button" @click="createOrga"><i class="fa fa-plus"></i> Create a orga</b-button>
                     </div>
                 </div>
                 <div v-if="!listOfOrgasLoaded" class="d-flex justify-content-center">

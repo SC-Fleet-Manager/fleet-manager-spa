@@ -21,7 +21,7 @@
             ></b-form-input>
             <b-form-invalid-feedback :state="stateSid">{{ form.sid.violation }}</b-form-invalid-feedback>
         </b-form-group>
-        <b-form-group class="mb-4" label="Image URL" label-for="input-orga-image" description="Url only from RSI">
+        <b-form-group class="mb-4" label="Image URL (optional)" label-for="input-orga-image" description="Url only from RSI">
             <b-form-input
                 id="input-orga-image"
                 v-model="form.logoUrl.value"

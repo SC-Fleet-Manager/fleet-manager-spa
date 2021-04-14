@@ -12,7 +12,7 @@
             ></b-form-input>
             <b-form-invalid-feedback :state="stateModel">{{ form.model.violation }}</b-form-invalid-feedback>
         </b-form-group>
-        <b-form-group class="mb-4" label="Image URL" label-for="input-ship-image" description="Only from RSI or starcitizen.tools">
+        <b-form-group class="mb-4" label="Image URL (optional)" label-for="input-ship-image" description="Only from RSI or starcitizen.tools">
             <b-form-input
                 id="input-ship-image"
                 v-model="form.imageUrl.value"
