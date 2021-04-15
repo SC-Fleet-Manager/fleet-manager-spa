@@ -1,5 +1,5 @@
 <template>
-    <div class="app">
+    <div class="app" v-infinite-scroll="loadMore" :infinite-scroll-disabled="$store.state.infiniteScrollDisabled" infinite-scroll-distance="500">
         <AppHeader fixed>
             <SidebarToggler class="d-lg-none" display="md" mobile/>
             <router-link class="navbar-brand" to="/my-fleet">
@@ -69,6 +69,7 @@
     import { mapState } from 'vuex';
     import Config from '@config/config.json';
     import CreateGiveFeedbackModal from '@/components/CreateGiveFeedbackModal';
+    import bus from '@/bus';
 
     export default {
         name: 'DefaultContainer',
@@ -113,7 +114,7 @@
                     {
                         name: 'My Fleet',
                         url: `/my-fleet`,
-                        icon: 'fas fa-fighter-jet',
+                        icon: 'fas fa-space-shuttle',
                         attributes: {
                             disabled: !this.profile,
                         },
@@ -121,7 +122,7 @@
                     {
                         name: 'My Orgas',
                         url: '/my-organizations',
-                        icon: 'fas fa-space-shuttle',
+                        icon: 'fas fa-users',
                         attributes: {
                             disabled: !this.profile,
                         },
@@ -249,6 +250,9 @@
             nl2br(str) {
                 return str.replace(/(?:\r\n|\r|\n)/g, '<br />');
             },
+            loadMore() {
+                bus.$emit('infinite-scroll-load-more');
+            }
         }
     };
 </script>

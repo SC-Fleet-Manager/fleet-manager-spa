@@ -6,6 +6,7 @@ import { Auth0Plugin } from "./auth";
 import App from './App';
 import store from './store/store';
 import VueToastr from "vue-toastr";
+import infiniteScroll from 'vue-infinite-scroll';
 import {
     LayoutPlugin,
     FormPlugin,
@@ -33,7 +34,8 @@ import {
     TablePlugin,
     VBTooltipPlugin,
     ImagePlugin,
-    ListGroupPlugin
+    ListGroupPlugin,
+    BreadcrumbPlugin
 } from 'bootstrap-vue';
 
 Vue.use(Auth0Plugin, {
@@ -76,6 +78,8 @@ Vue.use(TablePlugin);
 Vue.use(VBTooltipPlugin);
 Vue.use(ImagePlugin);
 Vue.use(ListGroupPlugin);
+Vue.use(BreadcrumbPlugin);
+Vue.use(infiniteScroll);
 Vue.use(VueToastr, {
     defaultTimeout: 3000,
     defaultProgressBar: false,
