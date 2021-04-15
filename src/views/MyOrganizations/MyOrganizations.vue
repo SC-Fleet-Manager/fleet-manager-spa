@@ -2,11 +2,15 @@
     <div class="animated fadeIn">
         <b-card>
             <b-card-body>
-                <div class="btn-edit-ships d-flex justify-content-between flex-wrap mb-3">
-                    <p class="h3">My organizations</p>
-                    <div>
-                        <b-button variant="primary" role="button" @click="createOrga"><i class="fa fa-plus"></i> Create a orga</b-button>
-                    </div>
+                <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap mb-3">
+                    <b-breadcrumb style="width:100%; flex-grow:1;" :items="[
+                        {
+                            text: 'My organizations',
+                            active: true
+                        }
+                    ]"></b-breadcrumb>
+                    <b-button class="mx-2 flex-shrink-0" variant="secondary" role="button" @click="createOrga"><i class="fa fa-plus"></i> Create</b-button>
+                    <b-button to="/my-organizations/join" class="flex-shrink-0" variant="primary" role="button"><i class="fas fa-door-open"></i> Join</b-button>
                 </div>
                 <div v-if="!listOfOrgasLoaded" class="d-flex justify-content-center">
                     <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
@@ -38,7 +42,6 @@
         data() {
             return {
                 listOfOrgasLoaded: false,
-                notFoundOrgas: false,
                 errorMessage: null,
                 listOfOrgas: [],
             };
@@ -48,7 +51,7 @@
         },
         computed: {
             hasAnyOrga() {
-                return this.notFoundOrgas || this.listOfOrgas.length === 0;
+                return this.listOfOrgas.length === 0;
             },
         },
         methods: {
@@ -68,11 +71,7 @@
                         this.$router.push({ name: 'Home' });
                         return;
                     }
-                    if (err.response.status == 400 && err.response.data.error === 'not_found_orga'){
-                        this.notFoundOrga = true
-                        return;
-                    }
-                    this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
+                    this.errorMessage = 'Sorry, we are unable to retrieve your organizations. Please, try again later.';
                 } finally {
                     this.listOfOrgasLoaded = true;
                 }

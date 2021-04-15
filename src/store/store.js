@@ -10,6 +10,7 @@ export default new Vuex.Store({
         splashScreen: false,
         accessToken: null,
         profile: null,
+        infiniteScrollDisabled: false,
     },
     getters: {
         user(state) {
@@ -29,5 +30,8 @@ export default new Vuex.Store({
         accessToken(state, payload) {
             state.accessToken = payload;
         },
+        infiniteScrollDisabled(state, payload) {
+            state.infiniteScrollDisabled = payload;
+        }
     }
 });

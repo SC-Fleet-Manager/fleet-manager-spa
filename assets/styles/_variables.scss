@@ -1,5 +1,7 @@
 $primary: #1e396a;
+$secondary: lighten($primary, 20%);
 
 @import "~@coreui/coreui/scss/variables/colors";
 
 $input-color: $gray-800;
+$sidebar-nav-link-active-icon-color: lighten($primary, 35%);
