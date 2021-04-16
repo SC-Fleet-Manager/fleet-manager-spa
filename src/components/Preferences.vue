@@ -1,8 +1,9 @@
 <template>
-    <b-card header="Preferences">
+    <b-card>
+        <template #header><h5 class="m-0">Preferences</h5></template>
         <b-row>
             <b-col col class="mb-3">
-                <h5 class="mb-3">Change my nickname</h5>
+                <h6 class="mb-3">Change my nickname</h6>
                 <b-form @submit="onSubmit">
                     <b-form-group class="mb-4" description="Set empty to back to your default one.">
                         <b-input-group>

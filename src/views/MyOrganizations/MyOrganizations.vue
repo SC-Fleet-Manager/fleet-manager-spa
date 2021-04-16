@@ -2,8 +2,8 @@
     <div class="animated fadeIn">
         <b-card>
             <b-card-body>
-                <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap mb-3">
-                    <b-breadcrumb style="width:100%; flex-grow:1;" :items="[
+                <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap mb-2">
+                    <b-breadcrumb class="mr-2" style="width:100%; flex-grow:1;" :items="[
                         {
                             text: 'My organizations',
                             active: true
