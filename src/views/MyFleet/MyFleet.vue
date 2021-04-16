@@ -2,19 +2,22 @@
     <div class="animated fadeIn">
         <b-card>
             <b-card-body>
-                <p class="h3">My fleet</p>
-                <div class="btn-edit-ships d-flex justify-content-between flex-sm-row-reverse">
-                    <div class="mb-2 text-right">
-                        <b-button variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
-                    </div>
-                    <div class="mb-2 search-bar-wrapper">
-                        <b-input-group>
-                            <template #prepend>
-                                <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
-                            </template>
-                            <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
-                        </b-input-group>
-                    </div>
+                <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap mb-1">
+                    <b-breadcrumb style="flex-grow:1;" :items="[
+                        {
+                            text: 'My fleet',
+                            active: true
+                        }
+                    ]"></b-breadcrumb>
+                    <b-button class="ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
+                </div>
+                <div class="mb-3 px-0 col-12 col-md-5 col-xl-3">
+                    <b-input-group>
+                        <template #prepend>
+                            <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
+                        </template>
+                        <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
+                    </b-input-group>
                 </div>
 
                 <div v-if="!listOfShipsLoaded" class="d-flex justify-content-center">
@@ -145,26 +148,20 @@
 <style lang="scss" scoped>
 @import '~@styles/style.scss';
 .btn-edit-ships {
-    @include media-breakpoint-down(sm) {
-        flex-direction: column;
+
+    .breadcrumb {
+        @include media-breakpoint-down(sm) {
+            width: 100%;
+        }
     }
 
     button {
         display: block;
         width: 100%;
+        margin-bottom: 2%;
         @include media-breakpoint-up(sm) {
             display: inline-block;
-        }
-    }
-
-    .search-bar-wrapper {
-        max-width: 100%;
-        & .input-group {
-            width: 250px;
-            max-width: 100%;
-            @include media-breakpoint-down(sm) {
-                width: 100%
-            }
+            width: auto;
         }
     }
 }

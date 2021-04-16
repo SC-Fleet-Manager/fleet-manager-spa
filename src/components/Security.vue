@@ -1,9 +1,10 @@
 <template>
     <b-card header="Security">
+        <template #header><h5 class="m-0">Security</h5></template>
         <b-row>
             <b-col col xl="6" lg="12" class="mb-3">
-                <h5 class="mb-3">Danger section</h5>
-                <b-button size="lg" block variant="danger" v-b-modal.modal-delete-account>Delete my account and my data</b-button>
+                <h6 class="mb-3">Danger section</h6>
+                <b-button block variant="danger" v-b-modal.modal-delete-account>Delete my account and my data</b-button>
                 <b-modal id="modal-delete-account" ref="modalDeleteAccount" size="lg" centered title="Delete my account and my data" hide-footer>
                     <b-alert variant="warning" :show="true"><i class="fa fa-exclamation-triangle"></i> You are about to delete your account and all your data.
                         This can not be cancelled.<br />Are you sure you want to confirm?

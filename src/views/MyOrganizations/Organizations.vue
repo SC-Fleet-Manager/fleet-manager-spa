@@ -17,7 +17,7 @@
                         <template #prepend>
                             <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
                         </template>
-                        <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
+                        <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search an organization"></b-form-input>
                     </b-input-group>
                 </div>
                 <div v-if="!listOfOrgasLoaded" class="d-flex justify-content-center">
