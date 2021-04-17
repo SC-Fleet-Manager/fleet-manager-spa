@@ -17,7 +17,7 @@
                         <template #prepend>
                             <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
                         </template>
-                        <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search an organization"></b-form-input>
+                        <b-form-input v-model="form.search" type="search" debounce="500" :trim="true" placeholder="Search an organization"></b-form-input>
                     </b-input-group>
                 </div>
                 <div v-if="!listOfOrgasLoaded" class="d-flex justify-content-center">
@@ -61,11 +61,21 @@ export default {
             return this.listOfOrgas.length === 0;
         },
     },
+    watch: {
+       'form.search'(newValue) {
+           if (!newValue || newValue.length >= 2) {
+               this.loadOrgaList(newValue);
+           }
+       },
+    },
     methods: {
-        async loadOrgaList() {
+        async loadOrgaList(searchQuery) {
             try {
                 this.errorMessage = null;
                 const response = await axios.get(`${Config.api_base_url}/api/organizations`, {
+                    params: {
+                        search: searchQuery || null,
+                    },
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
@@ -88,6 +98,9 @@ export default {
             try {
                 this.$store.commit('infiniteScrollDisabled', true);
                 const response = await axios.get(this.nextUrl, {
+                    params: {
+                        search: this.form.search && this.form.search.length >= 2 ? this.form.search : null,
+                    },
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
