@@ -1,0 +1,32 @@
+@import '~@styles/vendors/variables';
+
+.card {
+  margin-bottom: $grid-gutter-width;
+}
+
+.placeholder-orga {
+  max-width: 100%;
+  background-image: url('~@img/static/Placeholder-org.svg');
+  background-size: cover;
+  background-position: center;
+}
+.aspect-ratio-box {
+  overflow: hidden;
+  height: 0;
+  padding-top: 100%;
+  background-size: cover;
+  background-position: center;
+}
+.footer-orga-card {
+  font-size: 1.2rem;
+}
+
+.button-join-orga {
+  position: relative;
+  i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+  }
+}

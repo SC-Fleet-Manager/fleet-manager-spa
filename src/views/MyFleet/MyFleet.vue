@@ -2,16 +2,16 @@
     <div class="animated fadeIn">
         <b-card>
             <b-card-body>
-                <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap mb-1">
+                <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap">
                     <b-breadcrumb style="flex-grow:1;" :items="[
                         {
                             text: 'My fleet',
                             active: true
                         }
                     ]"></b-breadcrumb>
-                    <b-button class="ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
+                    <b-button class="mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
                 </div>
-                <div class="mb-3 px-0 col-12 col-md-5 col-xl-3">
+                <div class="mb-4 px-0 col-12 col-md-5 col-xl-3">
                     <b-input-group>
                         <template #prepend>
                             <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
