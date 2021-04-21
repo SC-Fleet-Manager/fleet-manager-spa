@@ -9,15 +9,15 @@
                             active: true
                         }
                     ]"></b-breadcrumb>
-                    <b-button class="mx-2 flex-shrink-0" variant="secondary" role="button" @click="createOrga"><i class="fa fa-plus"></i> Create</b-button>
-                    <b-button to="/my-organizations/join" class="flex-shrink-0" variant="primary" role="button"><i class="fas fa-door-open"></i> Join</b-button>
+                    <b-button class="mx-2 flex-shrink-0" variant="outline-primary" role="button" @click="createOrga"><i class="fa fa-plus mr-2"></i>Create</b-button>
+                    <b-button to="/my-organizations/join" class="flex-shrink-0" variant="primary" role="button"><i class="fas fa-door-open mr-2"></i>Join</b-button>
                 </div>
                 <div v-if="!listOfOrgasLoaded" class="d-flex justify-content-center">
                     <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
                 </div>
                 <div v-else>
                     <b-row cols-lg="mt-3">
-                        <OrgaCard v-for="orga in listOfOrgas" :key="orga.id" :orga="orga"/>
+                        <MyOrgaCard v-for="orga in $store.state.myOrgasList" :key="orga.id" @unJoin="onUnJoin"  :orga="orga"/>
                     </b-row>
                     <b-alert v-if="hasAnyOrga" show variant="warning">You don't have any organization yet. Why don't you join one ?</b-alert>
                     <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
@@ -33,17 +33,16 @@
 <script>
     import axios from 'axios';
     import Config from '@config/config.json';
-    import OrgaCard from '@/components/OrgaCard.vue';
+    import MyOrgaCard from '@/components/MyOrgaCard.vue';
     import CreateOrgaModal from '@/components/CreateOrgaModal';
 
     export default {
         name: 'my-orga',
-        components: {CreateOrgaModal, OrgaCard},
+        components: {CreateOrgaModal, MyOrgaCard},
         data() {
             return {
                 listOfOrgasLoaded: false,
                 errorMessage: null,
-                listOfOrgas: [],
             };
         },
         created() {
@@ -51,20 +50,19 @@
         },
         computed: {
             hasAnyOrga() {
-                return this.listOfOrgas.length === 0;
+                return this.$store.state.myOrgasList.length === 0;
             },
         },
         methods: {
             async loadOrgaList() {
                 try {
-                    this.notFoundOrgas = false;
                     this.errorMessage = null;
                     const response = await axios.get(`${Config.api_base_url}/api/my-organizations`, {
                         headers: {
                             Authorization: `Bearer ${this.$store.state.accessToken}`,
                         },
                     });
-                    this.listOfOrgas = response.data.organizations;
+                    this.$store.commit('myOrgasList', response.data.organizations);
                 } catch (err) {
                     if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                         this.$toastr.e('You have been disconnected. Please login again.');
@@ -83,7 +81,11 @@
                 this.$toastr.s('Your orga has been created!');
                 this.loadOrgaList();
                 this.$refs.modalCreateOrga.hide();
-            }
+            },
+            onUnJoin() {
+                this.$toastr.s('You have unjoin the organization!');
+                this.loadOrgaList();
+            },
         }
     }
 </script>

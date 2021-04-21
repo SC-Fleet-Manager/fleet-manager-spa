@@ -120,7 +120,7 @@
                         },
                     },
                     {
-                        name: 'My Orgas',
+                        name: 'My Organizations',
                         url: '/my-organizations',
                         icon: 'fas fa-users',
                         attributes: {
