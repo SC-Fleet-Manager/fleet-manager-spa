@@ -86,11 +86,15 @@
             return {
                 patchNotes: [],
                 versionCommitHash: null,
-            }
+            };
         },
         created() {
+            bus.$on('updateMyOrganizations', this.loadOrgaList);
             this.loadNewPatchNoteIfNew();
             this.loadVersionCommitHash();
+            if (this.$store.state.myOrgasList === null) {
+                this.loadOrgaList();
+            }
         },
         computed: {
             ...mapState(['accessToken', 'profile']),
@@ -110,6 +114,23 @@
             },
             nav() {
                 const nav = [];
+                const myOrgasItems = [];
+                if (this.$store.state.myOrgasList !== null) {
+                    for (const orga of this.$store.state.myOrgasList) {
+                        if (!orga.joined) {
+                            continue;
+                        }
+                        myOrgasItems.push({
+                            name: orga.name,
+                            url: `/my-organizations/${orga.sid}`,
+                            icon: ' ',
+                            class: 'orga-item-menu',
+                            attributes: {
+                                style: 'background-image: url('+orga.logoUrl+');'
+                            },
+                        });
+                    }
+                }
                 nav.push(
                     {
                         name: 'My Fleet',
@@ -120,17 +141,19 @@
                         },
                     },
                     {
-                        name: 'My Organizations',
+                        name: 'My organizations',
                         url: '/my-organizations',
                         icon: 'fas fa-users',
                         attributes: {
                             disabled: !this.profile,
                         },
                     },
+                    ...myOrgasItems,
                     {
                         name: "Profile",
                         url: '/profile',
                         icon: 'fas fa-user',
+                        class: 'mt-auto',
                         attributes: {
                             disabled: !this.profile,
                         },
@@ -247,12 +270,31 @@
                     this.$toastr.e('Sorry, an unexpected error has occurred when requesting the last patch notes. Please try again later.');
                 }
             },
+            async loadOrgaList() {
+                try {
+                    const response = await axios.get(`${Config.api_base_url}/api/my-organizations`, {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.state.accessToken}`,
+                        },
+                    });
+                    this.$store.commit('myOrgasList', response.data.organizations);
+                } catch (err) {
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
+                        this.$router.push({ name: 'Home' });
+                        return;
+                    }
+                    this.$toastr.e('Sorry, we are unable to retrieve your organizations. Please, try again later.');
+                } finally {
+                    this.listOfOrgasLoaded = true;
+                }
+            },
             nl2br(str) {
                 return str.replace(/(?:\r\n|\r|\n)/g, '<br />');
             },
             loadMore() {
                 bus.$emit('infinite-scroll-load-more');
-            }
+            },
         }
     };
 </script>
