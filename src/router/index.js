@@ -9,6 +9,8 @@ const DefaultContainer = () => import('@/views/DefaultContainer');
 const MyFleet = () => import('@/views/MyFleet/MyFleet');
 const MyOrganizations = () => import('@/views/MyOrganizations/MyOrganizations');
 const Organizations = () => import('@/views/MyOrganizations/Organizations');
+const Organization = () => import('@/views/MyOrganizations/Organization');
+const ManageOrganization = () => import('@/views/MyOrganizations/ManageOrganization');
 const Profile = () => import('@/views/Profile/Profile');
 const PrivacyPolicy = () => import('@/views/Pages/PrivacyPolicy');
 const Page404 = () => import('@/views/Pages/Page404');
@@ -58,7 +60,31 @@ const router = new Router({
                             meta: {
                                 requireAuth: true,
                             }
-                        }
+                        },
+                        {
+                            path: ':sid',
+                            component: {
+                                render: (c) => c('router-view'),
+                            },
+                            children: [
+                                {
+                                    path: '',
+                                    name: 'Organization',
+                                    component: Organization,
+                                    meta: {
+                                        requireAuth: true,
+                                    },
+                                },
+                                {
+                                    path: 'manage',
+                                    name: 'Manage',
+                                    component: ManageOrganization,
+                                    meta: {
+                                        requireAuth: true,
+                                    },
+                                },
+                            ]
+                        },
                     ],
                 },
                 {

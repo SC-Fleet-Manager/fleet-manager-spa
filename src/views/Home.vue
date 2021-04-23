@@ -340,6 +340,9 @@ export default {
 
         window.addEventListener('scroll', this.onScroll);
     },
+    destroyed() {
+        window.removeEventListener('scroll', this.onScroll);
+    },
     mounted() {
         this.onScroll();
     },

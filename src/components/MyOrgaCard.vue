@@ -1,13 +1,10 @@
 <template>
     <b-col sm="6" md="4" lg="3" xl="2">
         <div class="card">
-            <div class="mb-0 py-2 px-2 text-center border-bottom footer-orga-card">
-                {{ orga.name }}
-            </div>
-            <div class="position-relative placeholder-orga">
-                <div class="aspect-ratio-box" :style="stylePictureShip" />
-            </div>
-            <b-button v-if="!orga.joined" @click="onUnJoin" class="button-join-orga" block variant="warning" size="lg" style="border-top-left-radius: 0; border-top-right-radius: 0;"><i class="fas fa-times"></i>Cancel</b-button>
+            <router-link v-if="orga.joined" :to="'/my-organizations/'+orga.sid" style="text-decoration: none;">
+                <MyOrgaCardInner :orga="orga" :unjoin="unjoin" />
+            </router-link>
+            <MyOrgaCardInner v-else :orga="orga" :unjoin="unjoin" />
         </div>
     </b-col>
 </template>
@@ -15,24 +12,18 @@
 <script>
     import axios from "axios";
     import Config from '@config/config.json';
+    import MyOrgaCardInner from '@/components/MyOrgaCardInner.vue';
 
     export default {
         name: 'MyOrgaCard',
         props: ['orga'],
+        components: {MyOrgaCardInner},
         data() {
             return {
             };
         },
-        computed: {
-            stylePictureShip() {
-                if (this.orga.logoUrl !== null) {
-                    return `background-image: url(${this.orga.logoUrl}); background-color:#fff`
-                }
-                return '';
-            },
-        },
         methods: {
-            async onUnJoin() {
+            async unjoin() {
                 try {
                     await axios.post(`${Config.api_base_url}/api/organizations/${this.orga.id}/unjoin`, {}, {
                         headers: {

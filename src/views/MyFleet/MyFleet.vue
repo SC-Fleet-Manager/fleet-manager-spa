@@ -1,36 +1,34 @@
 <template>
     <div class="animated fadeIn">
         <b-card>
-            <b-card-body>
-                <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap">
-                    <b-breadcrumb style="flex-grow:1;" :items="[
-                        {
-                            text: 'My fleet',
-                            active: true
-                        }
-                    ]"></b-breadcrumb>
-                    <b-button class="mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
-                </div>
-                <div class="mb-4 px-0 col-12 col-md-5 col-xl-3">
-                    <b-input-group>
-                        <template #prepend>
-                            <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
-                        </template>
-                        <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
-                    </b-input-group>
-                </div>
+            <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap">
+                <b-breadcrumb style="flex-grow:1;" :items="[
+                    {
+                        text: 'My fleet',
+                        active: true
+                    }
+                ]"></b-breadcrumb>
+                <b-button class="mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
+            </div>
+            <div class="mb-4 px-0 col-12 col-md-5 col-xl-3">
+                <b-input-group>
+                    <template #prepend>
+                        <b-input-group-text style="background-color: white;"><i class="fa fa-search"></i></b-input-group-text>
+                    </template>
+                    <b-form-input v-model="form.search" type="search" debounce="100" :trim="true" placeholder="Search a ship"></b-form-input>
+                </b-input-group>
+            </div>
 
-                <div v-if="!listOfShipsLoaded" class="d-flex justify-content-center">
-                    <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
-                </div>
-                <div v-else>
-                    <b-row cols-lg="mt-3">
-                        <ShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship" @edit="onEditShip" />
-                    </b-row>
-                    <b-alert v-if="hasAnyShip" show variant="warning">You don't have any ships yet. Why don't you create one?</b-alert>
-                    <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
-                </div>
-            </b-card-body>
+            <div v-if="!listOfShipsLoaded" class="d-flex justify-content-center">
+                <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
+            </div>
+            <div v-else>
+                <b-row cols-lg="mt-3">
+                    <ShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship" @edit="onEditShip" />
+                </b-row>
+                <b-alert v-if="hasAnyShip" show variant="warning">You don't have any ships yet. Why don't you create one?</b-alert>
+                <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
+            </div>
         </b-card>
         <b-modal id="modal-edit-ship" ref="modalEditShip" size="lg" centered title="Edit ship" hide-footer>
             <EditShipModal :ship="editingShip" @updateShip="onUpdateShip" @deleteShip="onDeleteShip"></EditShipModal>

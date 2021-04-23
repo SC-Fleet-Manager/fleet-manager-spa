@@ -54,7 +54,7 @@
                             Authorization: `Bearer ${this.$store.state.accessToken}`,
                         },
                     });
-                    this.$emit('unJoin', this.orga);
+                    this.$emit('unjoin', this.orga);
                 } catch (err) {
                     if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                         this.$toastr.e('You have been disconnected. Please login again.');
