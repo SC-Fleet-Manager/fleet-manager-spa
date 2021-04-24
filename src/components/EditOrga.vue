@@ -1,42 +1,45 @@
 <template>
-    <b-form @submit="onSubmit">
-        <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
-        <b-form-group class="mb-4" label="Name *" label-for="input-orga-name">
-            <b-form-input
-                id="input-orga-name"
-                v-model="form.name.value"
-                type="text"
-                :state="stateName"
-                required
-            ></b-form-input>
-            <b-form-invalid-feedback :state="stateName">{{ form.name.violation }}</b-form-invalid-feedback>
-        </b-form-group>
-        <b-form-group class="mb-4" label="Sid *" label-for="input-orga-name">
-            <b-form-input
-                id="input-orga-sid"
-                v-model="form.sid.value"
-                type="text"
-                :state="stateSid"
-                required
-            ></b-form-input>
-            <b-form-invalid-feedback :state="stateSid">{{ form.sid.violation }}</b-form-invalid-feedback>
-        </b-form-group>
-        <b-form-group class="mb-4" label="Logo URL (optional)" label-for="input-orga-image" description="URL only from RSI">
-            <b-form-input
-                id="input-orga-image"
-                v-model="form.logoUrl.value"
-                debounce="500"
-                type="url"
-                placeholder="https://robertsspaceindustries.com/rsi/static/images/organization/defaults/logo/generic.jpg"
-                :state="statelogoUrl"
-            ></b-form-input>
-            <b-form-invalid-feedback :state="statelogoUrl">{{ form.logoUrl.violation }}</b-form-invalid-feedback>
-        </b-form-group>
-        <div v-if="form.logoUrl.value" class="mb-3">
-            <b-img :src="form.logoUrl.value" fluid alt=""></b-img>
-        </div>
-        <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
-    </b-form>
+    <b-card class="col-md-6">
+        <h3>Edit organization</h3>
+        <b-form @submit="onSubmit">
+            <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
+            <b-form-group class="mb-4" label="Name *" label-for="input-orga-name">
+                <b-form-input
+                    id="input-orga-name"
+                    v-model="form.name.value"
+                    type="text"
+                    :state="stateName"
+                    required
+                ></b-form-input>
+                <b-form-invalid-feedback :state="stateName">{{ form.name.violation }}</b-form-invalid-feedback>
+            </b-form-group>
+            <b-form-group class="mb-4" label="Sid *" label-for="input-orga-name">
+                <b-form-input
+                    id="input-orga-sid"
+                    v-model="form.sid.value"
+                    type="text"
+                    :state="stateSid"
+                    required
+                ></b-form-input>
+                <b-form-invalid-feedback :state="stateSid">{{ form.sid.violation }}</b-form-invalid-feedback>
+            </b-form-group>
+            <b-form-group class="mb-4" label="Logo URL (optional)" label-for="input-orga-image" description="URL only from RSI">
+                <b-form-input
+                    id="input-orga-image"
+                    v-model="form.logoUrl.value"
+                    debounce="500"
+                    type="url"
+                    placeholder="https://robertsspaceindustries.com/rsi/static/images/organization/defaults/logo/generic.jpg"
+                    :state="statelogoUrl"
+                ></b-form-input>
+                <b-form-invalid-feedback :state="statelogoUrl">{{ form.logoUrl.violation }}</b-form-invalid-feedback>
+            </b-form-group>
+            <div v-if="form.logoUrl.value" class="mb-3">
+                <b-img :src="form.logoUrl.value" fluid alt=""></b-img>
+            </div>
+            <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
+        </b-form>
+    </b-card>
 </template>
 
 <script>

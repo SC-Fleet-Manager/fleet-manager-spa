@@ -154,7 +154,6 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                console.error(err);
                 this.$toastr.e('Sorry, we are unable to delete your ship for the moment. Please, try again later.');
             }
         },

@@ -17,40 +17,17 @@
                     },
                 ]"></b-breadcrumb>
             </div>
-
-            <div v-if="!listOfMembersLoaded" class="d-flex justify-content-center">
+            <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
+            <div v-if="!listOfCandidatesLoaded" class="d-flex justify-content-center">
                 <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
             </div>
             <div v-else>
-                <b-row cols-lg="mt-3">
-                    <b-card class="col-md-5">
-                        <h3>Members</h3>
-                        <b-list-group>
-                            <b-list-group-item v-for="joined in listOfJoined" :key="joined.id" class="d-flex justify-content-between">
-                                {{ joined}}
-                                <span class="remove-member" @click="removeMember"><i class="fas fa-times"></i></span>
-                            </b-list-group-item>
-                        </b-list-group>
-                    </b-card>
-                    <b-card class="col-md-5">
-                        <h3>Edit orgnization</h3>
-                        <EditOrga :orga="orga"/>
-                    </b-card>
-                    <b-card class="col-md-5">
-                        <h3>Candidate list</h3>
-                        <b-list-group>
-                            <b-list-group-item v-for="member in listOfMembers" :key="member.id" class="d-flex justify-content-between">
-                                {{ member }}
-                                <div>
-                                    <span class="accept-member mr-2" @click="acceptMember"><i class="fas fa-check"></i></span>
-                                    <span class="remove-member" @click="declinedMember"><i class="fas fa-times"></i></span>
-                                </div>
-                            </b-list-group-item>
-                        </b-list-group>
-                    </b-card>
-                </b-row>
+                <div class="d-flex flex-column-reverse flex-md-row flex-wrap">
+                    <ManageMembers :listOfMembers="listOfMembers" :onKickMember="onKickMember"/>
+                    <EditOrga :orga="orga"/>
+                    <ManageCandidates :listOfCandidates="listOfCandidates" @onAcceptCandidate="onAcceptCandidate" @onDeclineCandidate="onDeclineCandidate"/>
+                </div>
                 <h4 class="text-danger" @click="disbandOrga">Disband organization</h4>
-                <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
             </div>
         </b-card>
     </div>
@@ -61,54 +38,67 @@ import axios from 'axios';
 import Config from '@config/config.json';
 import EditOrga from '@/components/EditOrga';
 import exported from 'locale-index-of';
+import ManageMembers from "@/components/ManageMembers";
+import ManageCandidates from "@/components/ManageCandidates";
 const localeIndexOf = exported(Intl);
 
 export default {
     name: 'ManageOrganization',
-    components: {EditOrga},
+    components: {ManageCandidates, ManageMembers, EditOrga},
     data() {
         return {
+            //TODO: Search member
             form: {
                 search: null,
             },
             errorMessage: null,
-            listOfMembersLoaded: true,
-            listOfJoinedLoaded: true,
-            listOfJoined: ['Ioni', 'Vyrtualsynthese', 'Compote','Ioni', 'Vyrtualsynthese', 'Compote','Ioni', 'Vyrtualsynthese', 'Compote','Ioni', 'Vyrtualsynthese', 'Compote'],
-            listOfMembers: ['toto', 'titi'],
-            orga: ''
+            listOfCandidatesLoaded: false,
+            listOfMembersLoaded: false,
+            listOfMembers: [],
+            listOfCandidates: [],
+            orga: null,
         };
     },
-    created() {
-        // this.loadListOfJoined();
-        // this.loadListOfMember();
-    },
-    computed: {
-
+    async created() {
+        if (this.$store.state.myOrgasList === null) {
+            await this.loadOrgaList();
+        } else {
+            this.listOfOrgasLoaded = true;
+        }
+        this.loadCurrentOrganization();
+        // this.loadListOfMembers();
+        this.loadListOfCandidates();
     },
     methods: {
-        async loadListOfJoined(){
+        async loadOrgaList() {
             try {
                 this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orga.id}`, {
+                const response = await axios.get(`${Config.api_base_url}/api/my-organizations`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.listOfJoined = response.data.organizations;
+                this.$store.commit('myOrgasList', response.data.organizations);
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                this.errorMessage = 'Sorry, we are unable to retrieve your organizations. Please, try again later.';
+                this.errorMessage = 'Sorry, we are unable to retrieve this organization. Please, try again later.';
             } finally {
-                this.listOfJoinedLoaded = true;
+                this.listOfOrgasLoaded = true;
             }
-
         },
-        async loadListOfMember(){
+        loadCurrentOrganization() {
+            for (const orga of this.$store.state.myOrgasList) {
+                if (orga.sid.toLowerCase() === this.$route.params.sid.toLowerCase()) {
+                    this.orga = orga;
+                    break;
+                }
+            }
+        },
+        async loadListOfMembers(){
             try {
                 this.errorMessage = null;
                 const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orga.id}`, {
@@ -116,7 +106,7 @@ export default {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.listOfMembers = response.data.organizations;
+                this.listOfMember = response.data.organization;
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
@@ -128,14 +118,37 @@ export default {
                 this.listOfMembersLoaded = true;
             }
         },
-        removeMember(){
-            console.log('remove');
+        async loadListOfCandidates(){
+            try {
+                this.errorMessage = null;
+                const response = await axios.get(`${Config.api_base_url}/api/organizations/manage/${this.orga.id}/candidates`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                this.listOfCandidates = response.data.candidates;
+            } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
+                this.errorMessage = 'Sorry, we are unable to retrieve your organizations. Please, try again later.';
+            } finally {
+                this.listOfCandidatesLoaded = true;
+            }
         },
-        acceptMember(){
-            console.log('accepte')
+        onAcceptCandidate(){
+            this.$toastr.s('Candidate accepted.');
+            this.loadListOfCandidates();
         },
-        declinedMember() {
-            console.log('declined');
+        onDeclineCandidate(){
+            this.$toastr.s('Candidate declined');
+            this.loadListOfCandidates();
+        },
+        onKickMember(){
+            this.$toastr.s('Member kicked');
+            this.loadListOfMembers();
         },
         disbandOrga(){
             console.log('disband')
@@ -147,13 +160,4 @@ export default {
 <style lang="scss" scoped>
 @import '~@styles/style.scss';
 
-.remove-member, .accept-member {
-    cursor: pointer;
-}
-.accept-member{
-    color: $success;
-}
-.remove-member{
-    color: $danger;
-}
 </style>

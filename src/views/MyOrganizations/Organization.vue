@@ -16,7 +16,7 @@
                     <template #button-content>
                         <span class="navbar-toggler-icon"></span>
                     </template>
-                    <b-dropdown-item disabled v-if="isFounder" :to="'/my-organizations/'+orga.sid+'/manage'">
+                    <b-dropdown-item v-if="isFounder" :to="'/my-organizations/'+orga.sid+'/manage'">
                         <i class="fa fa-cogs text-primary"></i> Manage organization
                     </b-dropdown-item>
                     <b-dropdown-item v-else @click="leaveOrga">
@@ -24,7 +24,7 @@
                     </b-dropdown-item>
                 </b-dropdown>
                 <template v-if="orga !== null">
-                    <b-button disabled v-if="isFounder" class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="primary" role="button" :to="'/my-organizations/'+orga.sid+'/manage'"><i class="fa fa-cogs"></i> Manage organization</b-button>
+                    <b-button v-if="isFounder" class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="primary" role="button" :to="'/my-organizations/'+orga.sid+'/manage'"><i class="fa fa-cogs"></i> Manage organization</b-button>
                     <b-button v-else class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="ouline-danger" role="button" @click="leaveOrga"><i class="fas fa-door-closed"></i> Leave organization</b-button>
                 </template>
             </div>
