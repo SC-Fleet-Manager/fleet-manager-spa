@@ -8,7 +8,7 @@
                         to: { name: 'My organizations' },
                     },
                     {
-                        text: `Organization ${orga !== null ? orga.name : $route.params.sid}`,
+                        text: orga !== null ? orga.name : $route.params.sid,
                         to: { path: `/my-organizations/${$route.params.sid}` },
                     },
                     {
