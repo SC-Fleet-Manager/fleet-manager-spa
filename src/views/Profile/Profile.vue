@@ -19,7 +19,6 @@ import Config from '@config/config.json';
 import Preferences from '@/components/Preferences';
 import Security from '@/components/Security';
 import store from '@/store/store';
-import Vue from 'vue';
 
 export default {
     name: 'profile',
