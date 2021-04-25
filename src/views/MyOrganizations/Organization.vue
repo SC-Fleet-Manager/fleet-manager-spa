@@ -19,14 +19,21 @@
                     <b-dropdown-item v-if="isFounder" :to="'/my-organizations/'+orga.sid+'/manage'">
                         <i class="fa fa-cogs text-primary"></i> Manage organization
                     </b-dropdown-item>
-                    <b-dropdown-item v-else @click="leaveOrga">
+                    <b-dropdown-item v-else v-b-modal.modal-leave-orga>
                         <i class="fas fa-door-closed text-danger"></i> Leave organization
                     </b-dropdown-item>
                 </b-dropdown>
                 <template v-if="orga !== null">
                     <b-button v-if="isFounder" class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="primary" role="button" :to="'/my-organizations/'+orga.sid+'/manage'"><i class="fa fa-cogs"></i> Manage organization</b-button>
-                    <b-button v-else class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="ouline-danger" role="button" @click="leaveOrga"><i class="fas fa-door-closed"></i> Leave organization</b-button>
+                    <b-button v-b-modal.modal-leave-orga v-else class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="ouline-danger" role="button"><i class="fas fa-door-closed"></i> Leave organization</b-button>
                 </template>
+                <b-modal id="modal-leave-orga" ref="modalLeaveOrga" size="lg" centered title="Leave organization" hide-footer>
+                    <b-alert variant="warning" :show="true"><i class="fa fa-exclamation-triangle"></i> You are about to leave the organization.
+                        <br />Are you sure you want to confirm?
+                    </b-alert>
+                    <b-alert v-if="leaveOrgaErrorMessage !== null" variant="danger" show v-html="leaveOrgaErrorMessage"></b-alert>
+                    <b-button v-else size="lg" block variant="danger" @click="leaveOrga">Leave organization</b-button>
+                </b-modal>
             </div>
             <h3 class="mb-3"><b-img v-if="orga !== null && orga.logoUrl !== null" class="orga-logo-img mr-2" :src="orga.logoUrl"/>{{orga !== null ? orga.name : $route.params.sid}}</h3>
             <div class="mb-4 px-0 col-12 col-md-5 col-xl-3">
@@ -72,6 +79,7 @@ export default {
             listOfOrgasLoaded: false,
             listOfShipsLoaded: false,
             listOfShips: [],
+            leaveOrgaErrorMessage: null,
         };
     },
     async created() {
@@ -155,8 +163,29 @@ export default {
                 this.listOfShipsLoaded = true;
             }
         },
-        leaveOrga() {
-
+        async leaveOrga() {
+            try {
+                this.leaveOrgaErrorMessage = null;
+                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orga.id}/leave`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                this.$toastr.s('You are leave the organization');
+                this.$router.push({ name: 'My-organizations' });
+                return;
+            } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
+                if (err.response.status === 400){
+                    this.errorMessage = err.response.data.errorMessage;
+                    return;
+                }
+                this.leaveOrgaErrorMessage = 'Sorry, you are unable to leave this organization for the moment.';
+            }
         },
         isFounder() {
             return this.$store.state.profile.id === this.orga.founderId;
