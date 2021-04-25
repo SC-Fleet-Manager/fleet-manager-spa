@@ -1,11 +1,11 @@
 <template>
-    <b-card class="col-md-6">
+    <b-card class="col-md-6" style="border: none">
         <h3>Members</h3>
         <p v-if="listOfMembers.length == 0">No members</p>
-        <b-list-group v-else>
+        <b-list-group v-else style="height: 400px; overflow: auto;">
             <b-list-group-item v-for="member in listOfMembers" :key="member.id" class="d-flex justify-content-between">
                 {{ member.nickname }}
-                <span class="remove-member" @click="onKickMember(member.id)"><i class="fas fa-times"></i></span>
+                <span class="remove-member"><i class="fas fa-times"></i></span>
             </b-list-group-item>
         </b-list-group>
     </b-card>
@@ -19,7 +19,7 @@ export default {
     name: "ManageMembers",
     props: ['listOfMembers', 'orga'],
     methods: {
-        async onKickMember(memberId) {
+        async KickMember(memberId) {
             try {
                 await axios.post(`${Config.api_base_url}/api/organizations/manage/${this.orga.id}/kick-member/${memberId}`, {}, {
                     headers: {
@@ -40,8 +40,11 @@ export default {
 }
 </script>
 
-<style scoped>
-    .remove-member {
-        cursor: pointer;
-    }
+<style lang="scss"  scoped>
+@import '~@styles/style.scss';
+.remove-member {
+    color: $danger;
+    cursor: pointer;
+}
+
 </style>

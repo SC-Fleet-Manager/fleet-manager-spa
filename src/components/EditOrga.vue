@@ -1,5 +1,5 @@
 <template>
-    <b-card class="col-md-6">
+    <b-card class="col-md-6" style="border: none">
         <h3>Edit organization</h3>
         <b-form @submit="onSubmit">
             <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
@@ -12,16 +12,6 @@
                     required
                 ></b-form-input>
                 <b-form-invalid-feedback :state="stateName">{{ form.name.violation }}</b-form-invalid-feedback>
-            </b-form-group>
-            <b-form-group class="mb-4" label="Sid *" label-for="input-orga-name">
-                <b-form-input
-                    id="input-orga-sid"
-                    v-model="form.sid.value"
-                    type="text"
-                    :state="stateSid"
-                    required
-                ></b-form-input>
-                <b-form-invalid-feedback :state="stateSid">{{ form.sid.violation }}</b-form-invalid-feedback>
             </b-form-group>
             <b-form-group class="mb-4" label="Logo URL (optional)" label-for="input-orga-image" description="URL only from RSI">
                 <b-form-input
@@ -45,6 +35,7 @@
 <script>
 import axios from 'axios';
 import Config from '@config/config.json';
+import bus from '@/bus';
 
 export default {
     name: 'EditOrga',
@@ -63,9 +54,6 @@ export default {
         stateName() {
             return this.form.name.violation !== null ? false : null;
         },
-        stateSid() {
-            return this.form.sid.violation !== null ? false : null;
-        },
         statelogoUrl() {
             return this.form.logoUrl.violation !== null ? false : null;
         }
@@ -74,15 +62,11 @@ export default {
         resetForm() {
             this.form = {
                 name: {
-                    value: null,
-                    violation: null,
-                },
-                sid: {
-                    value: null,
+                    value: this.orga.name,
                     violation: null,
                 },
                 logoUrl: {
-                    value: null,
+                    value: this.orga.logoUrl,
                     violation: null,
                 },
             };
@@ -93,18 +77,16 @@ export default {
                 this.submitDisabled = true;
                 this.globalViolation = null;
                 this.form.name.violation = null;
-                this.form.sid.violation = null;
                 this.form.logoUrl.violation = null;
-                await axios.post(`${Config.api_base_url}/api/organizations/`, {
+                await axios.post(`${Config.api_base_url}/api/organizations/${this.orga.id}/update`, {
                     name: this.form.name.value,
-                    sid: this.form.sid.value,
                     logoUrl: this.form.logoUrl.value || null
                 }, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.$emit('modificationOrga');
+                bus.$emit('updateMyOrganizations');
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
@@ -125,9 +107,6 @@ export default {
                         break;
                     case 'name':
                         this.form.name.violation = violation.title;
-                        break;
-                    case 'sid':
-                        this.form.sid.violation = violation.title;
                         break;
                     case 'logoUrl':
                         this.form.logoUrl.violation = violation.title;

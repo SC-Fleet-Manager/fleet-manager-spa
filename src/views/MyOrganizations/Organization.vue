@@ -16,7 +16,7 @@
                     <template #button-content>
                         <span class="navbar-toggler-icon"></span>
                     </template>
-                    <b-dropdown-item v-if="isFounder" :to="'/my-organizations/'+orga.sid+'/manage'">
+                    <b-dropdown-item v-if="orga.founder" :to="'/my-organizations/'+orga.sid+'/manage'">
                         <i class="fa fa-cogs text-primary"></i> Manage organization
                     </b-dropdown-item>
                     <b-dropdown-item v-else v-b-modal.modal-leave-orga>
@@ -24,8 +24,8 @@
                     </b-dropdown-item>
                 </b-dropdown>
                 <template v-if="orga !== null">
-                    <b-button v-if="isFounder" class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="primary" role="button" :to="'/my-organizations/'+orga.sid+'/manage'"><i class="fa fa-cogs"></i> Manage organization</b-button>
-                    <b-button v-b-modal.modal-leave-orga v-else class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="ouline-danger" role="button"><i class="fas fa-door-closed"></i> Leave organization</b-button>
+                    <b-button v-if="orga.founder" class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="primary" role="button" :to="'/my-organizations/'+orga.sid+'/manage'"><i class="fa fa-cogs"></i> Manage organization</b-button>
+                    <b-button v-else v-b-modal.modal-leave-orga class="btn-action-orga mb-3 ml-2 flex-shrink-0" variant="outline-danger" role="button"><i class="fas fa-door-closed"></i> Leave organization</b-button>
                 </template>
                 <b-modal id="modal-leave-orga" ref="modalLeaveOrga" size="lg" centered title="Leave organization" hide-footer>
                     <b-alert variant="warning" :show="true"><i class="fa fa-exclamation-triangle"></i> You are about to leave the organization.
@@ -66,6 +66,7 @@ import OrgaShipCard from '@/components/OrgaShipCard.vue';
 import exported from 'locale-index-of';
 import {mapState} from "vuex";
 const localeIndexOf = exported(Intl);
+import bus from '@/bus';
 
 export default {
     name: 'organization',
@@ -75,11 +76,11 @@ export default {
             form: {
                 search: null,
             },
+            orgaId: null,
             orga: null,
             errorMessage: null,
             listOfOrgasLoaded: false,
             listOfShipsLoaded: false,
-            listOfShips: [],
             leaveOrgaErrorMessage: null,
         };
     },
@@ -88,17 +89,23 @@ export default {
         next();
         this.loadCurrentOrganization();
     },
+    created() {
+        if (this.myOrgasList !== null) {
+            this.listOfOrgasLoaded = true;
+            this.loadCurrentOrganization();
+        }
+    },
     computed: {
         ...mapState(['myOrgasList']),
         hasNoShips() {
-            return this.listOfShips.length === 0;
+            return this.orga.fleet.ships.length === 0;
         },
         filteredlistOfShips() {
             if (!this.form.search) {
-                return this.listOfShips;
+                return this.orga.fleet.ships;
             }
 
-            return this.listOfShips.filter((ship) => {
+            return this.orga.fleet.ships.filter((ship) => {
                 return -1 !== localeIndexOf(ship.model, this.form.search, 'en', { sensitivity: 'base', ignorePunctuation: true });
             });
         },
@@ -113,21 +120,21 @@ export default {
         loadCurrentOrganization() {
             for (const orga of this.$store.state.myOrgasList) {
                 if (orga.sid.toLowerCase() === this.$route.params.sid.toLowerCase()) {
-                    this.orga = orga;
+                    this.orgaId = orga.id;
                     break;
                 }
             }
-            this.loadShipList();
+            this.loadOrganization();
         },
-        async loadShipList() {
+        async loadOrganization() {
             try {
                 this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orga.id}`, {
+                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orgaId}`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.listOfShips = response.data.fleet.ships;
+                this.orga = response.data;
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
@@ -146,14 +153,14 @@ export default {
         async leaveOrga() {
             try {
                 this.leaveOrgaErrorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orga.id}/leave`, {
+                await axios.post(`${Config.api_base_url}/api/organizations/${this.orgaId}/leave`, {}, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.$toastr.s('You are leave the organization');
-                this.$router.push({ name: 'My-organizations' });
-                return;
+                bus.$emit('updateMyOrganizations');
+                this.$toastr.s('You have left the organization');
+                this.$router.push({ name: 'My organizations' });
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
@@ -166,9 +173,6 @@ export default {
                 }
                 this.leaveOrgaErrorMessage = 'Sorry, you are unable to leave this organization for the moment.';
             }
-        },
-        isFounder() {
-            return this.$store.state.profile.id === this.orga.founderId;
         },
     }
 }

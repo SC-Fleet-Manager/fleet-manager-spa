@@ -23,11 +23,11 @@
             </div>
             <div v-else>
                 <div class="d-flex flex-column-reverse flex-md-row flex-wrap">
-                    <ManageMembers :listOfMembers="listOfMembers" :orga="orga" :onKickMember="onKickMember"/>
+                    <ManageMembers :listOfMembers="listOfMembers" :orga="orga" :onKickMember="onKickMember" @onKickMember="onKickMember"/>
                     <EditOrga :orga="orga"/>
                     <ManageCandidates :listOfCandidates="listOfCandidates" :orga="orga" @onAcceptCandidate="onAcceptCandidate" @onDeclineCandidate="onDeclineCandidate"/>
                 </div>
-                <h4 class="text-danger" @click="disbandOrga">Disband organization</h4>
+                <h5 class="text-danger" @click="disbandOrga">Disband organization</h5>
             </div>
         </b-card>
     </div>
@@ -40,6 +40,7 @@ import EditOrga from '@/components/EditOrga';
 import exported from 'locale-index-of';
 import ManageMembers from "@/components/ManageMembers";
 import ManageCandidates from "@/components/ManageCandidates";
+import {mapState} from "vuex";
 const localeIndexOf = exported(Intl);
 
 export default {
@@ -59,37 +60,22 @@ export default {
             orga: null,
         };
     },
-    async created() {
-        if (this.$store.state.myOrgasList === null) {
-            await this.loadOrgaList();
-        } else {
+    created() {
+        if (this.myOrgasList !== null) {
             this.listOfOrgasLoaded = true;
+            this.loadCurrentOrganization();
         }
-        this.loadCurrentOrganization();
-        this.loadListOfMembers();
-        this.loadListOfCandidates();
+    },
+    computed: {
+        ...mapState(['myOrgasList']),
+    },
+    watch: {
+        myOrgasList() {
+            this.listOfOrgasLoaded = true;
+            this.loadCurrentOrganization();
+        },
     },
     methods: {
-        async loadOrgaList() {
-            try {
-                this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/my-organizations`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.state.accessToken}`,
-                    },
-                });
-                this.$store.commit('myOrgasList', response.data.organizations);
-            } catch (err) {
-                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-                    this.$toastr.e('You have been disconnected. Please login again.');
-                    this.$router.push({ name: 'Home' });
-                    return;
-                }
-                this.errorMessage = 'Sorry, we are unable to retrieve this organization. Please, try again later.';
-            } finally {
-                this.listOfOrgasLoaded = true;
-            }
-        },
         loadCurrentOrganization() {
             for (const orga of this.$store.state.myOrgasList) {
                 if (orga.sid.toLowerCase() === this.$route.params.sid.toLowerCase()) {
@@ -97,6 +83,8 @@ export default {
                     break;
                 }
             }
+            this.loadListOfMembers();
+            this.loadListOfCandidates();
         },
         async loadListOfMembers(){
             try {
@@ -141,6 +129,7 @@ export default {
         onAcceptCandidate(){
             this.$toastr.s('Candidate accepted.');
             this.loadListOfCandidates();
+            this.loadListOfMembers();
         },
         onDeclineCandidate(){
             this.$toastr.s('Candidate declined');

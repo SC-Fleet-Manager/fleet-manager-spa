@@ -1,8 +1,8 @@
 <template>
-    <b-card class="col-md-6">
+    <b-card class="col-md-6" style="border: none">
         <h3>Candidate list</h3>
         <p v-if="listOfCandidates.length == 0">No candidates</p>
-        <b-list-group v-else>
+        <b-list-group v-else style="height: 400px; overflow: auto;">
             <b-list-group-item v-for="candidate in listOfCandidates" :key="candidate.id" class="d-flex justify-content-between">
                 {{ candidate.nickname }}
                 <div>
