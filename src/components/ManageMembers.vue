@@ -4,7 +4,10 @@
         <p v-if="listOfMembers.length == 0">No members</p>
         <b-list-group v-else style="height: 400px; overflow: auto;">
             <b-list-group-item v-for="member in listOfMembers" :key="member.id" class="d-flex justify-content-between">
-                {{ member.nickname }}
+                {{ member.handle }}
+                <template v-if="member.nickname !== null">
+                    aka {{ member.nickname}}
+                </template>
                 <span @click="kick(member.id)" class="remove-member"><i class="fas fa-times"></i></span>
             </b-list-group-item>
         </b-list-group>
@@ -13,7 +16,7 @@
                 <br />Are you sure you want to confirm?
             </b-alert>
             <b-alert v-if="kickMemberErrorMessage !== null" variant="danger" show v-html="kickMemberErrorMessage"></b-alert>
-            <b-button v-else size="lg" block variant="danger" @click="kickMember(kickMemberId)">Leave organization</b-button>
+            <b-button v-else size="lg" block variant="danger" @click="kickMember(kickMemberId)">Kick member</b-button>
         </b-modal>
     </b-card>
 </template>
