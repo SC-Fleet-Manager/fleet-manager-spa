@@ -5,11 +5,11 @@
                 <b-breadcrumb class="mb-3" style="flex-grow:1;" :items="[
                     {
                         text: 'My organizations',
-                        to: {name: 'My organizations'},
+                        to: { name: 'My organizations' },
                     },
                     {
                         text: `Organization ${orga !== null ? orga.name : $route.params.sid}`,
-                        to: {name: `My organizations/${orga !== null ? orga.name : $route.params.sid}`},
+                        to: { path: `/my-organizations/${$route.params.sid}` },
                     },
                     {
                         text: `Manage`,
