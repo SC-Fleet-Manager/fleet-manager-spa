@@ -16,9 +16,11 @@
 
 <script>
 import axios from "axios";
+import Config from '@config/config.json';
 
 export default {
     name: "ManageCandidates.vue",
+    props: ['listOfCandidates', 'orga'],
     methods: {
         async acceptCandidate(candidateId){
             try {
@@ -51,7 +53,7 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                this.$toastr.e('Sorry, we are unable to delete your ship for the moment. Please, try again later.');
+                this.$toastr.e('Sorry, we are unable to decline candidate for the moment. Please, try again later.');
             }
         },
     }

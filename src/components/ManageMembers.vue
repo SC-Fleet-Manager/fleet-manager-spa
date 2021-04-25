@@ -4,7 +4,7 @@
         <p v-if="listOfMembers.length == 0">No members</p>
         <b-list-group v-else>
             <b-list-group-item v-for="member in listOfMembers" :key="member.id" class="d-flex justify-content-between">
-                {{ member }}
+                {{ member.nickname }}
                 <span class="remove-member" @click="onKickMember(member.id)"><i class="fas fa-times"></i></span>
             </b-list-group-item>
         </b-list-group>
@@ -13,10 +13,11 @@
 
 <script>
 import axios from "axios";
+import Config from '@config/config.json';
 
 export default {
     name: "ManageMembers",
-    props: ['listOfMembers'],
+    props: ['listOfMembers', 'orga'],
     methods: {
         async onKickMember(memberId) {
             try {
@@ -32,7 +33,7 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                this.$toastr.e('Sorry, we are unable to accept candidate for the moment. Please, try again later.');
+                this.$toastr.e('Sorry, we are unable to kick this member for the moment. Please, try again later.');
             }
         },
     }
@@ -40,5 +41,7 @@ export default {
 </script>
 
 <style scoped>
-
+    .remove-member {
+        cursor: pointer;
+    }
 </style>

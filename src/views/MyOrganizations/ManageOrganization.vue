@@ -23,9 +23,9 @@
             </div>
             <div v-else>
                 <div class="d-flex flex-column-reverse flex-md-row flex-wrap">
-                    <ManageMembers :listOfMembers="listOfMembers" :onKickMember="onKickMember"/>
+                    <ManageMembers :listOfMembers="listOfMembers" :orga="orga" :onKickMember="onKickMember"/>
                     <EditOrga :orga="orga"/>
-                    <ManageCandidates :listOfCandidates="listOfCandidates" @onAcceptCandidate="onAcceptCandidate" @onDeclineCandidate="onDeclineCandidate"/>
+                    <ManageCandidates :listOfCandidates="listOfCandidates" :orga="orga" @onAcceptCandidate="onAcceptCandidate" @onDeclineCandidate="onDeclineCandidate"/>
                 </div>
                 <h4 class="text-danger" @click="disbandOrga">Disband organization</h4>
             </div>
@@ -66,7 +66,7 @@ export default {
             this.listOfOrgasLoaded = true;
         }
         this.loadCurrentOrganization();
-        // this.loadListOfMembers();
+        this.loadListOfMembers();
         this.loadListOfCandidates();
     },
     methods: {
@@ -101,12 +101,12 @@ export default {
         async loadListOfMembers(){
             try {
                 this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orga.id}`, {
+                const response = await axios.get(`${Config.api_base_url}/api/organizations/manage/${this.orga.id}/members`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.listOfMember = response.data.organization;
+                this.listOfMembers = response.data.members;
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
