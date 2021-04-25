@@ -64,6 +64,7 @@ import axios from 'axios';
 import Config from '@config/config.json';
 import OrgaShipCard from '@/components/OrgaShipCard.vue';
 import exported from 'locale-index-of';
+import {mapState} from "vuex";
 const localeIndexOf = exported(Intl);
 
 export default {
@@ -82,20 +83,13 @@ export default {
             leaveOrgaErrorMessage: null,
         };
     },
-    async created() {
-        if (this.$store.state.myOrgasList === null) {
-            await this.loadOrgaList();
-        } else {
-            this.listOfOrgasLoaded = true;
-        }
-        this.loadCurrentOrganization();
-    },
     beforeRouteUpdate(to, from, next) {
         // if we go from /my-organizations/ABC to /my-organizations/DEF
         next();
         this.loadCurrentOrganization();
     },
     computed: {
+        ...mapState(['myOrgasList']),
         hasNoShips() {
             return this.listOfShips.length === 0;
         },
@@ -109,6 +103,12 @@ export default {
             });
         },
     },
+    watch: {
+        myOrgasList() {
+            this.listOfOrgasLoaded = true;
+            this.loadCurrentOrganization();
+        },
+    },
     methods: {
         loadCurrentOrganization() {
             for (const orga of this.$store.state.myOrgasList) {
@@ -118,26 +118,6 @@ export default {
                 }
             }
             this.loadShipList();
-        },
-        async loadOrgaList() {
-            try {
-                this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/my-organizations`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.state.accessToken}`,
-                    },
-                });
-                this.$store.commit('myOrgasList', response.data.organizations);
-            } catch (err) {
-                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-                    this.$toastr.e('You have been disconnected. Please login again.');
-                    this.$router.push({ name: 'Home' });
-                    return;
-                }
-                this.errorMessage = 'Sorry, we are unable to retrieve this organization. Please, try again later.';
-            } finally {
-                this.listOfOrgasLoaded = true;
-            }
         },
         async loadShipList() {
             try {
