@@ -51,8 +51,6 @@ import Config from '@config/config.json';
 
 export default {
     name: 'CreateShipModal',
-    components: {},
-    props: [],
     data() {
         return {
             form: null,

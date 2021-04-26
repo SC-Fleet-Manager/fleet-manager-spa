@@ -248,6 +248,12 @@ router.beforeEach((to, from, next) => {
             const token = await Vue.prototype.$auth.getTokenSilently();
             store.commit('accessToken', token);
         }
+
+        if (store.state.profile) {
+            next();
+            return;
+        }
+
         try {
             const response = await axios.get(`${Config.api_base_url}/api/profile`, {
                 headers: {

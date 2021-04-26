@@ -5,11 +5,11 @@
                 <b-breadcrumb class="mb-3" style="flex-grow:1;" :items="[
                     {
                         text: 'My organizations',
-                        to: {name: 'My organizations'},
+                        to: { name: 'My organizations' },
                     },
                     {
-                        text: `Organization ${orga !== null ? orga.name : $route.params.sid}`,
-                        to: {name: `My organizations/${orga !== null ? orga.name : $route.params.sid}`},
+                        text: orga !== null ? orga.name : $route.params.sid,
+                        to: { path: `/my-organizations/${$route.params.sid}` },
                     },
                     {
                         text: `Manage`,
@@ -17,40 +17,35 @@
                     },
                 ]"></b-breadcrumb>
             </div>
+            <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
 
-            <div v-if="!listOfMembersLoaded" class="d-flex justify-content-center">
-                <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
-            </div>
             <div v-else>
-                <b-row cols-lg="mt-3">
-                    <b-card class="col-md-5">
-                        <h3>Members</h3>
-                        <b-list-group>
-                            <b-list-group-item v-for="joined in listOfJoined" :key="joined.id" class="d-flex justify-content-between">
-                                {{ joined}}
-                                <span class="remove-member" @click="removeMember"><i class="fas fa-times"></i></span>
-                            </b-list-group-item>
-                        </b-list-group>
-                    </b-card>
-                    <b-card class="col-md-5">
-                        <h3>Edit orgnization</h3>
-                        <EditOrga :orga="orga"/>
-                    </b-card>
-                    <b-card class="col-md-5">
-                        <h3>Candidate list</h3>
-                        <b-list-group>
-                            <b-list-group-item v-for="member in listOfMembers" :key="member.id" class="d-flex justify-content-between">
-                                {{ member }}
-                                <div>
-                                    <span class="accept-member mr-2" @click="acceptMember"><i class="fas fa-check"></i></span>
-                                    <span class="remove-member" @click="declinedMember"><i class="fas fa-times"></i></span>
-                                </div>
-                            </b-list-group-item>
-                        </b-list-group>
-                    </b-card>
+                <b-row v-if="orga !== null">
+                    <b-col md="6" class="mb-4">
+                        <ManageMembers :orga="orga" />
+                    </b-col>
+                    <b-col md="6" class="mb-4">
+                        <EditOrga :orga="orga" />
+                    </b-col>
+                    <b-col md="6" class="mb-4">
+                        <ManageCandidates :orga="orga" />
+                    </b-col>
                 </b-row>
-                <h4 class="text-danger" @click="disbandOrga">Disband organization</h4>
-                <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
+                <b-row>
+                    <b-col col lg="6" xl="3" class="mb-4">
+                        <h3 class="mb-3">Danger section</h3>
+                        <b-button block variant="danger" v-b-modal.modal-disband-organization>Disband organization</b-button>
+                        <b-modal id="modal-disband-organization" ref="modalDisbandOrganization" size="lg" centered title="Disband organization" hide-footer>
+                            <b-alert variant="warning" :show="true"><i class="fa fa-exclamation-triangle"></i> You are about to disband your organization.<br/>
+                                <strong>All the data</strong> related to the organization <strong>will be deleted</strong>.<br/>
+                                Personal ships of members will <strong>not</strong> be deleted.<br/>
+                                Are you sure you want to confirm?
+                            </b-alert>
+                            <b-alert v-if="disbandErrorMessage !== null" variant="danger" show v-html="disbandErrorMessage"></b-alert>
+                            <b-button v-else size="lg" block variant="danger" @click="disbandOrga">Disband organization</b-button>
+                        </b-modal>
+                    </b-col>
+                </b-row>
             </div>
         </b-card>
     </div>
@@ -61,99 +56,82 @@ import axios from 'axios';
 import Config from '@config/config.json';
 import EditOrga from '@/components/EditOrga';
 import exported from 'locale-index-of';
+import ManageMembers from "@/components/ManageMembers";
+import ManageCandidates from "@/components/ManageCandidates";
+import {mapState} from "vuex";
 const localeIndexOf = exported(Intl);
+import bus from '@/bus';
 
 export default {
     name: 'ManageOrganization',
-    components: {EditOrga},
+    components: {ManageCandidates, ManageMembers, EditOrga},
     data() {
         return {
+            //TODO: Search member
             form: {
                 search: null,
             },
             errorMessage: null,
-            listOfMembersLoaded: true,
-            listOfJoinedLoaded: true,
-            listOfJoined: ['Ioni', 'Vyrtualsynthese', 'Compote','Ioni', 'Vyrtualsynthese', 'Compote','Ioni', 'Vyrtualsynthese', 'Compote','Ioni', 'Vyrtualsynthese', 'Compote'],
-            listOfMembers: ['toto', 'titi'],
-            orga: ''
+            orga: null,
+            disbandErrorMessage: null,
         };
     },
     created() {
-        // this.loadListOfJoined();
-        // this.loadListOfMember();
+        if (this.myOrgasList !== null) {
+            this.listOfOrgasLoaded = true;
+            this.loadCurrentOrganization();
+        }
     },
     computed: {
-
+        ...mapState(['myOrgasList']),
+    },
+    watch: {
+        myOrgasList() {
+            this.listOfOrgasLoaded = true;
+            this.loadCurrentOrganization();
+        },
     },
     methods: {
-        async loadListOfJoined(){
+        loadCurrentOrganization() {
+            for (const orga of this.$store.state.myOrgasList) {
+                if (orga.sid.toLowerCase() === this.$route.params.sid.toLowerCase()) {
+                    this.orga = orga;
+                    break;
+                }
+            }
+            if (this.orga === null) {
+                this.$toastr.e('Sorry, you are not a member of this organization.');
+                this.$router.push({ name: 'My organizations' });
+                return;
+            }
+        },
+        async disbandOrga() {
             try {
-                this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orga.id}`, {
+                await axios.post(`${Config.api_base_url}/api/organizations/manage/${this.orga.id}/disband`, {}, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.listOfJoined = response.data.organizations;
+                this.$toastr.s('Organization disband');
+                this.$router.push({ name: 'My organizations' });
+                bus.$emit('updateMyOrganizations');
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                this.errorMessage = 'Sorry, we are unable to retrieve your organizations. Please, try again later.';
-            } finally {
-                this.listOfJoinedLoaded = true;
-            }
-
-        },
-        async loadListOfMember(){
-            try {
-                this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orga.id}`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.state.accessToken}`,
-                    },
-                });
-                this.listOfMembers = response.data.organizations;
-            } catch (err) {
-                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-                    this.$toastr.e('You have been disconnected. Please login again.');
-                    this.$router.push({ name: 'Home' });
+                if (err.response && err.response.data.error) {
+                    this.disbandErrorMessage = err.response.data.errorMessage;
                     return;
                 }
-                this.errorMessage = 'Sorry, we are unable to retrieve your organizations. Please, try again later.';
-            } finally {
-                this.listOfMembersLoaded = true;
+                console.log(err);
+                this.$toastr.e('Sorry, we are unable to decline candidate for the moment. Please, try again later.');
             }
         },
-        removeMember(){
-            console.log('remove');
-        },
-        acceptMember(){
-            console.log('accepte')
-        },
-        declinedMember() {
-            console.log('declined');
-        },
-        disbandOrga(){
-            console.log('disband')
+        disband() {
+            this.$refs.modalDisbandOrganization.show();
         }
     }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '~@styles/style.scss';
-
-.remove-member, .accept-member {
-    cursor: pointer;
-}
-.accept-member{
-    color: $success;
-}
-.remove-member{
-    color: $danger;
-}
-</style>

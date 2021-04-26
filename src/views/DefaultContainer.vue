@@ -46,6 +46,7 @@
         <b-modal id="modal-patch-notes" ref="modalPatchNotes" size="lg" centered scrollable title="What's new?" hide-footer @show="onShowPatchNotes">
             <div v-for="patchNote in patchNotes" :key="patchNote.id">
                 <h5>{{ patchNote.title }}</h5>
+                <p class="small">{{ formatPatchNoteDate(patchNote.createdAt) }}</p>
                 <p v-html="nl2br(patchNote.body)"></p>
                 <p v-if="patchNote.link"><a :href="patchNote.link" target="_blank">{{ patchNote.link }}</a></p>
             </div>
@@ -69,6 +70,7 @@
     import { mapState } from 'vuex';
     import Config from '@config/config.json';
     import CreateGiveFeedbackModal from '@/components/CreateGiveFeedbackModal';
+    import moment from 'moment-timezone';
     import bus from '@/bus';
 
     export default {
@@ -177,6 +179,9 @@
                 this.$auth.logout({
                     returnTo: window.location.origin
                 });
+            },
+            formatPatchNoteDate(date) {
+                return moment(date).format('LLL');
             },
             async giveFeedback() {
                 if (!this.accessToken) {
