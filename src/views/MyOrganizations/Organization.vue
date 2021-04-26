@@ -135,6 +135,9 @@ export default {
                     },
                 });
                 this.orga = response.data;
+                this.orga.fleet.ships.sort((ship1, ship2) => {
+                    return ship2.quantity - ship1.quantity;
+                });
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');

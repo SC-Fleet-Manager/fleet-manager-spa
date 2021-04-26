@@ -1,17 +1,19 @@
 <template>
-    <div>
+    <div style="position: relative;">
         <h3>Members</h3>
         <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
-        <b-alert v-if="listOfMembers.length === 0" show variant="warning">No members</b-alert>
         <div v-if="!listOfMembersLoaded" class="d-flex justify-content-center">
             <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
         </div>
-        <b-list-group v-else style="height: 400px; overflow: auto;">
-            <b-list-group-item v-for="member in listOfMembers" :key="member.id" class="d-flex justify-content-between">
-                <span><i v-if="isFounder(member)" class="fas fa-crown text-warning"></i> {{ fullName(member) }}</span>
-                <span v-if="!isFounder(member)" @click="kick(member)" class="remove-member"><i class="fas fa-times"></i></span>
-            </b-list-group-item>
-        </b-list-group>
+        <template v-else>
+            <b-alert v-if="listOfMembers.length === 0" show variant="warning">No members</b-alert>
+            <b-list-group v-else style="height: 400px; overflow: auto;">
+                <b-list-group-item v-for="member in listOfMembers" :key="member.id" class="d-flex justify-content-between">
+                    <span><i v-if="isFounder(member)" class="fas fa-crown text-warning"></i> {{ fullName(member) }}</span>
+                    <span v-if="!isFounder(member)" title="Kick" @click="kick(member)" class="remove-member"><i class="fas fa-times"></i></span>
+                </b-list-group-item>
+            </b-list-group>
+        </template>
         <b-modal id="modal-kick-member" ref="modalKickMember" size="lg" centered :title="'Kick member ' + (kickingMember ? fullName(kickingMember) : '')" hide-footer>
             <template v-if="kickingMember !== null">
                 <b-alert variant="warning" :show="true">
@@ -43,6 +45,7 @@ export default {
         }
     },
     created() {
+        bus.$on('acceptCandidate', this.onAcceptCandidate);
         this.loadListOfMembers();
     },
     methods: {
@@ -67,6 +70,11 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
+                if (err.response && err.response.data.error) {
+                    this.errorMessage = err.response.data.errorMessage;
+                    return;
+                }
+                console.error(err);
                 this.errorMessage = 'Sorry, we are unable to retrieve your organizations. Please, try again later.';
             } finally {
                 this.listOfMembersLoaded = true;
@@ -80,10 +88,7 @@ export default {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
-                this.loadListOfMembers();
-                this.$toastr.s('Member kicked');
-                this.$refs.modalKickMember.hide();
-                bus.$emit('kickedMember', member);
+                this.onKickMember(member);
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
@@ -94,12 +99,21 @@ export default {
                     this.kickMemberErrorMessage = err.response.data.errorMessage;
                     return;
                 }
+                console.error(err);
                 this.kickMemberErrorMessage = 'Sorry, we are unable to kick this member for the moment. Please, try again later.';
             }
         },
         kick(member) {
             this.kickingMember = member;
             this.$refs.modalKickMember.show();
+        },
+        onKickMember() {
+            this.loadListOfMembers();
+            this.$toastr.s('Member kicked');
+            this.$refs.modalKickMember.hide();
+        },
+        onAcceptCandidate() {
+            this.loadListOfMembers();
         },
     }
 }

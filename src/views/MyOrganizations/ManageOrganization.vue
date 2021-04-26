@@ -18,29 +18,34 @@
                 ]"></b-breadcrumb>
             </div>
             <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
-            <div v-if="!listOfCandidatesLoaded" class="d-flex justify-content-center">
-                <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
-            </div>
+
             <div v-else>
-                <b-row class="">
-                    <b-col md="6" class="mb-3">
+                <b-row v-if="orga !== null">
+                    <b-col md="6" class="mb-4">
                         <ManageMembers :orga="orga" />
                     </b-col>
-                    <b-col md="6" class="mb-3">
-                        <EditOrga :orga="orga"/>
+                    <b-col md="6" class="mb-4">
+                        <EditOrga :orga="orga" />
                     </b-col>
-                    <b-col md="6" class="mb-3">
-                        <ManageCandidates :listOfCandidates="listOfCandidates" :orga="orga" @onAcceptCandidate="onAcceptCandidate" @onDeclineCandidate="onDeclineCandidate"/>
+                    <b-col md="6" class="mb-4">
+                        <ManageCandidates :orga="orga" />
                     </b-col>
                 </b-row>
-                <h5 class="disband-button" @click="disband">Disband organization</h5>
-                <b-modal id="modal-disband-organization" ref="modalDisbandOrganization" size="lg" centered title="Disband organization" hide-footer>
-                    <b-alert variant="warning" :show="true"><i class="fa fa-exclamation-triangle"></i> You are about to disband your organization.
-                        <br />Are you sure you want to confirm?
-                    </b-alert>
-                    <b-alert v-if="disbandOrgnaizationErrorMessage !== null" variant="danger" show v-html="disbandOrgnaizationErrorMessage"></b-alert>
-                    <b-button v-else size="lg" block variant="danger" @click="disbandOrga">Disband organization</b-button>
-                </b-modal>
+                <b-row>
+                    <b-col col lg="6" xl="3" class="mb-4">
+                        <h3 class="mb-3">Danger section</h3>
+                        <b-button block variant="danger" v-b-modal.modal-disband-organization>Disband organization</b-button>
+                        <b-modal id="modal-disband-organization" ref="modalDisbandOrganization" size="lg" centered title="Disband organization" hide-footer>
+                            <b-alert variant="warning" :show="true"><i class="fa fa-exclamation-triangle"></i> You are about to disband your organization.<br/>
+                                <strong>All the data</strong> related to the organization <strong>will be deleted</strong>.<br/>
+                                Personal ships of members will <strong>not</strong> be deleted.<br/>
+                                Are you sure you want to confirm?
+                            </b-alert>
+                            <b-alert v-if="disbandErrorMessage !== null" variant="danger" show v-html="disbandErrorMessage"></b-alert>
+                            <b-button v-else size="lg" block variant="danger" @click="disbandOrga">Disband organization</b-button>
+                        </b-modal>
+                    </b-col>
+                </b-row>
             </div>
         </b-card>
     </div>
@@ -67,10 +72,8 @@ export default {
                 search: null,
             },
             errorMessage: null,
-            listOfCandidatesLoaded: false,
-            listOfCandidates: [],
             orga: null,
-            disbandOrgnaizationErrorMessage: null,
+            disbandErrorMessage: null,
         };
     },
     created() {
@@ -101,37 +104,8 @@ export default {
                 this.$router.push({ name: 'My organizations' });
                 return;
             }
-            this.loadListOfCandidates();
         },
-        async loadListOfCandidates(){
-            try {
-                this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/organizations/manage/${this.orga.id}/candidates`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.state.accessToken}`,
-                    },
-                });
-                this.listOfCandidates = response.data.candidates;
-            } catch (err) {
-                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-                    this.$toastr.e('You have been disconnected. Please login again.');
-                    this.$router.push({ name: 'Home' });
-                    return;
-                }
-                this.errorMessage = 'Sorry, we are unable to retrieve your organizations. Please, try again later.';
-            } finally {
-                this.listOfCandidatesLoaded = true;
-            }
-        },
-        onAcceptCandidate(){
-            this.$toastr.s('Candidate accepted.');
-            this.loadListOfCandidates();
-        },
-        onDeclineCandidate(){
-            this.$toastr.s('Candidate declined');
-            this.loadListOfCandidates();
-        },
-        async disbandOrga(){
+        async disbandOrga() {
             try {
                 await axios.post(`${Config.api_base_url}/api/organizations/manage/${this.orga.id}/disband`, {}, {
                     headers: {
@@ -147,22 +121,17 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
+                if (err.response && err.response.data.error) {
+                    this.disbandErrorMessage = err.response.data.errorMessage;
+                    return;
+                }
+                console.log(err);
                 this.$toastr.e('Sorry, we are unable to decline candidate for the moment. Please, try again later.');
             }
         },
-        disband(){
+        disband() {
             this.$refs.modalDisbandOrganization.show();
         }
     }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '~@styles/style.scss';
-
-.disband-button {
-    cursor: pointer;
-    color: $danger;
-}
-
-</style>

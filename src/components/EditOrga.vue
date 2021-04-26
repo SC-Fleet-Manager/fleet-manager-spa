@@ -1,7 +1,10 @@
 <template>
     <div>
-        <h3>Edit organization</h3>
         <b-form @submit="onSubmit">
+            <div class="d-flex justify-content-between">
+                <h3>Edit organization</h3>
+                <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
+            </div>
             <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
             <b-form-group class="mb-4" label="Name *" label-for="input-orga-name">
                 <b-form-input
@@ -27,7 +30,6 @@
             <div v-if="form.logoUrl.value" class="mb-3">
                 <b-img :src="form.logoUrl.value" fluid alt=""></b-img>
             </div>
-            <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
         </b-form>
     </div>
 </template>
@@ -79,13 +81,14 @@ export default {
                 this.form.name.violation = null;
                 this.form.logoUrl.violation = null;
                 await axios.post(`${Config.api_base_url}/api/organizations/${this.orga.id}/update`, {
-                    name: this.form.name.value,
+                    name: this.form.name.value || null,
                     logoUrl: this.form.logoUrl.value || null
                 }, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
+                this.$toastr.s('Your organization has been updated!');
                 bus.$emit('updateMyOrganizations');
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
