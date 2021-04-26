@@ -1,5 +1,5 @@
 <template>
-    <b-card class="col-md-6" style="border: none">
+    <div>
         <h3>Edit organization</h3>
         <b-form @submit="onSubmit">
             <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
@@ -29,7 +29,7 @@
             </div>
             <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Save</b-button>
         </b-form>
-    </b-card>
+    </div>
 </template>
 
 <script>

@@ -22,11 +22,17 @@
                 <b-spinner label="Loading..." style="width: 3rem; height: 3rem;"></b-spinner>
             </div>
             <div v-else>
-                <div class="d-flex flex-column-reverse flex-md-row flex-wrap">
-                    <ManageMembers :listOfMembers="listOfMembers" :orga="orga" :onKickMember="onKickMember" @onKickMember="onKickMember"/>
-                    <EditOrga :orga="orga"/>
-                    <ManageCandidates :listOfCandidates="listOfCandidates" :orga="orga" @onAcceptCandidate="onAcceptCandidate" @onDeclineCandidate="onDeclineCandidate"/>
-                </div>
+                <b-row class="">
+                    <b-col md="6" class="mb-3">
+                        <ManageMembers :orga="orga" />
+                    </b-col>
+                    <b-col md="6" class="mb-3">
+                        <EditOrga :orga="orga"/>
+                    </b-col>
+                    <b-col md="6" class="mb-3">
+                        <ManageCandidates :listOfCandidates="listOfCandidates" :orga="orga" @onAcceptCandidate="onAcceptCandidate" @onDeclineCandidate="onDeclineCandidate"/>
+                    </b-col>
+                </b-row>
                 <h5 class="disband-button" @click="disband">Disband organization</h5>
                 <b-modal id="modal-disband-organization" ref="modalDisbandOrganization" size="lg" centered title="Disband organization" hide-footer>
                     <b-alert variant="warning" :show="true"><i class="fa fa-exclamation-triangle"></i> You are about to disband your organization.
@@ -62,8 +68,6 @@ export default {
             },
             errorMessage: null,
             listOfCandidatesLoaded: false,
-            listOfMembersLoaded: false,
-            listOfMembers: [],
             listOfCandidates: [],
             orga: null,
             disbandOrgnaizationErrorMessage: null,
@@ -92,28 +96,12 @@ export default {
                     break;
                 }
             }
-            this.loadListOfMembers();
-            this.loadListOfCandidates();
-        },
-        async loadListOfMembers(){
-            try {
-                this.errorMessage = null;
-                const response = await axios.get(`${Config.api_base_url}/api/organizations/manage/${this.orga.id}/members`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.state.accessToken}`,
-                    },
-                });
-                this.listOfMembers = response.data.members;
-            } catch (err) {
-                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-                    this.$toastr.e('You have been disconnected. Please login again.');
-                    this.$router.push({ name: 'Home' });
-                    return;
-                }
-                this.errorMessage = 'Sorry, we are unable to retrieve your organizations. Please, try again later.';
-            } finally {
-                this.listOfMembersLoaded = true;
+            if (this.orga === null) {
+                this.$toastr.e('Sorry, you are not a member of this organization.');
+                this.$router.push({ name: 'My organizations' });
+                return;
             }
+            this.loadListOfCandidates();
         },
         async loadListOfCandidates(){
             try {
@@ -138,15 +126,10 @@ export default {
         onAcceptCandidate(){
             this.$toastr.s('Candidate accepted.');
             this.loadListOfCandidates();
-            this.loadListOfMembers();
         },
         onDeclineCandidate(){
             this.$toastr.s('Candidate declined');
             this.loadListOfCandidates();
-        },
-        onKickMember(){
-            this.$toastr.s('Member kicked');
-            this.loadListOfMembers();
         },
         async disbandOrga(){
             try {

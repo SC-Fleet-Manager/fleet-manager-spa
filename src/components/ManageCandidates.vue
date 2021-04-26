@@ -1,5 +1,5 @@
 <template>
-    <b-card class="col-md-6" style="border: none">
+    <div>
         <h3>Candidate list</h3>
         <p v-if="listOfCandidates.length == 0">No candidates</p>
         <b-list-group v-else style="height: 400px; overflow: auto;">
@@ -28,7 +28,7 @@
             <b-alert v-if="declineCandidateErrorMessage !== null" variant="danger" show v-html="declineCandidateErrorMessage"></b-alert>
             <b-button v-else size="lg" block variant="danger" @click="declineCandidate(declineCandidateId)">Decline candidate</b-button>
         </b-modal>
-    </b-card>
+    </div>
 </template>
 
 <script>
