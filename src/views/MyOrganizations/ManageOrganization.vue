@@ -27,7 +27,14 @@
                     <EditOrga :orga="orga"/>
                     <ManageCandidates :listOfCandidates="listOfCandidates" :orga="orga" @onAcceptCandidate="onAcceptCandidate" @onDeclineCandidate="onDeclineCandidate"/>
                 </div>
-                <h5 class="text-danger" @click="disbandOrga">Disband organization</h5>
+                <h5 class="disband-button" @click="disband">Disband organization</h5>
+                <b-modal id="modal-disband-organization" ref="modalDisbandOrganization" size="lg" centered title="Disband organization" hide-footer>
+                    <b-alert variant="warning" :show="true"><i class="fa fa-exclamation-triangle"></i> You are about to disband your organization.
+                        <br />Are you sure you want to confirm?
+                    </b-alert>
+                    <b-alert v-if="disbandOrgnaizationErrorMessage !== null" variant="danger" show v-html="disbandOrgnaizationErrorMessage"></b-alert>
+                    <b-button v-else size="lg" block variant="danger" @click="disbandOrga">Disband organization</b-button>
+                </b-modal>
             </div>
         </b-card>
     </div>
@@ -42,6 +49,7 @@ import ManageMembers from "@/components/ManageMembers";
 import ManageCandidates from "@/components/ManageCandidates";
 import {mapState} from "vuex";
 const localeIndexOf = exported(Intl);
+import bus from '@/bus';
 
 export default {
     name: 'ManageOrganization',
@@ -58,6 +66,7 @@ export default {
             listOfMembers: [],
             listOfCandidates: [],
             orga: null,
+            disbandOrgnaizationErrorMessage: null,
         };
     },
     created() {
@@ -139,8 +148,27 @@ export default {
             this.$toastr.s('Member kicked');
             this.loadListOfMembers();
         },
-        disbandOrga(){
-            console.log('disband')
+        async disbandOrga(){
+            try {
+                await axios.post(`${Config.api_base_url}/api/organizations/manage/${this.orga.id}/disband`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                this.$toastr.s('Organization disband');
+                this.$router.push({ name: 'My organizations' });
+                bus.$emit('updateMyOrganizations');
+            } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
+                this.$toastr.e('Sorry, we are unable to decline candidate for the moment. Please, try again later.');
+            }
+        },
+        disband(){
+            this.$refs.modalDisbandOrganization.show();
         }
     }
 }
@@ -148,5 +176,10 @@ export default {
 
 <style lang="scss" scoped>
 @import '~@styles/style.scss';
+
+.disband-button {
+    cursor: pointer;
+    color: $danger;
+}
 
 </style>
