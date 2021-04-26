@@ -7,7 +7,7 @@
         </div>
         <template v-else>
             <b-alert v-if="listOfMembers.length === 0" show variant="warning">No members</b-alert>
-            <b-list-group v-else style="height: 400px; overflow: auto;">
+            <b-list-group v-else style="height: 400px; overflow: auto; border-bottom: 1px solid rgba(0, 0, 0, 0.125);">
                 <b-list-group-item v-for="member in listOfMembers" :key="member.id" class="d-flex justify-content-between">
                     <span><i v-if="isFounder(member)" class="fas fa-crown text-warning"></i> {{ fullName(member) }}</span>
                     <span v-if="!isFounder(member)" title="Kick" @click="kick(member)" class="remove-member"><i class="fas fa-times"></i></span>

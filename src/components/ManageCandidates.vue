@@ -7,7 +7,7 @@
         </div>
         <template v-else>
             <b-alert v-if="listOfCandidates.length === 0" show variant="info">No pending candidates</b-alert>
-            <b-list-group v-else style="height: 400px; overflow: auto;" id="toto">
+            <b-list-group v-else style="height: 400px; overflow: auto; border-bottom: 1px solid rgba(0, 0, 0, 0.125);" id="toto">
                 <b-list-group-item v-for="candidate in listOfCandidates" :key="candidate.id" class="d-flex justify-content-between">
                    {{ fullName(candidate) }}
                     <div>
