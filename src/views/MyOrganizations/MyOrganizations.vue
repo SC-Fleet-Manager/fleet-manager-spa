@@ -22,7 +22,7 @@
                 <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
             </div>
         </b-card>
-        <b-modal id="modal-create-orga" ref="modalCreateOrga" size="lg" centered title="Create Orga" hide-footer>
+        <b-modal id="modal-create-orga" ref="modalCreateOrga" size="lg" centered title="Create Organization" hide-footer>
             <CreateOrgaModal @newOrga="onNewOrga"></CreateOrgaModal>
         </b-modal>
     </div>

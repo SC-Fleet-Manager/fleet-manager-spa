@@ -125,7 +125,7 @@ export default {
                     this.disbandErrorMessage = err.response.data.errorMessage;
                     return;
                 }
-                console.log(err);
+                console.error(err);
                 this.$toastr.e('Sorry, we are unable to decline candidate for the moment. Please, try again later.');
             }
         },

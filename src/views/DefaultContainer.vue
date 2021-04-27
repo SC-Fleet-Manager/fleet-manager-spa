@@ -92,6 +92,7 @@
         },
         created() {
             bus.$on('updateMyOrganizations', this.loadOrgaList);
+            bus.$on('updatedProfile', this.updatedProfile);
             this.loadNewPatchNoteIfNew();
             this.loadVersionCommitHash();
             if (this.$store.state.myOrgasList === null) {
@@ -292,6 +293,24 @@
                     this.$toastr.e('Sorry, we are unable to retrieve your organizations. Please, try again later.');
                 } finally {
                     this.listOfOrgasLoaded = true;
+                }
+            },
+            async updatedProfile() {
+                this.$toastr.s('Your profile has been updated!');
+                try {
+                    const response = await axios.get(`${Config.api_base_url}/api/profile`, {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.state.accessToken}`,
+                        }
+                    });
+                    this.$store.commit('profile', response.data);
+                } catch (err) {
+                    if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                        this.$toastr.e('You have been disconnected. Please login again.');
+                        this.$router.push({ name: 'Home' });
+                        return;
+                    }
+                    console.error(err);
                 }
             },
             nl2br(str) {
