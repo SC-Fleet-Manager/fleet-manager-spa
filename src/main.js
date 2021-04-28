@@ -35,7 +35,8 @@ import {
     VBTooltipPlugin,
     ImagePlugin,
     ListGroupPlugin,
-    BreadcrumbPlugin
+    BreadcrumbPlugin,
+    SidebarPlugin,
 } from 'bootstrap-vue';
 
 Vue.use(Auth0Plugin, {
@@ -79,6 +80,7 @@ Vue.use(VBTooltipPlugin);
 Vue.use(ImagePlugin);
 Vue.use(ListGroupPlugin);
 Vue.use(BreadcrumbPlugin);
+Vue.use(SidebarPlugin);
 Vue.use(infiniteScroll);
 Vue.use(VueToastr, {
     defaultTimeout: 3000,

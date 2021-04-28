@@ -50,11 +50,29 @@
             </div>
             <div v-else>
                 <b-row cols-lg="mt-3">
-                    <OrgaShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship"/>
+                    <OrgaShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship" :visible="visible" @showOwners="onShowOwners"/>
                 </b-row>
                 <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
                 <b-alert v-else-if="hasNoShips" show variant="warning">The organization does not have any ships. Why don't you create one on <router-link to="/my-fleet">My Fleet page</router-link>?</b-alert>
             </div>
+            <b-sidebar
+                id="sidebar-backdrop"
+                :title="selectShip"
+                :backdrop-variant="variant"
+                backdrop
+                shadow
+                right
+                v-model="visible"
+            >
+                <div class="px-3 py-2" v-if="owners.length !== 0">
+                    <ul class="px-4">
+                        <li v-for="owner in owners" :key="owner.id" class="h5 d-flex justify-content-between w-100" style="list-style: none">
+                            {{ owner.name }}
+                            <b-badge>{{ owner.quantity }}</b-badge>
+                        </li>
+                    </ul>
+                </div>
+            </b-sidebar>
         </b-card>
     </div>
 </template>
@@ -82,6 +100,10 @@ export default {
             listOfOrgasLoaded: false,
             listOfShipsLoaded: false,
             leaveOrgaErrorMessage: null,
+            selectShip: null,
+            visible: false,
+            variant: 'dark',
+            owners: [],
         };
     },
     beforeRouteUpdate(to, from, next) {
@@ -177,6 +199,10 @@ export default {
                 this.leaveOrgaErrorMessage = 'Sorry, you are unable to leave this organization for the moment.';
             }
         },
+        onShowOwners(ship) {
+            this.selectShip = ship.model;
+            this.visible = true;
+        }
     }
 }
 </script>

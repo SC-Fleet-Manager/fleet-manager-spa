@@ -1,6 +1,6 @@
 <template>
     <b-col sm="12" md="6" lg="4" xl="3">
-        <div class="card">
+        <div class="card" @click="$emit('showOwners', ship)" aria-controls="sidebar-backdrop" :aria-expanded="visible">
             <header class="mb-0 px-4 py-3 h4 d-flex justify-content-between">
                 {{ ship.model }}
             </header>
@@ -14,7 +14,7 @@
 <script>
     export default {
         name: 'OrgaShipCard',
-        props: ['ship'],
+        props: ['ship', 'visible'],
         data() {
             return {};
         },
