@@ -50,11 +50,31 @@
             </div>
             <div v-else>
                 <b-row cols-lg="mt-3">
-                    <OrgaShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship"/>
+                    <OrgaShipCard v-for="ship in filteredlistOfShips" :key="ship.id" :ship="ship" :visible="visible" @showOwners="onShowOwners"/>
                 </b-row>
                 <b-alert v-if="errorMessage !== null" show variant="danger">{{ errorMessage }}</b-alert>
                 <b-alert v-else-if="hasNoShips" show variant="warning">The organization does not have any ships. Why don't you create one on <router-link to="/my-fleet">My Fleet page</router-link>?</b-alert>
             </div>
+            <b-sidebar
+                id="sidebar-backdrop"
+                ref="sidebarBackdrop"
+                v-if="selectShip !== null"
+                :title="selectShip.model"
+                bg-variant="light"
+                :backdrop-variant="variant"
+                backdrop
+                shadow
+                right
+                v-model="visible"
+                width="300px"
+            >
+                <ul class="px-4 py-2" v-if="owners.length !== 0">
+                    <li v-for="owner in owners" :key="owner.id" class="h5 d-flex justify-content-between w-100" style="list-style: none">
+                        {{ owner.nickname ? owner.nickname : owner.handle }}
+                        <b-badge variant="primary">{{ owner.quantity }}</b-badge>
+                    </li>
+                </ul>
+            </b-sidebar>
         </b-card>
     </div>
 </template>
@@ -82,6 +102,10 @@ export default {
             listOfOrgasLoaded: false,
             listOfShipsLoaded: false,
             leaveOrgaErrorMessage: null,
+            selectShip: null,
+            visible: false,
+            variant: 'dark',
+            owners: [],
         };
     },
     beforeRouteUpdate(to, from, next) {
@@ -170,11 +194,44 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                if (err.response.status === 400){
+                if (err.response && err.response.status === 400) {
                     this.errorMessage = err.response.data.errorMessage;
                     return;
                 }
+                console.error(err);
                 this.leaveOrgaErrorMessage = 'Sorry, you are unable to leave this organization for the moment.';
+            }
+        },
+        onShowOwners(ship) {
+            this.selectShip = ship;
+            this.loadOwners(ship);
+            this.$nextTick(() => {
+                if (this.selectShip.imageUrl) {
+                    this.$refs.sidebarBackdrop.$el.querySelector('.b-sidebar').style.backgroundImage = `url(${this.selectShip.imageUrl})`;
+                }
+                this.visible = true;
+            });
+        },
+        async loadOwners(ship) {
+            try {
+                const response = await axios.get(`${Config.api_base_url}/api/organizations/${this.orgaId}/ship/${ship.model}/owners`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                this.owners = response.data.owners;
+            } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
+                if (err.response && err.response.status === 400) {
+                    this.$toastr.e(err.response.data.errorMessage);
+                    return;
+                }
+                console.error(err);
+                this.$toastr.e('Sorry, we are unable to load the ship owners for the moment. Please, try again later.');
             }
         },
     }
