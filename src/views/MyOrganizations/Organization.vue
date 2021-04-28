@@ -68,7 +68,7 @@
                 v-model="visible"
                 width="300px"
             >
-                <ul class="px-4 py-2" v-if="owners.length !== 0">
+                <ul class="px-4 py-2" v-if="owners !== null">
                     <li v-for="owner in owners" :key="owner.id" class="h5 d-flex justify-content-between w-100" style="list-style: none">
                         {{ owner.nickname ? owner.nickname : owner.handle }}
                         <b-badge variant="primary">{{ owner.quantity }}</b-badge>
