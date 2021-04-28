@@ -49,3 +49,21 @@
         height: 18px;
     }
 }
+
+.b-sidebar {
+  background-position: -9999px;
+  background-repeat: no-repeat;
+}
+#sidebar-backdrop::before {
+  content: "";
+  position: absolute;
+  display: block;
+  height: 100%;
+  width: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(4px);
+  background-image: inherit;
+  opacity: 0.2;
+}
