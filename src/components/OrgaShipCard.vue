@@ -1,6 +1,6 @@
 <template>
     <b-col sm="12" md="6" lg="4" xl="3">
-        <div class="card" @click="$emit('showOwners', ship)" aria-controls="sidebar-backdrop" :aria-expanded="visible">
+        <div class="card orga-ship-card" @click="$emit('showOwners', ship)" aria-controls="sidebar-backdrop" :aria-expanded="visible">
             <header class="mb-0 px-4 py-3 h4 d-flex justify-content-between">
                 {{ ship.model }}
             </header>
@@ -30,8 +30,14 @@
 </script>
 
 <style lang="scss" scoped>
-@import '~@styles/vendors/variables';
-@import '~@coreui/icons';
+@import '~@styles/style';
+
+.orga-ship-card {
+    cursor: pointer;
+    &:hover {
+        box-shadow: $gray-300 0 0 4px 0px;
+    }
+}
 
 .placeholder-ship {
     max-width: 100%;
