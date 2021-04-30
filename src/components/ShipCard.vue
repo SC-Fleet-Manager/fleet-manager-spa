@@ -3,7 +3,7 @@
         <div class="card">
             <header class="mb-0 px-4 py-3 h4 d-flex justify-content-between">
                 {{ ship.model }}
-                <span class="edit-ship" @click="$emit('edit', ship)"><i class="cil-pencil"></i></span>
+                <span class="edit-ship" @click="$emit('edit', ship)"><img src="@img/pen.svg" width="20px" alt="pen icon"></span>
             </header>
             <div class="position-relative placeholder-ship">
                 <div class="aspect-ratio-box" :style="stylePictureShip" />
@@ -32,7 +32,6 @@
 
 <style lang="scss" scoped>
 @import '~@styles/vendors/variables';
-@import '~@coreui/icons';
 
 .edit-ship {
     cursor: pointer;
