@@ -9,7 +9,6 @@
             <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen="true" ref="sidebarDesktop"/>
             <div v-if="displayEnv" class="p-3 bg-danger text-white text-uppercase">{{ environment }}</div>
             <b-navbar-nav class="ml-auto">
-                <b-nav-item v-if="hasFeedbackForm" class="px-2" v-b-modal.modal-give-feedback><i class="fa fa-comment"></i><div class="px-2 d-none d-sm-inline-block"> Give feedback</div></b-nav-item>
                 <b-nav-text v-if="profile !== null" class="px-3 d-none d-sm-inline-block">Welcome, {{ profile.nickname }}</b-nav-text>
                 <b-nav-text v-if="profile !== null && profile.coins > 0" class="px-3 d-none d-sm-inline-block"><img src="@img/coin.svg" title="FM Coins" alt="FM Coins" height="30"> {{ profile.coins }}</b-nav-text>
                 <b-nav-item v-if="$auth.isAuthenticated" class="px-3" @click="logout"><i class="fas fa-sign-out-alt"></i><div class="px-2 d-none d-sm-inline-block"> Logout</div></b-nav-item>
@@ -36,6 +35,8 @@
                 Star Citizen is a product of Cloud Imperium Rights LLC and Cloud Imperium Rights Ltd.
             </div>
             <b-nav class="ml-auto">
+                <b-nav-item link-classes="p-2" v-if="hasFeedbackForm" v-b-modal.modal-give-feedback><i class="fa fa-comment"></i><div class="px-2 d-none d-sm-inline-block"> Give feedback</div></b-nav-item>
+                <b-nav-text class="p-2">–</b-nav-text>
                 <b-nav-item link-classes="p-2" v-b-modal.modal-patch-notes>Patch notes</b-nav-item>
                 <b-nav-text class="p-2">–</b-nav-text>
                 <b-nav-item href="https://discord.gg/f6mrA3Y" target="_blank" link-classes="p-2"><i class="fab fa-discord" style="font-size: 1.4rem;"></i></b-nav-item>
