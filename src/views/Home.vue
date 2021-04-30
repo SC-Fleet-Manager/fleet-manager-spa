@@ -82,53 +82,45 @@
                                     <img
                                         v-show="this.screenshots['sprite-first-screenshot']"
                                         @load="onLoad('sprite-first-screenshot', true)"
-                                        src="@img/screen_orga_fleet_750x.png" alt="Screenshot Orga's fleet"
+                                        src="@img/screenshot_orga_750x.png" alt="Screenshot Orga's fleet"
                                         sizes="(min-width: 1290px) 750px,
                                                (min-width: 1035px) 545px,
                                                429px
                                         "
                                         srcset="
-                                            @img/screen_orga_fleet_429x.png 429w,
-                                            @img/screen_orga_fleet_545x.png 545w,
-                                            @img/screen_orga_fleet_750x.png 750w
+                                            @img/screenshot_orga_429x.png 429w,
+                                            @img/screenshot_orga_545x.png 545w,
+                                            @img/screenshot_orga_750x.png 750w
                                         ">
                                 </div>
                             </div>
                             <div class="fp-col-2">
-                                <h2 class="screens-title">Manage your Organization's fleet</h2>
+                                <h2 class="screens-title">Manage your Organizations' fleet</h2>
                                 <div class="screens-aside-media">
                                     <svg v-show="!this.screenshots['sprite-first-screenshot']" viewBox="0 0 750 422"><rect width="750" height="422" style="fill:#031217"></rect></svg>
                                     <img
                                         v-show="this.screenshots['sprite-first-screenshot']"
                                         @load="onLoad('sprite-first-screenshot', true)"
-                                        src="@img/screen_orga_fleet_750x.png" alt="Screenshot Orga's fleet"
+                                        src="@img/screenshot_orga_750x.png" alt="Screenshot Orga's fleet"
                                         sizes="100vw"
                                         srcset="
-                                            @img/screen_orga_fleet_429x.png 429w,
-                                            @img/screen_orga_fleet_545x.png 545w,
-                                            @img/screen_orga_fleet_750x.png 750w
+                                            @img/screenshot_orga_429x.png 429w,
+                                            @img/screenshot_orga_545x.png 545w,
+                                            @img/screenshot_orga_750x.png 750w
                                         ">
                                 </div>
                                 <ul class="list-ships">
                                     <li>
                                         <span class="screens-ship">1</span>
-                                        <p>Review your Organization's fleet at a glance with easy access to who owns what.</p>
+                                        <p>Review your Organizations' fleet at a glance with easy access to who owns what.</p>
                                     </li>
                                     <li>
                                         <span class="screens-ship">2</span>
-                                        <p>Many filters to quickly find what you are looking for.</p>
+                                        <p>Create and join your organizations.</p>
                                     </li>
                                     <li>
                                         <span class="screens-ship">3</span>
-                                        <p>Share your Organization’s page with the world or hide it even to your members.</p>
-                                    </li>
-                                    <li>
-                                        <span class="screens-ship">4</span>
-                                        <p>Export your fleet for other tools like <a target="_blank" rel="nofollow" href="https://www.starship42.com/fleetview/">Fleet Viewer</a>.</p>
-                                    </li>
-                                    <li>
-                                        <span class="screens-ship">5</span>
-                                        <p>Get in depth statistics about your organization. Track changes and informations about your citizens.</p>
+                                        <p>Manage your organizations' members.</p>
                                     </li>
                                 </ul>
                             </div>
@@ -142,15 +134,15 @@
                                     <img
                                         v-show="this.screenshots['review-personal-fleet']"
                                         @load="onLoad('review-personal-fleet', true)"
-                                        src="@img/screen_my_fleet_750x.png" alt="Screenshot My Fleet"
+                                        src="@img/screenshot_myfleet_750x.png" alt="Screenshot My Fleet"
                                         sizes="(min-width: 1290px) 750px,
                                                (min-width: 1035px) 545px,
                                                429px
                                         "
                                         srcset="
-                                            @img/screen_my_fleet_750x.png 750w,
-                                            @img/screen_my_fleet_545x.png 545w,
-                                            @img/screen_my_fleet_429x.png 429w
+                                            @img/screenshot_myfleet_750x.png 750w,
+                                            @img/screenshot_myfleet_545x.png 545w,
+                                            @img/screenshot_myfleet_429x.png 429w
                                         ">
                                     <img @load="onLoad('review-personal-fleet')" id="sprite-ship-right-top-1" src="@img/vaisseau-2.png" alt="Ship sprite">
                                 </div>
@@ -162,12 +154,12 @@
                                     <img
                                         v-show="this.screenshots['review-personal-fleet']"
                                         @load="onLoad('review-personal-fleet', true)"
-                                        src="@img/screen_my_fleet_750x.png" alt="Screenshot My Fleet"
+                                        src="@img/screenshot_myfleet_750x.png" alt="Screenshot My Fleet"
                                         sizes="100vw"
                                         srcset="
-                                            @img/screen_my_fleet_750x.png 750w,
-                                            @img/screen_my_fleet_545x.png 545w,
-                                            @img/screen_my_fleet_429x.png 429w
+                                            @img/screenshot_myfleet_750x.png 750w,
+                                            @img/screenshot_myfleet_545x.png 545w,
+                                            @img/screenshot_myfleet_429x.png 429w
                                         ">
                                     <img @load="onLoad('review-personal-fleet')" id="sprite-ship-right-top-1-reduced" src="@img/vaisseau-2.png" alt="Ship sprite">
                                 </div>

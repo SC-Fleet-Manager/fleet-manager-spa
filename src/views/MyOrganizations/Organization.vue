@@ -208,6 +208,8 @@ export default {
             this.$nextTick(() => {
                 if (this.selectShip.imageUrl) {
                     this.$refs.sidebarBackdrop.$el.querySelector('.b-sidebar').style.backgroundImage = `url(${this.selectShip.imageUrl})`;
+                } else {
+                    this.$refs.sidebarBackdrop.$el.querySelector('.b-sidebar').style.backgroundImage = 'none';
                 }
                 this.visible = true;
             });
