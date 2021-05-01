@@ -4,6 +4,5 @@
     "environment": "dev",
     "auth0_domain": "",
     "auth0_clientId": "",
-    "auth0_audience": "",
-    "version": "v2.0"
+    "auth0_audience": ""
 }
