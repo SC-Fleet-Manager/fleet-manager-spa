@@ -1,14 +1,26 @@
 <template>
     <div class="animated fadeIn">
         <b-card>
-            <div class="btn-edit-ships d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap">
+            <div class="btn-actions-my-fleet  d-flex justify-content-end align-items-baseline flex-wrap flex-sm-nowrap">
                 <b-breadcrumb style="flex-grow:1;" :items="[
                     {
                         text: 'My fleet',
                         active: true
                     }
                 ]"></b-breadcrumb>
-                <b-button class="mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
+                <b-dropdown class="d-sm-none" size="lg" right variant="link" toggle-class="text-decoration-none" no-caret>
+                    <template #button-content>
+                        <span class="navbar-toggler-icon"></span>
+                    </template>
+                    <b-dropdown-item @click="createShip">
+                        <i class="fa fa-plus"></i> Create a ship
+                    </b-dropdown-item>
+                    <b-dropdown-item @click="importFleet">
+                        <i class="fas fa-cloud-upload-alt"></i> Import
+                    </b-dropdown-item>
+                </b-dropdown>
+                <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
+                <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="outline-primary" role="button" @click="importFleet"><i class="fas fa-cloud-upload-alt"></i> Import</b-button>
             </div>
             <div class="mb-4 px-0 col-12 col-md-5 col-xl-3">
                 <b-input-group>
@@ -36,6 +48,10 @@
         <b-modal id="modal-create-ship" ref="modalCreateShip" size="lg" centered title="Create ship" hide-footer>
             <CreateShipModal @newShip="onNewShip"></CreateShipModal>
         </b-modal>
+        <b-modal id="modal-import" ref="modalImport" size="lg" centered title="Import fleet" hide-footer>
+<!--                :state="Boolean(form.importFile)"-->
+            <ImportFleetModal @newImport="onImportFleet"></ImportFleetModal>
+        </b-modal>
     </div>
 </template>
 
@@ -46,11 +62,12 @@
     import EditShipModal from '@/components/EditShipModal';
     import CreateShipModal from '@/components/CreateShipModal';
     import exported from 'locale-index-of';
+    import ImportFleetModal from "../../components/ImportFleetModal";
     const localeIndexOf = exported(Intl);
 
     export default {
         name: 'my-fleet',
-        components: {EditShipModal, CreateShipModal, ShipCard},
+        components: {ImportFleetModal, EditShipModal, CreateShipModal, ShipCard},
         data() {
             return {
                 form: {
@@ -123,6 +140,14 @@
             createShip() {
                 this.$refs.modalCreateShip.show();
             },
+            importFleet() {
+                this.$refs.modalImport.show();
+            },
+            onImportFleet() {
+                this.$toastr.s('Your fleet has been imported!');
+                this.loadShipList();
+                this.$refs.modalImport.hide();
+            },
             onNewShip({ shouldClose }) {
                 this.$toastr.s('Your ship has been created!');
                 this.loadShipList();
@@ -148,22 +173,15 @@
 
 <style lang="scss" scoped>
 @import '~@styles/style.scss';
-.btn-edit-ships {
 
-    .breadcrumb {
-        @include media-breakpoint-down(sm) {
-            width: 100%;
-        }
-    }
+.navbar-toggler-icon {
+    background-image: $navbar-toggler-icon;
+}
 
-    button {
-        display: block;
-        width: 100%;
-        margin-bottom: 2%;
-        @include media-breakpoint-up(sm) {
-            display: inline-block;
-            width: auto;
-        }
+.btn-actions-my-fleet .btn-action-my-fleet {
+    display: none;
+    @include media-breakpoint-up(sm) {
+        display: inline-block;
     }
 }
 </style>

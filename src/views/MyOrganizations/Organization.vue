@@ -247,12 +247,10 @@ export default {
     background-image: $navbar-toggler-icon;
 }
 
-.btn-actions-orga {
-    .btn-action-orga {
-        display: none;
-        @include media-breakpoint-up(sm) {
-            display: inline-block;
-        }
+.btn-actions-orga .btn-action-orga {
+    display: none;
+    @include media-breakpoint-up(sm) {
+        display: inline-block;
     }
 }
 
