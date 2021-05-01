@@ -350,6 +350,8 @@ export default {
         loadNumbers() {
             axios.get(`${Config.api_base_url}/api/numbers`).then(response => {
                 this.countUsers = response.data.users;
+                this.countOrga = response.data.fleets;
+                this.countShips = response.data.ships;
             });
         },
         formatSatistics(value) {
