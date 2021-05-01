@@ -71,6 +71,7 @@
     } from '@coreui/vue';
     import { mapState } from 'vuex';
     import Config from '@config/config.json';
+    import Version from '@/version.json';
     import CreateGiveFeedbackModal from '@/components/CreateGiveFeedbackModal';
     import moment from 'moment-timezone';
     import bus from '@/bus';
@@ -107,7 +108,7 @@
                 return Config.environment === 'beta';
             },
             lastVersion() {
-                let version = Config.version;
+                let version = Version.version;
                 if (Config.environment !== 'prod') {
                     version += `-${Config.environment}${this.versionCommitHash !== null ? '-'+this.versionCommitHash : ''}`;
                 }
