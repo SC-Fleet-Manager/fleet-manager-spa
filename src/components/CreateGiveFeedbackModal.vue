@@ -2,7 +2,7 @@
     <b-form @submit="onSubmit">
         <b-alert variant="info" show>
             Here you can write something about your experience on Fleet-Manager (bugs, features, enhancements, etc.).<br/>
-            This will help us to improve FM and see what things are the most often requested.
+            This will help us to improve FM and see what are the most hyped.
         </b-alert>
         <b-form-group class="mb-4" label="Description *" label-for="input-description">
             <b-form-textarea
