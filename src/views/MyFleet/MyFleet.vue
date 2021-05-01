@@ -144,8 +144,9 @@
                 this.$refs.modalImport.show();
             },
             onImportFleet() {
+                this.$toastr.s('Your fleet has been imported!');
+                this.loadShipList();
                 this.$refs.modalImport.hide();
-                this.this.loadShipList();
             },
             onNewShip({ shouldClose }) {
                 this.$toastr.s('Your ship has been created!');

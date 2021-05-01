@@ -1,6 +1,6 @@
 <template>
     <b-form @submit="onSubmit">
-        <b-alert variant="info" show>Import your ships from <a href="https://github.com/dolkensp/HangarXPLOR" target="_blank" rel="nofollow">HangarEXPLOR</a> web extension.</b-alert>
+        <b-alert variant="info" show>Import your ships with <a href="https://github.com/dolkensp/HangarXPLOR" target="_blank" rel="nofollow">HangarEXPLOR</a> web extension.</b-alert>
         <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
         <b-form-group>
             <b-form-file
