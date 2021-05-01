@@ -1,6 +1,6 @@
 <template>
     <b-form @submit="onSubmit">
-        <b-alert variant="info" show>Toto</b-alert>
+        <b-alert variant="info" show>Import your ships from <a href="https://github.com/dolkensp/HangarXPLOR" target="_blank" rel="nofollow">HangarEXPLOR</a> web extension.</b-alert>
         <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
         <b-form-group>
             <b-form-file
@@ -52,28 +52,20 @@ export default {
         },
         async onSubmit(ev) {
             ev.preventDefault();
-
             try {
                 this.submitDisabled = true;
                 this.globalViolation = null;
                 this.form.file.violation = null;
                 this.form.onlyMissing.violation = null;
-                // await axios.post(`${Config.api_base_url}/api/my-fleet/create-ship`, {
-                //     model: this.form.model.value,
-                //     pictureUrl: this.form.imageUrl.value || null,
-                //     quantity: this.form.quantity.value,
-                // }, {
-                //     headers: {
-                //         Authorization: `Bearer ${this.$store.state.accessToken}`,
-                //     },
-                // });
-                // if (this.form.addAnother.value) {
-                //     this.$emit('newShip', { shouldClose: false });
-                //     this.resetForm();
-                //     this.form.addAnother.value = true;
-                //     return;
-                // }
-                // this.$emit('newShip', { shouldClose: true });
+                await axios.post(`${Config.api_base_url}/api/my-fleet/import`, {
+                    hangarExplorerContent: await this.form.file.value.text(),
+                    onlyMissing: this.form.onlyMissing.value,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                this.$emit('newImport');
             } catch (err) {
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');

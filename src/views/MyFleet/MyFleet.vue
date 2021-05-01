@@ -50,7 +50,7 @@
         </b-modal>
         <b-modal id="modal-import" ref="modalImport" size="lg" centered title="Import fleet" hide-footer>
 <!--                :state="Boolean(form.importFile)"-->
-            <ImportFleetModal></ImportFleetModal>
+            <ImportFleetModal @newImport="onImportFleet"></ImportFleetModal>
         </b-modal>
     </div>
 </template>
@@ -142,6 +142,10 @@
             },
             importFleet() {
                 this.$refs.modalImport.show();
+            },
+            onImportFleet() {
+                this.$refs.modalImport.hide();
+                this.this.loadShipList();
             },
             onNewShip({ shouldClose }) {
                 this.$toastr.s('Your ship has been created!');
