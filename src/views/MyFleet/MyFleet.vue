@@ -18,9 +18,13 @@
                     <b-dropdown-item @click="importFleet">
                         <i class="fas fa-cloud-upload-alt"></i> Import
                     </b-dropdown-item>
+                    <b-dropdown-item @click="deleteFleet">
+                        <i class="fas fa-trash"></i> Clear my fleet
+                    </b-dropdown-item>
                 </b-dropdown>
                 <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
                 <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="outline-primary" role="button" @click="importFleet"><i class="fas fa-cloud-upload-alt"></i> Import</b-button>
+                <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="outline-danger" role="button" @click="deleteFleet"><i class="fas fa-trash"></i> Clear my fleet</b-button>
             </div>
             <div class="mb-4 px-0 col-12 col-md-5 col-xl-3">
                 <b-input-group>
@@ -52,6 +56,9 @@
 <!--                :state="Boolean(form.importFile)"-->
             <ImportFleetModal @newImport="onImportFleet"></ImportFleetModal>
         </b-modal>
+        <b-modal id="modal-delete-fleet" ref="modalDeleteFleet" size="lg" centered title="Clear my fleet" hide-footer>
+            <DeleteMyFleetModal @newDeleteFleet="onDeleteFleet"></DeleteMyFleetModal>
+        </b-modal>
     </div>
 </template>
 
@@ -61,13 +68,14 @@
     import ShipCard from '@/components/ShipCard.vue';
     import EditShipModal from '@/components/EditShipModal';
     import CreateShipModal from '@/components/CreateShipModal';
+    import DeleteMyFleetModal from '@/components/DeleteMyFleetModal';
     import exported from 'locale-index-of';
     import ImportFleetModal from "../../components/ImportFleetModal";
     const localeIndexOf = exported(Intl);
 
     export default {
         name: 'my-fleet',
-        components: {ImportFleetModal, EditShipModal, CreateShipModal, ShipCard},
+        components: {DeleteMyFleetModal, ImportFleetModal, EditShipModal, CreateShipModal, ShipCard},
         data() {
             return {
                 form: {
@@ -147,6 +155,14 @@
                 this.$toastr.s('Your fleet has been imported!');
                 this.loadShipList();
                 this.$refs.modalImport.hide();
+            },
+            deleteFleet() {
+                this.$refs.modalDeleteFleet.show();
+            },
+            onDeleteFleet() {
+                this.$toastr.s('Your fleet has been cleared!');
+                this.loadShipList();
+                this.$refs.modalDeleteFleet.hide();
             },
             onNewShip({ shouldClose }) {
                 this.$toastr.s('Your ship has been created!');
