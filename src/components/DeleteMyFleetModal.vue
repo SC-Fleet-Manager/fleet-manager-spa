@@ -23,7 +23,7 @@ export default {
         async deleteFleet() {
             try {
                 this.deleteFleetErrorMessage = null;
-                await axios.post(`${Config.api_base_url}/api/my-fleet/delete-all`, {}, {
+                await axios.post(`${Config.api_base_url}/api/my-fleet/clear`, {}, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
