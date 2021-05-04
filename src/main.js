@@ -37,6 +37,7 @@ import {
     ListGroupPlugin,
     BreadcrumbPlugin,
     SidebarPlugin,
+    TabsPlugin,
 } from 'bootstrap-vue';
 
 Vue.use(Auth0Plugin, {
@@ -81,6 +82,7 @@ Vue.use(ImagePlugin);
 Vue.use(ListGroupPlugin);
 Vue.use(BreadcrumbPlugin);
 Vue.use(SidebarPlugin);
+Vue.use(TabsPlugin);
 Vue.use(infiniteScroll);
 Vue.use(VueToastr, {
     defaultTimeout: 3000,

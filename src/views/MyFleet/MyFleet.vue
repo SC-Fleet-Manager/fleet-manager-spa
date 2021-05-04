@@ -15,6 +15,9 @@
                     <b-dropdown-item @click="createShip">
                         <i class="fa fa-plus"></i> Create a ship
                     </b-dropdown-item>
+                    <b-dropdown-item @click="createTemplate">
+                        <i class="fa fa-plus"></i> Create a template
+                    </b-dropdown-item>
                     <b-dropdown-item @click="importFleet">
                         <i class="fas fa-cloud-upload-alt"></i> Import
                     </b-dropdown-item>
@@ -24,11 +27,14 @@
                     </b-dropdown-item>
                 </b-dropdown>
                 <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
-                <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="outline-primary" role="button" @click="importFleet"><i class="fas fa-cloud-upload-alt"></i> Import</b-button>
+                <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createTemplate"><i class=""></i> Create a template</b-button>
                 <b-dropdown class="btn-action-my-fleet " size="lg" right variant="link" toggle-class="text-decoration-none" no-caret>
                     <template #button-content>
                         <span><i class="fas fa-ellipsis-v"></i></span>
                     </template>
+                    <b-dropdown-item @click="importFleet">
+                        <i class="fas fa-cloud-upload-alt"></i> Import
+                    </b-dropdown-item>
                     <b-dropdown-item @click="deleteFleet">
                         <i class="fas fa-trash"></i> Clear my fleet
                     </b-dropdown-item>
@@ -60,6 +66,9 @@
         <b-modal id="modal-create-ship" ref="modalCreateShip" size="lg" centered title="Create ship" hide-footer>
             <CreateShipModal @newShip="onNewShip"></CreateShipModal>
         </b-modal>
+        <b-modal id="modal-create-template" ref="modalCreateTemplate" size="lg" centered title="Create a template" hide-footer>
+            <CreateTemplate @newTemplate="onDeleteFleet"></CreateTemplate>
+        </b-modal>
         <b-modal id="modal-import" ref="modalImport" size="lg" centered title="Import fleet" hide-footer>
             <ImportFleetModal @newImport="onImportFleet"></ImportFleetModal>
         </b-modal>
@@ -76,13 +85,14 @@
     import EditShipModal from '@/components/EditShipModal';
     import CreateShipModal from '@/components/CreateShipModal';
     import DeleteMyFleetModal from '@/components/DeleteMyFleetModal';
+    import CreateTemplate from '@/components/CreateTemplate';
     import exported from 'locale-index-of';
     import ImportFleetModal from "../../components/ImportFleetModal";
     const localeIndexOf = exported(Intl);
 
     export default {
         name: 'my-fleet',
-        components: {DeleteMyFleetModal, ImportFleetModal, EditShipModal, CreateShipModal, ShipCard},
+        components: {CreateTemplate, DeleteMyFleetModal, ImportFleetModal, EditShipModal, CreateShipModal, ShipCard},
         data() {
             return {
                 form: {
@@ -162,6 +172,13 @@
                 this.$toastr.s('Your fleet has been imported!');
                 this.loadShipList();
                 this.$refs.modalImport.hide();
+            },
+            createTemplate() {
+                this.$refs.modalCreateTemplate.show();
+            },
+            onCreateTemplate() {
+                this.$refs.modalCreateTemplate.hide();
+                this.$toastr.s('Your template has created !');
             },
             deleteFleet() {
                 this.$refs.modalDeleteFleet.show();
