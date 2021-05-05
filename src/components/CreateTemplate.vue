@@ -2,7 +2,7 @@
     <div>
         <b-card no-body>
             <b-form @submit="onSubmit">
-                <b-tabs card>
+                <b-tabs v-model="tabIndex" card>
                     <b-tab title="Ship" active>
                         <b-card-text>
                             <b-form-group class="mb-4" label="Ship chassis *" label-for="input-ship-chassis">
@@ -11,6 +11,7 @@
                                     v-model="form.chassis.value"
                                     type="text"
                                     :state="stateChassis"
+                                    placeholder="Constellation"
                                     required
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="stateChassis">{{ form.chassis.violation }}</b-form-invalid-feedback>
@@ -21,21 +22,24 @@
                                     v-model="form.variant.value"
                                     type="text"
                                     :state="stateVariant"
+                                    placeholder="Aquila"
                                     required
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="stateVariant">{{ form.variant.violation }}</b-form-invalid-feedback>
                             </b-form-group>
-                            <b-form-group class="mb-4" label="Ship picture " label-for="input-ship-pictureUrl">
+                            <b-form-group class="mb-4" label="Ship picture (optional)" label-for="input-ship-pictureUrl" description="Only from RSI or starcitizen.tools">
                                 <b-form-input
                                     id="input-ship-pictureUrl"
                                     v-model="form.pictureUrl.value"
-                                    type="text"
+                                    type="url"
                                     :state="statePictureUrl"
-                                    required
+                                    debounce="500"
+                                    placeholder="https://media.robertsspaceindustries.com/c2k21tjgn3z6a/store_small.jpg"
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="statePictureUrl">{{ form.pictureUrl.violation }}</b-form-invalid-feedback>
                             </b-form-group>
                         </b-card-text>
+                        <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next</b-button>
                     </b-tab>
                     <b-tab title="Manufacturer">
                         <b-card-text>
@@ -45,7 +49,7 @@
                                     v-model="form.manufacturerName.value"
                                     type="text"
                                     :state="stateManufacturerName"
-                                    required
+                                    placeholder="Robert Space Industries"
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="stateManufacturerName">{{ form.manufacturerName.violation }}</b-form-invalid-feedback>
                             </b-form-group>
@@ -55,22 +59,22 @@
                                     v-model="form.manufacturerCode.value"
                                     type="text"
                                     :state="stateManufacturerCode"
-                                    required
+                                    placeholder="RSI"
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="stateManufacturerCode">{{ form.manufacturerCode.violation }}</b-form-invalid-feedback>
                             </b-form-group>
+                            <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next</b-button>
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Utility">
                         <b-card-text>
                             <b-form-group class="mb-4" label="Ship size (optional)" label-for="input-ship-size">
-                                <b-form-input
+                                <b-form-select
                                     id="input-ship-size"
-                                    v-model="form.shipSize.value"
-                                    type="text"
-                                    :state="stateShipSize"
-                                    required
-                                ></b-form-input>
+                                    class=""
+                                    :options="[{ text: 'Choose...', value: null }, 'Vehicule', 'Snub', 'Small', 'Medium', 'Large', 'Capital']"
+                                    :value="null"
+                                ></b-form-select>
                                 <b-form-invalid-feedback :state="stateShipSize">{{ form.shipSize.violation }}</b-form-invalid-feedback>
                             </b-form-group>
                             <b-form-group class="mb-4" label="Ship role (optional)" label-for="input-ship-role">
@@ -79,7 +83,7 @@
                                     v-model="form.shipRole.value"
                                     type="text"
                                     :state="stateShipRole"
-                                    required
+                                    placeholder="Expedition"
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="stateShipRole">{{ form.shipRole.violation }}</b-form-invalid-feedback>
                             </b-form-group>
@@ -87,9 +91,10 @@
                                 <b-form-input
                                     id="input-cargo-capacity"
                                     v-model="form.cargoCapacity.value"
-                                    type="text"
+                                    type="number"
                                     :state="stateCargoCapacity"
-                                    required
+                                    min="0"
+                                    placeholder="96 SCU"
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="stateCargoCapacity">{{ form.cargoCapacity.violation }}</b-form-invalid-feedback>
                             </b-form-group>
@@ -97,9 +102,10 @@
                                 <b-form-input
                                     id="input-min-crew"
                                     v-model="form.minCrew.value"
-                                    type="text"
+                                    type="number"
                                     :state="stateMinCrew"
-                                    required
+                                    min="1"
+                                    placeholder="1"
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="stateMinCrew">{{ form.minCrew.violation }}</b-form-invalid-feedback>
                             </b-form-group>
@@ -107,36 +113,43 @@
                                 <b-form-input
                                     id="input-max-crew"
                                     v-model="form.maxCrew.value"
-                                    type="text"
+                                    type="number"
                                     :state="stateMaxCrew"
-                                    required
+                                    placeholder="4"
+                                    min="1"
                                 ></b-form-input>
                                 <b-form-invalid-feedback :state="stateMaxCrew">{{ form.maxCrew.violation }}</b-form-invalid-feedback>
                             </b-form-group>
+                            <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next</b-button>
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Prices">
                         <b-card-text>
-                            <b-form-group class="mb-4" label="Pledge price (optional)" label-for="input-pledge-price">
+                            <label for="input-pledge-price">Pledge price (optional)</label>
+                            <b-input-group prepend="$" class="mb-4">
                                 <b-form-input
                                     id="input-pledge-price"
                                     v-model="form.pledgePrice.value"
-                                    type="text"
+                                    placeholder="310"
                                     :state="statePledgePrice"
-                                    required
-                                ></b-form-input>
+                                    min="0"
+                                >
+                                </b-form-input>
                                 <b-form-invalid-feedback :state="statePledgePrice">{{ form.pledgePrice.violation }}</b-form-invalid-feedback>
-                            </b-form-group>
-                            <b-form-group class="mb-4" label="In game price (optional)" label-for="input-in-game-price">
+                            </b-input-group>
+                            <label for="input-in-game-price">In game price (optional)</label>
+                            <b-input-group prepend="UEC" class="mb-4">
                                 <b-form-input
                                     id="input-in-game-price"
                                     v-model="form.inGamePrice.value"
-                                    type="text"
+                                    placeholder="4,926,700"
                                     :state="stateInGamePrice"
-                                    required
-                                ></b-form-input>
+                                    min="0"
+                                >
+                                </b-form-input>
                                 <b-form-invalid-feedback :state="stateInGamePrice">{{ form.inGamePrice.violation }}</b-form-invalid-feedback>
-                            </b-form-group>
+                            </b-input-group>
+                            <b-button class="d-block ml-auto" type="submit" :disabled="submitDisabled" variant="success"><i class="fa fa-check"></i> Create</b-button>
                         </b-card-text>
                     </b-tab>
                 </b-tabs>
@@ -156,6 +169,7 @@ export default {
             form: null,
             globalViolation: null,
             submitDisabled: false,
+            tabIndex: 1,
         };
     },
     created() {
@@ -254,21 +268,28 @@ export default {
         },
         // async onSubmit(ev) {
         //     ev.preventDefault();
+        //
         //     try {
         //         this.submitDisabled = true;
         //         this.globalViolation = null;
-        //         this.form.name.violation = null;
-        //         this.form.logoUrl.violation = null;
+        //         this.form.chassis.violation = null;
+        //         this.form.imageUrl.violation = null;
         //         await axios.post(`${Config.api_base_url}/api/`, {
-        //             name: this.form.name.value || null,
-        //             logoUrl: this.form.logoUrl.value || null
+        //             name: this.form.chassis.value,
+        //             pictureUrl: this.form.imageUrl.value || null,
+        //             quantity: this.form.quantity.value,
         //         }, {
         //             headers: {
         //                 Authorization: `Bearer ${this.$store.state.accessToken}`,
         //             },
         //         });
-        //         this.$toastr.s('Your organization has been updated!');
-        //         bus.$emit('updateMyOrganizations');
+        //         if (this.form.addAnother.value) {
+        //             this.$emit('newShip', { shouldClose: false });
+        //             this.resetForm();
+        //             this.form.addAnother.value = true;
+        //             return;
+        //         }
+        //         this.$emit('newShip', { shouldClose: true });
         //     } catch (err) {
         //         if (err.response && (err.response.status === 401 || err.response.status === 403)) {
         //             this.$toastr.e('You have been disconnected. Please login again.');
@@ -287,11 +308,14 @@ export default {
         //             case '':
         //                 this.globalViolation = violation.title;
         //                 break;
-        //             case 'name':
-        //                 this.form.name.violation = violation.title;
+        //             case 'model':
+        //                 this.form.model.violation = violation.title;
         //                 break;
-        //             case 'logoUrl':
-        //                 this.form.logoUrl.violation = violation.title;
+        //             case 'pictureUrl':
+        //                 this.form.imageUrl.violation = violation.title;
+        //                 break;
+        //             case 'quantity':
+        //                 this.form.quantity.violation = violation.title;
         //                 break;
         //         }
         //     }
