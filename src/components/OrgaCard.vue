@@ -1,8 +1,9 @@
 <template>
     <b-col sm="6" md="4" lg="3" xl="2">
         <div class="card">
-            <div class="mb-0 py-2 px-2 text-center border-bottom footer-orga-card">
-                {{ orga.name }}
+            <div class="mb-0 p2 text-center border-bottom footer-orga-card">
+                <p class="mb-0">{{ orga.name }}</p>
+                <p class="mb-0">[{{ orga.sid }}]</p>
             </div>
             <div class="position-relative placeholder-orga">
                 <div class="aspect-ratio-box" :style="stylePictureShip" />

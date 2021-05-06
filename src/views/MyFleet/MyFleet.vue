@@ -67,7 +67,7 @@
             <CreateShipModal @newShip="onNewShip"></CreateShipModal>
         </b-modal>
         <b-modal id="modal-create-template" ref="modalCreateTemplate" size="lg" centered title="Create a template" hide-footer>
-            <CreateTemplate @newTemplate="onDeleteFleet"></CreateTemplate>
+            <CreateTemplate @newTemplate="onCreateTemplate"></CreateTemplate>
         </b-modal>
         <b-modal id="modal-import" ref="modalImport" size="lg" centered title="Import fleet" hide-footer>
             <ImportFleetModal @newImport="onImportFleet"></ImportFleetModal>
