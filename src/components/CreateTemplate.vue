@@ -2,31 +2,29 @@
     <b-card no-body>
         <b-form @submit="onSubmit">
             <b-tabs v-model="tabIndex" card>
-                <b-tab title="Ship" :title-link-class="[(stateChassis == false || requiredChassis == true) ? 'text-danger' : '']" active>
+                <b-tab title="Ship" :title-link-class="[stateChassis == false || stateModel == false || statePictureUrl == false  || stateModel == false || statePictureUrl == false ? 'text-danger' : '']" active>
                     <b-card-text>
-                        <b-form-group class="mb-4" label="Ship chassis *" label-for="input-ship-chassis">
+                        <b-form-group class="mb-4" label="Model *" label-for="input-ship-model">
+                            <b-form-input
+                                id="input-ship-model"
+                                v-model="form.model.value"
+                                type="text"
+                                :state="stateModel"
+                                placeholder="Constellation Aquila"
+                            ></b-form-input>
+                            <b-form-invalid-feedback :state="stateModel">{{ form.model.violation }}</b-form-invalid-feedback>
+                        </b-form-group>
+                        <b-form-group class="mb-4" label="Chassis *" label-for="input-ship-chassis">
                             <b-form-input
                                 id="input-ship-chassis"
                                 v-model="form.chassis.value"
                                 type="text"
                                 :state="stateChassis"
                                 placeholder="Constellation"
-                                :required="requiredChassis"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="stateChassis">{{ form.chassis.violation }}</b-form-invalid-feedback>
                         </b-form-group>
-                        <b-form-group class="mb-4" label="Ship variant *" label-for="input-ship-variant">
-                            <b-form-input
-                                id="input-ship-variant"
-                                v-model="form.variant.value"
-                                type="text"
-                                :state="stateVariant"
-                                placeholder="Aquila"
-                                required
-                            ></b-form-input>
-                            <b-form-invalid-feedback :state="stateVariant">{{ form.variant.violation }}</b-form-invalid-feedback>
-                        </b-form-group>
-                        <b-form-group class="mb-4" label="Ship picture (optional)" label-for="input-ship-pictureUrl" description="Only from RSI or starcitizen.tools">
+                        <b-form-group class="mb-4" label="Picture URL (optional)" label-for="input-ship-pictureUrl" description="Only from RSI or starcitizen.tools">
                             <b-form-input
                                 id="input-ship-pictureUrl"
                                 v-model="form.pictureUrl.value"
@@ -38,9 +36,9 @@
                             <b-form-invalid-feedback :state="statePictureUrl">{{ form.pictureUrl.violation }}</b-form-invalid-feedback>
                         </b-form-group>
                     </b-card-text>
-                    <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next</b-button>
+                    <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next <i class="fas fa-arrow-right"></i></b-button>
                 </b-tab>
-                <b-tab title="Manufacturer" :title-link-class="[stateChassis == false ? 'text-danger' : '']">
+                <b-tab title="Manufacturer" :title-link-class="[stateManufacturerName == false || stateManufacturerCode == false ? 'text-danger' : '']">
                     <b-card-text>
                         <b-form-group class="mb-4" label="Manufacturer name (optional)" label-for="input-manufacturer-name">
                             <b-form-input
@@ -62,21 +60,20 @@
                             ></b-form-input>
                             <b-form-invalid-feedback :state="stateManufacturerCode">{{ form.manufacturerCode.violation }}</b-form-invalid-feedback>
                         </b-form-group>
-                        <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next</b-button>
+                        <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next <i class="fas fa-arrow-right"></i></b-button>
                     </b-card-text>
                 </b-tab>
-                <b-tab title="Utility" :title-link-class="[stateChassis == false ? 'text-danger' : '']">
+                <b-tab title="Utility" :title-link-class="[stateShipSize == false || stateShipRole == false || stateCargoCapacity == false || stateMinCrew == false || stateMaxCrew == false ? 'text-danger' : '']">
                     <b-card-text>
-                        <b-form-group class="mb-4" label="Ship size (optional)" label-for="input-ship-size">
+                        <b-form-group class="mb-4" label="Size (optional)" label-for="input-ship-size">
                             <b-form-select
                                 id="input-ship-size"
-                                class=""
-                                :options="[{ text: 'Choose...', value: null }, 'Vehicle', 'Snub', 'Small', 'Medium', 'Large', 'Capital']"
-                                :value="null"
+                                v-model="form.shipSize.value"
+                                :options="[{ text: 'Choose...', value: null }, { text: 'Vehicle', value: 'vehicle' }, { text: 'Snub', value: 'snub' }, { text: 'Small', value: 'small' }, { text: 'Medium', value: 'medium' }, { text: 'Large', value: 'large' }, { text: 'Capital', value: 'capital' }]"
                             ></b-form-select>
                             <b-form-invalid-feedback :state="stateShipSize">{{ form.shipSize.violation }}</b-form-invalid-feedback>
                         </b-form-group>
-                        <b-form-group class="mb-4" label="Ship role (optional)" label-for="input-ship-role">
+                        <b-form-group class="mb-4" label="Role (optional)" label-for="input-ship-role">
                             <b-form-input
                                 id="input-ship-role"
                                 v-model="form.shipRole.value"
@@ -119,10 +116,10 @@
                             ></b-form-input>
                             <b-form-invalid-feedback :state="stateMaxCrew">{{ form.maxCrew.violation }}</b-form-invalid-feedback>
                         </b-form-group>
-                        <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next</b-button>
+                        <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next <i class="fas fa-arrow-right"></i></b-button>
                     </b-card-text>
                 </b-tab>
-                <b-tab title="Prices" :title-link-class="[stateChassis == false ? 'text-danger' : '']">
+                <b-tab title="Prices" :title-link-class="[statePledgePrice == false || stateInGamePrice == false ? 'text-danger' : '']">
                     <b-card-text>
                         <label for="input-pledge-price">Pledge price (optional)</label>
                         <b-input-group prepend="$" class="mb-4">
@@ -159,6 +156,16 @@
 <script>
 import axios from 'axios';
 import Config from '@config/config.json';
+const formFields = ['chassis', 'model', 'pictureUrl', 'manufacturerName', 'manufacturerCode', 'shipSize', 'shipRole', 'cargoCapacity', 'minCrew', 'maxCrew', 'pledgePrice', 'inGamePrice' ]
+function generateFormState() {
+    let obj = {};
+    for(const formfield of formFields) {
+        obj[`state${formfield.charAt(0).toUpperCase() + formfield.slice(1)}`] = function () {
+            return this.form[formfield].violation !== null ? false : null;
+        }
+    }
+    return obj;
+}
 
 export default {
     name: "CreateTemplate",
@@ -167,131 +174,54 @@ export default {
             form: null,
             globalViolation: null,
             tabIndex: 1,
-            requiredChassis: false,
         };
     },
     created() {
         this.resetForm();
     },
     computed: {
-        requiredChassis() {
-            return this.requiredChassis == false ? true : false;
-        },
-        stateChassis() {
-            return this.form.chassis.violation !== null ? false : null;
-        },
-        stateVariant() {
-            return this.form.variant.violation !== null ? false : null;
-        },
-        statePictureUrl() {
-            return this.form.pictureUrl.violation !== null ? false : null;
-        },
-        stateManufacturerName() {
-            return this.form.manufacturerName.violation !== null ? false : null;
-        },
-        stateManufacturerCode() {
-            return this.form.manufacturerCode.violation !== null ? false : null;
-        },
-        stateShipSize() {
-            return this.form.shipSize.violation !== null ? false : null;
-        },
-        stateShipRole() {
-            return this.form.shipRole.violation !== null ? false : null;
-        },
-        stateCargoCapacity() {
-            return this.form.cargoCapacity.violation !== null ? false : null;
-        },
-        stateMinCrew() {
-            return this.form.minCrew.violation !== null ? false : null;
-        },
-        stateMaxCrew() {
-            return this.form.maxCrew.violation !== null ? false : null;
-        },
-        statePledgePrice() {
-            return this.form.pledgePrice.violation !== null ? false : null;
-        },
-        stateInGamePrice() {
-            return this.form.inGamePrice.violation !== null ? false : null;
-        }
+        ...generateFormState(),
     },
     methods: {
-        tableColor() {
-            return 'text-danger'
-        },
         resetForm() {
-            this.form = {
-                chassis: {
+            this.form = {};
+            for( const value of formFields) {
+                this.form[value] = {
                     value: null,
-                    violation: null,
-                },
-                variant: {
-                    value: null,
-                    violation: null,
-                },
-                pictureUrl: {
-                    value: null,
-                    violation: null,
-                },
-                manufacturerName: {
-                    value: null,
-                    violation: null,
-                },
-                manufacturerCode: {
-                    value: null,
-                    violation: null,
-                },
-                shipSize: {
-                    value: null,
-                    violation: null,
-                },
-                shipRole: {
-                    value: null,
-                    violation: null,
-                },
-                cargoCapacity: {
-                    value: null,
-                    violation: null,
-                },
-                minCrew: {
-                    value: null,
-                    violation: null,
-                },
-                maxCrew: {
-                    value: null,
-                    violation: null,
-                },
-                pledgePrice: {
-                    value: null,
-                    violation: null,
-                },
-                inGamePrice: {
-                    value: null,
-                    violation: null,
-                },
-            };
+                    violation: null
+                }
+            }
         },
         async onSubmit(ev) {
             console.log('submit')
             ev.preventDefault();
             try {
                 this.submitDisabled = true;
+                for( const value of formFields) {
+                    this.form[value].violation = null;
+                }
                 this.globalViolation = null;
-                this.form.chassis.violation = null;
-                this.form.variant.violation = null;
-                this.form.imageUrl.violation = null;
-                this.form.manufacturerName.violation = null;
-                this.form.manufacturerCode.violation = null;
-                this.form.shipSize.violation = null;
-                this.form.shipRole.violation = null;
-                this.form.cargoCapacity.violation = null;
-                this.form.minCrew.violation = null;
-                this.form.maxCrew.violation = null;
-                this.form.pledgePrice.violation = null;
-                this.form.inGamePrice.violation = null;
                 await axios.post(`${Config.api_base_url}/api/ship-template/create`, {
-                    // name: this.form.chassis.value,
-                    // pictureUrl: this.form.imageUrl.value || null,
-                    // quantity: this.form.quantity.value,
+                    model: this.form.model.value,
+                    pictureUrl: this.form.pictureUrl.value,
+                    chassis: {
+                        name: this.form.chassis.value
+                    },
+                    manufacturer: {
+                        name: this.form.manufacturerName.value,
+                        code: this.form.manufacturerCode.value
+                    },
+                    size: this.form.shipSize.value,
+                    role: this.form.shipRole.value,
+                    cargoCapacity: this.form.cargoCapacity.value !== null ? parseInt(this.form.cargoCapacity.value) : null,
+                    crew: {
+                        min: this.form.minCrew.value !== null ? parseInt(this.form.minCrew.value) : null,
+                        max: this.form.maxCrew.value !== null ? parseInt(this.form.maxCrew.value): null
+                    },
+                    price: {
+                        pledge: this.form.pledgePrice.value !== null ? this.form.pledgePrice.value*100 : null,
+                        ingame: this.form.inGamePrice.value !== null ? parseInt(this.form.inGamePrice.value ) : null
+                    }
                 }, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
@@ -304,7 +234,11 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                this.handleViolations(err.response);
+                if(err.response){
+                    this.handleViolations(err.response);
+                    return;
+                }
+                console.error(err);
             } finally {
                 this.submitDisabled = false;
             }
@@ -319,11 +253,8 @@ export default {
                     case 'model':
                         this.form.model.violation = violation.title;
                         break;
-                    case 'pictureUrl':
-                        this.form.imageUrl.violation = violation.title;
-                        break;
-                    case 'quantity':
-                        this.form.quantity.violation = violation.title;
+                    case 'chassis.name':
+                        this.form.chassis.violation = violation.title;
                         break;
                 }
             }

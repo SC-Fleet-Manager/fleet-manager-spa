@@ -27,7 +27,7 @@
                     </b-dropdown-item>
                 </b-dropdown>
                 <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createShip"><i class="fa fa-plus"></i> Create a ship</b-button>
-                <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="primary" role="button" @click="createTemplate"><i class="fa fa-plus"></i> Create a template</b-button>
+                <b-button class="btn-action-my-fleet mb-3 ml-2 flex-shrink-0" variant="outline-primary" role="button" @click="createTemplate"><i class="fa fa-plus"></i> Create a template</b-button>
                 <b-dropdown class="btn-action-my-fleet " size="lg" right variant="link" toggle-class="text-decoration-none" no-caret>
                     <template #button-content>
                         <span><i class="fas fa-ellipsis-v"></i></span>
