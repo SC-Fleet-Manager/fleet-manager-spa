@@ -54,6 +54,7 @@ export default {
             listOfOrgas: [],
             orgasJoinedStatuses: {},
             nextUrl: null,
+            calledPaginationUrls: {}, // {<url>: <bool: false if calling, true if called>}
         };
     },
     async created() {
@@ -118,9 +119,15 @@ export default {
             }
         },
         async loadMore() {
-            if(this.nextUrl === null) return;
+            if (this.nextUrl === null) {
+                return;
+            }
+            if (this.calledPaginationUrls[this.nextUrl] !== undefined) {
+                return;
+            }
             try {
                 this.$store.commit('infiniteScrollDisabled', true);
+                this.calledPaginationUrls[this.nextUrl] = false;
                 const response = await axios.get(this.nextUrl, {
                     params: {
                         search: this.form.search && this.form.search.length >= 2 ? this.form.search : null,
@@ -129,16 +136,19 @@ export default {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
                     },
                 });
+                this.calledPaginationUrls[this.nextUrl] = true;
                 for(const orga of response.data.organizations) {
                     this.listOfOrgas.push(orga);
                 }
                 this.nextUrl = response.data.nextUrl;
             } catch (err) {
+                delete this.calledPaginationUrls[this.nextUrl]; // want to retry
                 if (err.response && (err.response.status === 401 || err.response.status === 403)) {
                     this.$toastr.e('You have been disconnected. Please login again.');
                     this.$router.push({ name: 'Home' });
                     return;
                 }
+                console.error(err);
             } finally {
                 this.$store.commit('infiniteScrollDisabled', false);
             }
