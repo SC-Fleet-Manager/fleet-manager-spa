@@ -35,6 +35,9 @@
                             ></b-form-input>
                             <b-form-invalid-feedback :state="statePictureUrl">{{ form.pictureUrl.violation }}</b-form-invalid-feedback>
                         </b-form-group>
+                        <div v-if="form.pictureUrl.value" class="col-4 p-0 mb-3">
+                            <b-img :src="form.pictureUrl.value" fluid alt=""></b-img>
+                        </div>
                     </b-card-text>
                     <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next <i class="fas fa-arrow-right"></i></b-button>
                 </b-tab>
