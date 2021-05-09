@@ -1,8 +1,8 @@
 <template>
-    <b-card no-body>
         <b-form @submit="onSubmit">
-            <b-tabs v-model="tabIndex" card>
-                <b-tab title="Ship" :title-link-class="[stateChassis == false || stateModel == false || statePictureUrl == false  || stateModel == false || statePictureUrl == false ? 'text-danger' : '']" active>
+            <b-button class="d-block ml-auto" type="submit" variant="success"><i class="fa fa-check"></i> Create</b-button>
+            <b-tabs v-model="tabIndex">
+                <b-tab title="Ship" :title-link-class="hasShipTabViolations ? 'text-danger' : ''" active>
                     <b-card-text>
                         <b-form-group class="mb-4" label="Model *" label-for="input-ship-model">
                             <b-form-input
@@ -28,7 +28,7 @@
                             <b-form-input
                                 id="input-ship-pictureUrl"
                                 v-model="form.pictureUrl.value"
-                                type="url"
+                                type="text"
                                 :state="statePictureUrl"
                                 debounce="500"
                                 placeholder="https://media.robertsspaceindustries.com/c2k21tjgn3z6a/store_small.jpg"
@@ -38,7 +38,7 @@
                     </b-card-text>
                     <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next <i class="fas fa-arrow-right"></i></b-button>
                 </b-tab>
-                <b-tab title="Manufacturer" :title-link-class="[stateManufacturerName == false || stateManufacturerCode == false ? 'text-danger' : '']">
+                <b-tab title="Manufacturer" :title-link-class="hasManufacturerTabViolations ? 'text-danger' : ''">
                     <b-card-text>
                         <b-form-group class="mb-4" label="Manufacturer name (optional)" label-for="input-manufacturer-name">
                             <b-form-input
@@ -63,7 +63,7 @@
                         <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next <i class="fas fa-arrow-right"></i></b-button>
                     </b-card-text>
                 </b-tab>
-                <b-tab title="Utility" :title-link-class="[stateShipSize == false || stateShipRole == false || stateCargoCapacity == false || stateMinCrew == false || stateMaxCrew == false ? 'text-danger' : '']">
+                <b-tab title="Utility" :title-link-class="hasUtilityTabViolations ? 'text-danger' : ''">
                     <b-card-text>
                         <b-form-group class="mb-4" label="Size (optional)" label-for="input-ship-size">
                             <b-form-select
@@ -87,6 +87,7 @@
                             <b-form-input
                                 id="input-cargo-capacity"
                                 v-model="form.cargoCapacity.value"
+                                :number="true"
                                 type="number"
                                 :state="stateCargoCapacity"
                                 min="0"
@@ -94,72 +95,82 @@
                             ></b-form-input>
                             <b-form-invalid-feedback :state="stateCargoCapacity">{{ form.cargoCapacity.violation }}</b-form-invalid-feedback>
                         </b-form-group>
-                        <b-form-group class="mb-4 col-md-3 p-0 d-block d-md-inline-block" label="Min crew (optional)" label-for="input-min-crew">
-                            <b-form-input
-                                id="input-min-crew"
-                                v-model="form.minCrew.value"
-                                type="number"
-                                :state="stateMinCrew"
-                                min="1"
-                                placeholder="1"
-                            ></b-form-input>
-                            <b-form-invalid-feedback :state="stateMinCrew">{{ form.minCrew.violation }}</b-form-invalid-feedback>
-                        </b-form-group>
-                        <b-form-group class="mb-4 col-md-3 mx-2 p-0 d-block d-md-inline-block" label="Max crew (optional)" label-for="input-max-crew">
-                            <b-form-input
-                                id="input-max-crew"
-                                v-model="form.maxCrew.value"
-                                type="number"
-                                :state="stateMaxCrew"
-                                placeholder="4"
-                                min="1"
-                            ></b-form-input>
-                            <b-form-invalid-feedback :state="stateMaxCrew">{{ form.maxCrew.violation }}</b-form-invalid-feedback>
-                        </b-form-group>
+                        <div :class="{'is-invalid': stateCrew === false}">
+                            <b-form-invalid-feedback :state="stateCrew">{{ form.crew.violation }}</b-form-invalid-feedback>
+                            <b-form-group class="mb-4 col-md-3 p-0 d-block d-md-inline-block" label="Min crew (optional)" label-for="input-min-crew">
+                                <b-form-input
+                                    id="input-min-crew"
+                                    v-model="form.minCrew.value"
+                                    :number="true"
+                                    type="number"
+                                    :state="stateCrew === false ? false : stateMinCrew"
+                                    min="1"
+                                    placeholder="1"
+                                ></b-form-input>
+                                <b-form-invalid-feedback :state="stateMinCrew">{{ form.minCrew.violation }}</b-form-invalid-feedback>
+                            </b-form-group>
+                            <b-form-group class="mb-4 col-md-3 mx-2 p-0 d-block d-md-inline-block" label="Max crew (optional)" label-for="input-max-crew">
+                                <b-form-input
+                                    id="input-max-crew"
+                                    v-model="form.maxCrew.value"
+                                    :number="true"
+                                    type="number"
+                                    :state="stateCrew === false ? false : stateMaxCrew"
+                                    placeholder="4"
+                                    min="1"
+                                ></b-form-input>
+                                <b-form-invalid-feedback :state="stateMaxCrew">{{ form.maxCrew.violation }}</b-form-invalid-feedback>
+                            </b-form-group>
+                        </div>
                         <b-button class="d-block ml-auto" variant="primary" @click="tabIndex++">Next <i class="fas fa-arrow-right"></i></b-button>
                     </b-card-text>
                 </b-tab>
-                <b-tab title="Prices" :title-link-class="[statePledgePrice == false || stateInGamePrice == false ? 'text-danger' : '']">
+                <b-tab title="Prices" :title-link-class="hasPricesTabViolations ? 'text-danger' : ''">
                     <b-card-text>
-                        <label for="input-pledge-price">Pledge price (optional)</label>
-                        <b-input-group prepend="$" class="mb-4">
-                            <b-form-input
-                                id="input-pledge-price"
-                                v-model="form.pledgePrice.value"
-                                placeholder="310"
-                                :state="statePledgePrice"
-                                min="0"
-                            >
-                            </b-form-input>
-                            <b-form-invalid-feedback :state="statePledgePrice">{{ form.pledgePrice.violation }}</b-form-invalid-feedback>
-                        </b-input-group>
-                        <label for="input-in-game-price">In game price (optional)</label>
-                        <b-input-group prepend="UEC" class="mb-4">
-                            <b-form-input
-                                id="input-in-game-price"
-                                v-model="form.inGamePrice.value"
-                                placeholder="4,926,700"
-                                :state="stateInGamePrice"
-                                min="0"
-                            >
-                            </b-form-input>
-                            <b-form-invalid-feedback :state="stateInGamePrice">{{ form.inGamePrice.violation }}</b-form-invalid-feedback>
-                        </b-input-group>
+                        <b-form-group class="mb-4" label="Pledge price (optional)" label-for="input-pledge-price">
+                            <b-input-group prepend="$">
+                                <b-form-input
+                                    id="input-pledge-price"
+                                    v-model="form.pledgePrice.value"
+                                    :number="true"
+                                    type="number"
+                                    :state="statePledgePrice"
+                                    placeholder="310"
+                                    step="0.01"
+                                    min="0"
+                                ></b-form-input>
+                                <b-form-invalid-feedback :state="statePledgePrice">{{ form.pledgePrice.violation }}</b-form-invalid-feedback>
+                            </b-input-group>
+                        </b-form-group>
+                        <b-form-group class="mb-4" label="In-game price (optional)" label-for="input-in-game-price">
+                            <b-input-group prepend="UEC">
+                                <b-form-input
+                                    id="input-in-game-price"
+                                    v-model="form.inGamePrice.value"
+                                    :number="true"
+                                    type="number"
+                                    :state="stateInGamePrice"
+                                    placeholder="4 926 700"
+                                    min="0"
+                                ></b-form-input>
+                                <b-form-invalid-feedback :state="stateInGamePrice">{{ form.inGamePrice.violation }}</b-form-invalid-feedback>
+                            </b-input-group>
+                        </b-form-group>
                         <b-button class="d-block ml-auto" type="submit" variant="success"><i class="fa fa-check"></i> Create</b-button>
                     </b-card-text>
                 </b-tab>
             </b-tabs>
         </b-form>
-    </b-card>
 </template>
 
 <script>
 import axios from 'axios';
 import Config from '@config/config.json';
-const formFields = ['chassis', 'model', 'pictureUrl', 'manufacturerName', 'manufacturerCode', 'shipSize', 'shipRole', 'cargoCapacity', 'minCrew', 'maxCrew', 'pledgePrice', 'inGamePrice' ]
-function generateFormState() {
+
+const formFields = ['chassis', 'model', 'pictureUrl', 'manufacturerName', 'manufacturerCode', 'shipSize', 'shipRole', 'cargoCapacity', 'crew', 'minCrew', 'maxCrew', 'pledgePrice', 'inGamePrice'];
+function generateFormStates() {
     let obj = {};
-    for(const formfield of formFields) {
+    for (const formfield of formFields) {
         obj[`state${formfield.charAt(0).toUpperCase() + formfield.slice(1)}`] = function () {
             return this.form[formfield].violation !== null ? false : null;
         }
@@ -180,20 +191,31 @@ export default {
         this.resetForm();
     },
     computed: {
-        ...generateFormState(),
+        ...generateFormStates(),
+        hasShipTabViolations() {
+            return this.stateChassis === false || this.stateModel === false || this.statePictureUrl === false;
+        },
+        hasManufacturerTabViolations() {
+            return this.stateManufacturerName === false || this.stateManufacturerCode === false;
+        },
+        hasUtilityTabViolations() {
+            return this.stateShipSize === false || this.stateShipRole === false || this.stateCargoCapacity === false || this.stateCrew === false || this.stateMinCrew === false || this.stateMaxCrew === false;
+        },
+        hasPricesTabViolations() {
+            return this.statePledgePrice === false || this.stateInGamePrice === false;
+        },
     },
     methods: {
         resetForm() {
             this.form = {};
             for( const value of formFields) {
-                this.form[value] = {
+                this.$set(this.form, value, {
                     value: null,
                     violation: null
-                }
+                });
             }
         },
         async onSubmit(ev) {
-            console.log('submit')
             ev.preventDefault();
             try {
                 this.submitDisabled = true;
@@ -202,25 +224,25 @@ export default {
                 }
                 this.globalViolation = null;
                 await axios.post(`${Config.api_base_url}/api/ship-template/create`, {
-                    model: this.form.model.value,
-                    pictureUrl: this.form.pictureUrl.value,
+                    model: this.form.model.value || null,
+                    pictureUrl: this.form.pictureUrl.value || null,
                     chassis: {
-                        name: this.form.chassis.value
+                        name: this.form.chassis.value || null
                     },
                     manufacturer: {
-                        name: this.form.manufacturerName.value,
-                        code: this.form.manufacturerCode.value
+                        name: this.form.manufacturerName.value || null,
+                        code: this.form.manufacturerCode.value || null
                     },
-                    size: this.form.shipSize.value,
-                    role: this.form.shipRole.value,
+                    size: this.form.shipSize.value || null,
+                    role: this.form.shipRole.value || null,
                     cargoCapacity: this.form.cargoCapacity.value !== null ? parseInt(this.form.cargoCapacity.value) : null,
                     crew: {
                         min: this.form.minCrew.value !== null ? parseInt(this.form.minCrew.value) : null,
-                        max: this.form.maxCrew.value !== null ? parseInt(this.form.maxCrew.value): null
+                        max: this.form.maxCrew.value !== null ? parseInt(this.form.maxCrew.value) : null
                     },
                     price: {
-                        pledge: this.form.pledgePrice.value !== null ? this.form.pledgePrice.value*100 : null,
-                        ingame: this.form.inGamePrice.value !== null ? parseInt(this.form.inGamePrice.value ) : null
+                        pledge: this.form.pledgePrice.value !== null ? Math.round(this.form.pledgePrice.value * 100) : null,
+                        ingame: this.form.inGamePrice.value !== null ? this.form.inGamePrice.value : null
                     }
                 }, {
                     headers: {
@@ -234,7 +256,7 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                if(err.response){
+                if (err.response && err.response.status === 400) {
                     this.handleViolations(err.response);
                     return;
                 }
@@ -244,25 +266,32 @@ export default {
             }
         },
         handleViolations(response) {
+            const mapViolationToFormfield = {
+                'model': 'model',
+                'chassis.name': 'chassis',
+                'pictureUrl': 'pictureUrl',
+                'manufacturer.name': 'manufacturerName',
+                'manufacturer.code': 'manufacturerCode',
+                'size': 'shipSize',
+                'role': 'shipRole',
+                'cargoCapacity': 'cargoCapacity',
+                'crew': 'crew',
+                'crew.min': 'minCrew',
+                'crew.max': 'maxCrew',
+                'price.pledge': 'pledgePrice',
+                'price.ingame': 'inGamePrice',
+            };
             const data = response.data;
             for (const violation of data.violations.violations) {
-                switch (violation.propertyPath) {
-                    case '':
-                        this.globalViolation = violation.title;
-                        break;
-                    case 'model':
-                        this.form.model.violation = violation.title;
-                        break;
-                    case 'chassis.name':
-                        this.form.chassis.violation = violation.title;
-                        break;
+                if (violation.propertyPath === '') {
+                    this.globalViolation = violation.title;
+                    continue;
+                }
+                if (mapViolationToFormfield[violation.propertyPath]) {
+                    this.form[mapViolationToFormfield[violation.propertyPath]].violation = violation.title;
                 }
             }
-        }
+        },
     }
 }
 </script>
-
-<style scoped>
-
-</style>
