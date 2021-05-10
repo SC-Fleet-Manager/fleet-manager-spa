@@ -1,6 +1,5 @@
 <template>
         <b-form @submit="onSubmit">
-            <b-button class="d-block ml-auto" type="submit" variant="success"><i class="fa fa-check"></i> Create</b-button>
             <b-tabs v-model="tabIndex">
                 <b-tab title="Ship" :title-link-class="hasShipTabViolations ? 'text-danger' : ''" active>
                     <b-card-text>
