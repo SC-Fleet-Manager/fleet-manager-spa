@@ -1,6 +1,14 @@
 <template>
     <b-form @submit="onSubmit">
         <b-alert variant="danger" :show="globalViolation !== null">{{ globalViolation }}</b-alert>
+        <b-form-group class="mb-4" label="Select from my template (optional)" label-for="input-select-template">
+            <b-form-select
+                id="input-select-template"
+                v-model="form.template.value"
+                :options="[{ text: 'Choose...', value: null }, { text: 'Cutlass', value: 'Cutlass' }]"
+            ></b-form-select>
+            <b-form-invalid-feedback :state="stateSelectTemplate">{{ form.template.violation }}</b-form-invalid-feedback>
+        </b-form-group>
         <b-form-group class="mb-4" label="Model *" label-for="input-ship-model">
             <b-form-input
                 id="input-ship-model"
@@ -8,6 +16,7 @@
                 placeholder="Cutlass black"
                 type="text"
                 :state="stateModel"
+                :disabled="templateSelected"
                 required
             ></b-form-input>
             <b-form-invalid-feedback :state="stateModel">{{ form.model.violation }}</b-form-invalid-feedback>
@@ -18,6 +27,7 @@
                 v-model="form.imageUrl.value"
                 debounce="500"
                 type="url"
+                :disabled="templateSelected"
                 placeholder="https://media.robertsspaceindustries.com/wj92rqzvhnecb/store_small.jpg"
                 :state="stateImageUrl"
             ></b-form-input>
@@ -32,6 +42,7 @@
                 v-model="form.quantity.value"
                 type="number"
                 :state="stateQuantity"
+                :disabled="templateSelected"
                 required
                 :number="true"
                 min="1"
@@ -56,12 +67,17 @@ export default {
             form: null,
             globalViolation: null,
             submitDisabled: false,
+            templateSelected: false,
+            listOfTemplate: [{id:1, model: 'Cutlass black', pictureUrl: ''}, {id:1, model: 'Cutlass black', pictureUrl: ''}],
         };
     },
     created() {
         this.resetForm();
     },
     computed: {
+        stateSelectTemplate() {
+            return this.form.template.violation !== null ? false : null;
+        },
         stateModel() {
             return this.form.model.violation !== null ? false : null;
         },
@@ -72,9 +88,21 @@ export default {
             return this.form.quantity.violation !== null ? false : null;
         },
     },
+    watch: {
+        isTemplateSelected(){
+            if(this.form.template.value !== null){
+                console.log('template selected');
+                this.templateSelected = true;
+            }
+        }
+    },
     methods: {
         resetForm() {
             this.form = {
+                template: {
+                  value: null,
+                  violation: null
+                },
                 model: {
                     value: null,
                     violation: null,
