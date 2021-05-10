@@ -178,7 +178,7 @@
             },
             onCreateTemplate() {
                 this.$refs.modalCreateTemplate.hide();
-                this.$toastr.s('Your template has created !');
+                this.$toastr.s('Your template has been created !');
             },
             deleteFleet() {
                 this.$refs.modalDeleteFleet.show();
