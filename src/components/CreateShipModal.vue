@@ -5,7 +5,7 @@
             <b-form-select
                 id="input-select-template"
                 v-model="form.template.value"
-                :options="[{ text: 'Choose...', value: null }, { text: 'Cutlass', value: 'Cutlass' }]"
+                :options="options"
             ></b-form-select>
             <b-form-invalid-feedback :state="stateSelectTemplate">{{ form.template.violation }}</b-form-invalid-feedback>
         </b-form-group>
@@ -16,7 +16,7 @@
                 placeholder="Cutlass black"
                 type="text"
                 :state="stateModel"
-                :disabled="templateSelected"
+                :disabled="isTemplateSelected"
                 required
             ></b-form-input>
             <b-form-invalid-feedback :state="stateModel">{{ form.model.violation }}</b-form-invalid-feedback>
@@ -27,7 +27,7 @@
                 v-model="form.imageUrl.value"
                 debounce="500"
                 type="url"
-                :disabled="templateSelected"
+                :disabled="isTemplateSelected"
                 placeholder="https://media.robertsspaceindustries.com/wj92rqzvhnecb/store_small.jpg"
                 :state="stateImageUrl"
             ></b-form-input>
@@ -42,7 +42,7 @@
                 v-model="form.quantity.value"
                 type="number"
                 :state="stateQuantity"
-                :disabled="templateSelected"
+                :disabled="isTemplateSelected"
                 required
                 :number="true"
                 min="1"
@@ -67,12 +67,13 @@ export default {
             form: null,
             globalViolation: null,
             submitDisabled: false,
-            templateSelected: false,
-            listOfTemplate: [{id:1, model: 'Cutlass black', pictureUrl: ''}, {id:1, model: 'Cutlass black', pictureUrl: ''}],
+            listOfTemplate: [{id:1, model: 'Cutlass black', pictureUrl: '', quantity: 2}, {id:2, model: 'Cutlass red', pictureUrl: '', quantity: 1}],
+            options: [{ value: null, text: 'Choose...' }],
         };
     },
     created() {
         this.resetForm();
+        this.loadTemplateList()
     },
     computed: {
         stateSelectTemplate() {
@@ -87,12 +88,10 @@ export default {
         stateQuantity() {
             return this.form.quantity.violation !== null ? false : null;
         },
-    },
-    watch: {
         isTemplateSelected(){
             if(this.form.template.value !== null){
-                console.log('template selected');
-                this.templateSelected = true;
+                this.templateForm(this.form.template.value);
+                return true;
             }
         }
     },
@@ -119,6 +118,63 @@ export default {
                     value: false,
                 },
             };
+        },
+        templateForm(ship) {
+            console.log(ship)
+            this.form = {
+                template: {
+                    value: ship,
+                    violation: null
+                },
+                model: {
+                    value: ship,
+                    violation: null,
+                },
+                imageUrl: {
+                    value: ship.imageUrl,
+                    violation: null,
+                },
+                quantity: {
+                    value: ship.quantity,
+                    violation: null,
+                },
+                addAnother: {
+                    value: false,
+                },
+            };
+        },
+        async loadTemplateList() {
+            // try {
+            //     this.notFoundFleet = false;
+            //     const response = await axios.get(`${Config.api_base_url}/api/template`, {
+            //         headers: {
+            //             Authorization: `Bearer ${this.$store.state.accessToken}`,
+            //         },
+            //     });
+            //     this.listOfTemplate = response;
+            // } catch (err) {
+            //     if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+            //         this.$toastr.e('You have been disconnected. Please login again.');
+            //         this.$router.push({ name: 'Home' });
+            //         return;
+            //     }
+            //     if (err.response.status == 400 && err.response.data.error === 'not_found_fleet'){
+            //         this.notFoundFleet = true
+            //         return;
+            //     }
+            //     this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
+            // } finally {
+            //     this.listOfTemplateLoaded = true;
+            // }
+            this.setOptions();
+        },
+        setOptions() {
+            for (const template of this.listOfTemplate) {
+                const obj = {};
+                obj['value'] = template.model;
+                obj['text'] = template.model;
+                this.options.push(obj);
+            }
         },
         async onSubmit(ev) {
             ev.preventDefault();
@@ -176,5 +232,5 @@ export default {
             }
         }
     }
-};
+}
 </script>
