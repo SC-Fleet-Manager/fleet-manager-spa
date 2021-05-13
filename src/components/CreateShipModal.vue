@@ -12,7 +12,7 @@
         <b-form-group class="mb-4" label="Model *" label-for="input-ship-model">
             <b-form-input
                 id="input-ship-model"
-                v-model="form.model.value"
+                v-model="formModelValue"
                 placeholder="Cutlass black"
                 type="text"
                 :state="stateModel"
@@ -24,7 +24,7 @@
         <b-form-group class="mb-4" label="Image URL (optional)" label-for="input-ship-image" description="Only from RSI or starcitizen.tools">
             <b-form-input
                 id="input-ship-image"
-                v-model="form.imageUrl.value"
+                v-model="formImageUrlValue"
                 debounce="500"
                 type="url"
                 :disabled="isTemplateSelected"
@@ -42,7 +42,6 @@
                 v-model="form.quantity.value"
                 type="number"
                 :state="stateQuantity"
-                :disabled="isTemplateSelected"
                 required
                 :number="true"
                 min="1"
@@ -67,7 +66,7 @@ export default {
             form: null,
             globalViolation: null,
             submitDisabled: false,
-            listOfTemplate: [{id:1, model: 'Cutlass black', pictureUrl: '', quantity: 2}, {id:2, model: 'Cutlass red', pictureUrl: '', quantity: 1}],
+            templateSelected: false,
             options: [{ value: null, text: 'Choose...' }],
         };
     },
@@ -88,12 +87,26 @@ export default {
         stateQuantity() {
             return this.form.quantity.violation !== null ? false : null;
         },
-        isTemplateSelected(){
+        isTemplateSelected() {
             if(this.form.template.value !== null){
-                this.templateForm(this.form.template.value);
+                this.templateSelected = true;
                 return true;
             }
-        }
+        },
+        formModelValue() {
+            if(this.templateSelected) {
+                return this.form.template.value
+            }
+        },
+        formImageUrlValue() {
+            if(this.templateSelected) {
+                for(const template of this.listOfTemplate){
+                   if(template.model == this.form.template.value) {
+                        return template.pictureUrl
+                   }
+                }
+            }
+        },
     },
     methods: {
         resetForm() {
@@ -119,54 +132,28 @@ export default {
                 },
             };
         },
-        templateForm(ship) {
-            console.log(ship)
-            this.form = {
-                template: {
-                    value: ship,
-                    violation: null
-                },
-                model: {
-                    value: ship,
-                    violation: null,
-                },
-                imageUrl: {
-                    value: ship.imageUrl,
-                    violation: null,
-                },
-                quantity: {
-                    value: ship.quantity,
-                    violation: null,
-                },
-                addAnother: {
-                    value: false,
-                },
-            };
-        },
         async loadTemplateList() {
-            // try {
-            //     this.notFoundFleet = false;
-            //     const response = await axios.get(`${Config.api_base_url}/api/template`, {
-            //         headers: {
-            //             Authorization: `Bearer ${this.$store.state.accessToken}`,
-            //         },
-            //     });
-            //     this.listOfTemplate = response;
-            // } catch (err) {
-            //     if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-            //         this.$toastr.e('You have been disconnected. Please login again.');
-            //         this.$router.push({ name: 'Home' });
-            //         return;
-            //     }
-            //     if (err.response.status == 400 && err.response.data.error === 'not_found_fleet'){
-            //         this.notFoundFleet = true
-            //         return;
-            //     }
-            //     this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
-            // } finally {
-            //     this.listOfTemplateLoaded = true;
-            // }
-            this.setOptions();
+            try {
+                this.notFoundFleet = false;
+                const response = await axios.get(`${Config.api_base_url}/api/my-ship-templates`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                this.listOfTemplate = response.data.items;
+                this.setOptions();
+            } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
+                if (err.response.status == 400 && err.response.data.error === 'not_found_fleet'){
+                    this.notFoundFleet = true
+                    return;
+                }
+                this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
+            }
         },
         setOptions() {
             for (const template of this.listOfTemplate) {
@@ -186,8 +173,8 @@ export default {
                 this.form.imageUrl.violation = null;
                 this.form.quantity.violation = null;
                 await axios.post(`${Config.api_base_url}/api/my-fleet/create-ship`, {
-                    model: this.form.model.value,
-                    pictureUrl: this.form.imageUrl.value || null,
+                    model: this.formModelValue,
+                    pictureUrl: this.formImageUrlValue || null,
                     quantity: this.form.quantity.value,
                 }, {
                     headers: {
