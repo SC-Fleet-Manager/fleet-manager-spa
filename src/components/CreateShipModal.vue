@@ -4,7 +4,7 @@
         <b-form-group class="mb-4" label="Select from my template (optional)" label-for="input-select-template">
             <b-form-select
                 id="input-select-template"
-                v-model="form.template.value"
+                v-model="templateSelected"
                 :options="options"
             ></b-form-select>
             <b-form-invalid-feedback :state="stateSelectTemplate">{{ form.template.violation }}</b-form-invalid-feedback>
@@ -66,7 +66,8 @@ export default {
             form: null,
             globalViolation: null,
             submitDisabled: false,
-            templateSelected: false,
+            templateSelected: null,
+            listOfTemplate: null,
             options: [{ value: null, text: 'Choose...' }],
         };
     },
@@ -88,23 +89,22 @@ export default {
             return this.form.quantity.violation !== null ? false : null;
         },
         isTemplateSelected() {
-            if(this.form.template.value !== null){
-                this.templateSelected = true;
-                return true;
+            return this.templateSelected !== null ? true : null;
+        },
+        formModelValue: {
+            set(value){
+                this.form.model.value = value;
+            },
+            get(){
+                return this.templateSelected ? this.templateSelected.model : null;
             }
         },
-        formModelValue() {
-            if(this.templateSelected) {
-                return this.form.template.value
-            }
-        },
-        formImageUrlValue() {
-            if(this.templateSelected) {
-                for(const template of this.listOfTemplate){
-                   if(template.model == this.form.template.value) {
-                        return template.pictureUrl
-                   }
-                }
+        formImageUrlValue: {
+            set(value){
+                this.form.imageUrl.value = value;
+            },
+            get(){
+                return this.templateSelected ? this.templateSelected.pictureUrl : null;
             }
         },
     },
@@ -134,7 +134,6 @@ export default {
         },
         async loadTemplateList() {
             try {
-                this.notFoundFleet = false;
                 const response = await axios.get(`${Config.api_base_url}/api/my-ship-templates`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.state.accessToken}`,
@@ -148,24 +147,22 @@ export default {
                     this.$router.push({ name: 'Home' });
                     return;
                 }
-                if (err.response.status == 400 && err.response.data.error === 'not_found_fleet'){
-                    this.notFoundFleet = true
-                    return;
-                }
-                this.errorMessage = 'Sorry, we are unable to retrieve your fleet. Please, try again later.';
+                this.errorMessage = 'Sorry, we are unable to retrieve your templates. Please, try again later.';
             }
         },
         setOptions() {
             for (const template of this.listOfTemplate) {
-                const obj = {};
-                obj['value'] = template.model;
-                obj['text'] = template.model;
-                this.options.push(obj);
+                const option = {};
+                option['value'] = { id: template.id, model: template.model, pictureUrl: template.pictureUrl };
+                option['text'] = template.model;
+                this.options.push(option);
             }
         },
-        async onSubmit(ev) {
+        onSubmit(ev) {
+          this.templateSelected ? this.createShipFromTemplate(ev) : this.createShip(ev);
+        },
+        async createShip(ev) {
             ev.preventDefault();
-
             try {
                 this.submitDisabled = true;
                 this.globalViolation = null;
@@ -173,8 +170,42 @@ export default {
                 this.form.imageUrl.violation = null;
                 this.form.quantity.violation = null;
                 await axios.post(`${Config.api_base_url}/api/my-fleet/create-ship`, {
-                    model: this.formModelValue,
-                    pictureUrl: this.formImageUrlValue || null,
+                    model: this.form.model.value,
+                    pictureUrl: this.form.imageUrl.value || null,
+                    quantity: this.form.quantity.value,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                if (this.form.addAnother.value) {
+                    this.$emit('newShip', { shouldClose: false });
+                    this.resetForm();
+                    this.form.addAnother.value = true;
+                    return;
+                }
+                this.$emit('newShip', { shouldClose: true });
+            } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
+                this.handleViolations(err.response);
+            } finally {
+                this.submitDisabled = false;
+            }
+        },
+        async createShipFromTemplate(ev) {
+            ev.preventDefault();
+            try {
+                this.submitDisabled = true;
+                this.globalViolation = null;
+                this.form.model.violation = null;
+                this.form.imageUrl.violation = null;
+                this.form.quantity.violation = null;
+                await axios.post(`${Config.api_base_url}/api/my-fleet/create-ship-from-template`, {
+                    templateId: this.templateSelected.id,
                     quantity: this.form.quantity.value,
                 }, {
                     headers: {
