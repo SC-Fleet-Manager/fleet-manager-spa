@@ -40,6 +40,8 @@
                 <b-nav-text class="p-2">–</b-nav-text>
                 <b-nav-item link-classes="p-2" v-b-modal.modal-patch-notes>Patch notes</b-nav-item>
                 <b-nav-text class="p-2">–</b-nav-text>
+                <b-nav-item link-classes="p-2" v-b-modal.modal-faq>FAQ</b-nav-item>
+                <b-nav-text class="p-2">–</b-nav-text>
                 <b-nav-item href="https://discord.gg/f6mrA3Y" target="_blank" link-classes="p-2"><i class="fab fa-discord" style="font-size: 1.4rem;"></i></b-nav-item>
                 <b-nav-item href="https://github.com/Ioni14/fleet-manager-api" target="_blank" link-classes="p-2"><i class="fab fa-github" style="font-size: 1.4rem;"></i></b-nav-item>
             </b-nav>
@@ -55,6 +57,9 @@
         </b-modal>
         <b-modal id="modal-give-feedback" ref="modalGiveFeedback" size="lg" centered title="Give feedback" hide-footer>
             <CreateGiveFeedbackModal></CreateGiveFeedbackModal>
+        </b-modal>
+        <b-modal id="modal-faq" ref="modalFaq" size="lg" centered title="Frequently asked questions (FAQ)" hide-footer>
+            <FaqModal></FaqModal>
         </b-modal>
     </div>
 </template>
@@ -73,6 +78,7 @@
     import Config from '@config/config.json';
     import Version from '@/version.json';
     import CreateGiveFeedbackModal from '@/components/CreateGiveFeedbackModal';
+    import FaqModal from '@/components/FaqModal';
     import moment from 'moment-timezone';
     import bus from '@/bus';
 
@@ -86,6 +92,7 @@
             SidebarToggler,
             SidebarMinimizer,
             CreateGiveFeedbackModal,
+            FaqModal,
         },
         data() {
             return {

@@ -3,6 +3,7 @@
         <b-alert variant="info" show>
             Here you can write something about your experience on Fleet-Manager (bugs, features, enhancements, etc.).<br/>
             This will help us to improve FM and see what are the most hyped.
+            <p> Any problems ? Check the <a href="" v-b-modal.modal-faq>Frequently asked questions (FAQ)</a>"</p>
         </b-alert>
         <b-form-group class="mb-4" label="Description *" label-for="input-description">
             <b-form-textarea
