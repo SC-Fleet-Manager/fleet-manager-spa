@@ -8,6 +8,7 @@
                 placeholder="Cutlass black"
                 type="text"
                 :state="stateModel"
+                :disabled="isFormTemplate"
                 required
             ></b-form-input>
             <b-form-invalid-feedback :state="stateModel">{{ form.model.violation }}</b-form-invalid-feedback>
@@ -20,6 +21,7 @@
                 type="url"
                 placeholder="https://media.robertsspaceindustries.com/wj92rqzvhnecb/store_small.jpg"
                 :state="stateImageUrl"
+                :disabled="isFormTemplate"
             ></b-form-input>
             <b-form-invalid-feedback :state="stateImageUrl">{{ form.imageUrl.violation }}</b-form-invalid-feedback>
         </b-form-group>
@@ -58,6 +60,8 @@ export default {
             form: null,
             globalViolation: null,
             submitDisabled: false,
+            isShipTemplate: false,
+            shipTemplateId: null,
         }
     },
     created() {
@@ -73,6 +77,11 @@ export default {
         stateQuantity() {
             return this.form.quantity.violation !== null ? false : null;
         },
+        isFormTemplate() {
+            if(this.shipTemplateId !== null){
+               return this.isShipTemplate = true;
+           }
+        }
     },
     methods: {
         resetForm() {
@@ -90,8 +99,12 @@ export default {
                     violation: null,
                 },
             };
+            this.shipTemplateId = this.ship.templateId;
         },
-        async onSubmit(ev) {
+        onSubmit(ev) {
+            this.isShipTemplate ? this.editShipFromTemplate(ev) : this.editShip(ev);
+        },
+        async editShip(ev) {
             ev.preventDefault();
 
             try {
@@ -103,6 +116,35 @@ export default {
                 await axios.post(`${Config.api_base_url}/api/my-fleet/update-ship/${this.ship.id}`, {
                     model: this.form.model.value,
                     pictureUrl: this.form.imageUrl.value || null,
+                    quantity: this.form.quantity.value,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.accessToken}`,
+                    },
+                });
+                this.$emit('updateShip');
+            } catch (err) {
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    this.$toastr.e('You have been disconnected. Please login again.');
+                    this.$router.push({ name: 'Home' });
+                    return;
+                }
+                this.handleViolations(err.response);
+            } finally {
+                this.submitDisabled = false;
+            }
+        },
+        async editShipFromTemplate(ev) {
+            ev.preventDefault();
+
+            try {
+                this.submitDisabled = true;
+                this.globalViolation = null;
+                this.form.model.violation = null;
+                this.form.imageUrl.violation = null;
+                this.form.quantity.violation = null;
+                await axios.post(`${Config.api_base_url}/api/my-fleet/update-ship-from-template/${this.ship.id}`, {
+                    templateId: this.ship.templateId,
                     quantity: this.form.quantity.value,
                 }, {
                     headers: {
