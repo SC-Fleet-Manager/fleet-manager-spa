@@ -87,9 +87,11 @@ Vue.use(SidebarPlugin);
 Vue.use(TabsPlugin);
 Vue.use(FormSelectPlugin);
 Vue.use(infiniteScroll);
-Vue.use(VueGtag, {
-    config: { id: "UA-38751935-8" }
-}, router);
+if (Config.gtagId){
+    Vue.use(VueGtag, {
+        config: { id: Config.gtagId }
+    }, router);
+};
 
 Vue.use(VueToastr, {
     defaultTimeout: 3000,
