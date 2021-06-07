@@ -7,6 +7,7 @@ import App from './App';
 import store from './store/store';
 import VueToastr from "vue-toastr";
 import infiniteScroll from 'vue-infinite-scroll';
+import VueGtag from "vue-gtag";
 import {
     LayoutPlugin,
     FormPlugin,
@@ -86,6 +87,12 @@ Vue.use(SidebarPlugin);
 Vue.use(TabsPlugin);
 Vue.use(FormSelectPlugin);
 Vue.use(infiniteScroll);
+if (Config.gtagId){
+    Vue.use(VueGtag, {
+        config: { id: Config.gtagId }
+    }, router);
+};
+
 Vue.use(VueToastr, {
     defaultTimeout: 3000,
     defaultProgressBar: false,
